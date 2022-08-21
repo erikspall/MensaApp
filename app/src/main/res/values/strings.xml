@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MensaApp</string>
+    <string name="text_label_nav_mensa">Mensen</string>
+    <string name="text_label_nav_cafe">Cafeterien</string>
+    <string name="text_label_nav_settings">Einstellungen</string>
+    <string name="mensa_image_descriptor">Image of mensa</string>
+</resources>

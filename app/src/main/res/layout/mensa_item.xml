@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    style="@style/Widget.Material3.CardView.Elevated"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardElevation="1dp"
+    app:cardCornerRadius="28dp"
+    app:contentPaddingBottom="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Material3.CardView.Filled"
+            android:id="@+id/mensa_image_container"
+            android:layout_width="wrap_content"
+            android:layout_height="125dp"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/mensa_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                tools:srcCompat="@drawable/m1"
+                android:contentDescription="@string/mensa_image_descriptor" />
+
+        </FrameLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/TextAppearance.Material3.BodyLarge"
+            android:layout_width="wrap_content"
+            android:id="@+id/text_mensa_name"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mensa_image_container"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            tools:text="Campus Hubland Nord"/>
+
+        <com.google.android.material.chip.Chip
+            app:chipBackgroundColor="?attr/colorPrimaryContainer"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:chipStrokeWidth="0dp"
+            tools:text="Mensa"
+            />
+
+        <ImageView
+            android:id="@+id/image_view_time"
+            app:layout_constraintTop_toBottomOf="@id/text_mensa_name"
+            app:layout_constraintStart_toStartOf="@id/text_mensa_name"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:scaleType="centerCrop"
+            app:tint="?attr/colorOutline"
+            android:src="@drawable/ic_time"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/TextAppearance.Material3.BodySmall"
+            android:layout_width="wrap_content"
+            android:id="@+id/text_mensa_opening"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/image_view_time"
+            app:layout_constraintTop_toTopOf="@id/image_view_time"
+            app:layout_constraintBottom_toBottomOf="@id/image_view_time"
+            android:layout_marginStart="8dp"
+            android:textColor="?attr/colorOutline"
+            tools:text="Noch 2h geöffnet"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
