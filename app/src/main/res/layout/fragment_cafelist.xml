@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.erikspall.mensaapp.ui.mensalist.MensaListFragment"
+    tools:context="de.erikspall.mensaapp.ui.cafelist.CafeListFragment"
     >
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:elevation="0dp"
                 app:layout_collapseMode="pin"
-                app:title="@string/text_label_nav_mensa"
+                app:title="@string/text_label_nav_cafe"
                 />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -37,13 +37,13 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/library_nested_scroll"
+        android:id="@+id/cafe_nested_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="?attr/collapsingToolbarLayoutMediumSize"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/library_recycler_view"
+            android:id="@+id/cafe_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"

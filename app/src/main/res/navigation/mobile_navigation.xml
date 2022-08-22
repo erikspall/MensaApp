@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation.xml"
-    app:startDestination="@id/mensaListFragment">
+    app:startDestination="@id/mensa_list_dest">
 
     <fragment
-        android:id="@+id/mensaListFragment"
+        android:id="@+id/mensa_list_dest"
         android:name="de.erikspall.mensaapp.ui.mensalist.MensaListFragment"
         android:label="MensaListFragment" />
+    <fragment
+        android:id="@+id/cafe_list_dest"
+        android:name="de.erikspall.mensaapp.ui.cafelist.CafeListFragment"
+        android:label="fragment_cafelist"
+        tools:layout="@layout/fragment_cafelist" />
+    <fragment
+        android:id="@+id/settings_dest"
+        android:name="de.erikspall.mensaapp.ui.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>
