@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.erikspall.mensaapp.ui.mensalist.MensaListFragment"
+    android:fitsSystemWindows="true"
     >
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -13,23 +13,32 @@
         android:fitsSystemWindows="true"
         >
 
+
         <com.google.android.material.appbar.CollapsingToolbarLayout
-            style="?attr/collapsingToolbarLayoutMediumStyle"
+            style="?attr/collapsingToolbarLayoutLargeStyle"
             android:layout_width="match_parent"
-            android:layout_height="?attr/collapsingToolbarLayoutMediumSize"
+            android:layout_height="?attr/collapsingToolbarLayoutLargeSize"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:collapsedTitleTextAppearance="@style/TextAppearance.App.TitleLarge"
             app:expandedTitleTextAppearance="@style/TextAppearance.App.TitleLarge">
 
-        <!--app:contentScrim="?attr/colorBackgroundFloating"-->
+            <!--app:contentScrim="?attr/colorBackgroundFloating"-->
 
+
+            <com.google.android.material.imageview.ShapeableImageView
+                style="@style/MyCardView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/m1" />
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
                 android:elevation="0dp"
                 app:layout_collapseMode="pin"
-                app:title="@string/text_label_nav_mensa"
                 />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -37,16 +46,16 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/library_nested_scroll"
+        android:id="@+id/cafe_nested_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="?attr/collapsingToolbarLayoutMediumSize"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/library_recycler_view"
+            android:id="@+id/cafe_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             tools:listitem="@layout/mensa_item"
+            android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:nestedScrollingEnabled="false">
         </androidx.recyclerview.widget.RecyclerView>

@@ -45,9 +45,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/cafe_recycler_view"
             android:layout_width="match_parent"
+            tools:listitem="@layout/mensa_item"
             android:layout_height="wrap_content"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="1"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:nestedScrollingEnabled="false">
         </androidx.recyclerview.widget.RecyclerView>
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="TextAppearance.App.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+    <style name="TextAppearance.App.TitleLarge" parent="TextAppearance.Material3.HeadlineMedium">
         <item name="fontFamily">@font/shrikhand</item>
         <item name="android:fontFamily">@font/shrikhand</item>
     </style>
@@ -10,4 +10,16 @@
         <item name="android:fontFamily">@font/shrikhand</item>
     </style>
 
+    <style name="MyCardView" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MaterialCardView.Cut</item>
+    </style>
+
+
+    <style name="ShapeAppearanceOverlay.MaterialCardView.Cut" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeBottomRight">28dp</item>
+        <item name="cornerSizeBottomLeft">28dp</item>
+    </style>
 </resources>
