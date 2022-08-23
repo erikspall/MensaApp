@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import de.erikspall.mensaapp.databinding.FragmentCafelistBinding
-import de.erikspall.mensaapp.databinding.FragmentMensalibBinding
 
 class CafeListFragment : Fragment() {
     private var _binding: FragmentCafelistBinding? = null

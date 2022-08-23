@@ -15,11 +15,24 @@
     </style>
 
 
+
     <style name="ShapeAppearanceOverlay.MaterialCardView.Cut" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSizeTopRight">0dp</item>
         <item name="cornerSizeTopLeft">0dp</item>
         <item name="cornerSizeBottomRight">28dp</item>
         <item name="cornerSizeBottomLeft">28dp</item>
+    </style>
+
+    <style name="MyChip" parent="@style/Widget.Material3.Chip.Assist">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MaterialChip.MensaApp</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.MaterialChip.MensaApp" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">16dp</item>
+        <item name="cornerSizeTopLeft">16dp</item>
+        <item name="cornerSizeBottomRight">2dp</item>
+        <item name="cornerSizeBottomLeft">16dp</item>
     </style>
 </resources>

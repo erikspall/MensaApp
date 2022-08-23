@@ -39,14 +39,13 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/library_nested_scroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="?attr/collapsingToolbarLayoutMediumSize"
+        android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/library_recycler_view"
+            android:id="@+id/recycler_view_canteen"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:listitem="@layout/mensa_item"
+            tools:listitem="@layout/item_food_provider"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:nestedScrollingEnabled="false">
         </androidx.recyclerview.widget.RecyclerView>
