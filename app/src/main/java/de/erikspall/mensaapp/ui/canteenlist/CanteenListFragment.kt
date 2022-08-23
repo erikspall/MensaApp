@@ -1,14 +1,12 @@
-package de.erikspall.mensaapp.ui.mensalist
+package de.erikspall.mensaapp.ui.canteenlist
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import de.erikspall.mensaapp.databinding.FragmentFoodProviderCanteenLibBinding
 import de.erikspall.mensaapp.domain.const.MaterialSizes
@@ -16,7 +14,7 @@ import de.erikspall.mensaapp.domain.utils.Conversion
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
 import de.erikspall.mensaapp.ui.adapter.FoodProviderCardAdapter
 
-class MensaListFragment : Fragment() {
+class CanteenListFragment : Fragment() {
     private var _binding: FragmentFoodProviderCanteenLibBinding? = null
 
     // This property is only valid between onCreateView and
@@ -28,8 +26,8 @@ class MensaListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val mensaListViewModel =
-            ViewModelProvider(this)[MensaListViewModel::class.java]
+        val canteenListViewModel =
+            ViewModelProvider(this)[CanteenListViewModel::class.java]
 
         _binding = FragmentFoodProviderCanteenLibBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -42,6 +40,7 @@ class MensaListFragment : Fragment() {
 
         binding.recyclerViewCanteen.adapter = FoodProviderCardAdapter(
             requireContext(),
+            findNavController()
         )
 
         binding.recyclerViewCanteen.setHasFixedSize(true)
@@ -55,6 +54,6 @@ class MensaListFragment : Fragment() {
     }
 
     private fun pushRecyclerContentUp(recyclerView: RecyclerView, dp: Int = 50) {
-        binding.recyclerViewCanteen.setPadding(8, 0, 8, Conversion.dpToPx(dp))
+        recyclerView.setPadding(8, 0, 8, Conversion.dpToPx(dp))
     }
 }

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    tools:context="de.erikspall.mensaapp.ui.foodproviderdetail.FoodProviderDetailFragment"
     >
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -27,6 +28,7 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 style="@style/MyCardView"
+                android:id="@+id/image_food_provider"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
@@ -69,7 +71,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                     <com.google.android.material.textview.MaterialTextView
-                        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+                        android:textAppearance="@style/TextAppearance.Material3.HeadlineLarge"
+                        android:id="@+id/text_food_provider_name"
                         android:layout_marginStart="20dp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -94,12 +97,13 @@
                         />
             </androidx.constraintlayout.widget.ConstraintLayout>
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/cafe_recycler_view"
+                android:id="@+id/recycler_view_menus"
                 android:layout_width="match_parent"
-                tools:listitem="@layout/day_item"
+                tools:listitem="@layout/item_menu"
                 android:layout_height="wrap_content"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                android:nestedScrollingEnabled="false">
+                android:nestedScrollingEnabled="false"
+                android:layout_marginTop="16dp">
             </androidx.recyclerview.widget.RecyclerView>
         </LinearLayout>
 

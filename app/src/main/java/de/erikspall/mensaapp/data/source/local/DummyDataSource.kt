@@ -91,6 +91,29 @@ object DummyDataSource {
                             priceEmployee = 365
                         )
                     )
+                ),
+                Menu.createMenuOfDay(
+                    date = LocalDate.of(2022, 8, 24),
+                    food = setOf(
+                        Food.createMeal(
+                            name = "Köttbullar mit Rahmsoße",
+                            priceStudent = 280,
+                            priceGuest = 510,
+                            priceEmployee = 415
+                        ),
+                        Food.createMeal(
+                            name = "Vegane Lasagne",
+                            priceStudent = 445,
+                            priceGuest = 685,
+                            priceEmployee = 590
+                        ),
+                        Food.createMeal(
+                            name = "Mensa-Vital: Gemüse Couscous-Pfanne mit Joghurt-Ingwer-Dip",
+                            priceStudent = 235,
+                            priceGuest = 460,
+                            priceEmployee = 365
+                        )
+                    )
                 )
             ),
             imageResourceId = R.drawable.m1,
@@ -155,6 +178,29 @@ object DummyDataSource {
             menus = listOf(
                 Menu.createMenuOfDay(
                     date = LocalDate.of(2022, 8, 23),
+                    food = setOf(
+                        Food.createMeal(
+                            name = "Köttbullar mit Rahmsoße",
+                            priceStudent = 280,
+                            priceGuest = 510,
+                            priceEmployee = 415
+                        ),
+                        Food.createMeal(
+                            name = "Vegane Lasagne",
+                            priceStudent = 445,
+                            priceGuest = 685,
+                            priceEmployee = 590
+                        ),
+                        Food.createMeal(
+                            name = "Mensa-Vital: Gemüse Couscous-Pfanne mit Joghurt-Ingwer-Dip",
+                            priceStudent = 235,
+                            priceGuest = 460,
+                            priceEmployee = 365
+                        )
+                    )
+                ),
+                Menu.createMenuOfDay(
+                    date = LocalDate.of(2022, 8, 24),
                     food = setOf(
                         Food.createMeal(
                             name = "Köttbullar mit Rahmsoße",
@@ -259,6 +305,29 @@ object DummyDataSource {
                             priceEmployee = 365
                         )
                     )
+                ),
+                Menu.createMenuOfDay(
+                    date = LocalDate.of(2022, 8, 24),
+                    food = setOf(
+                        Food.createMeal(
+                            name = "Köttbullar mit Rahmsoße",
+                            priceStudent = 280,
+                            priceGuest = 510,
+                            priceEmployee = 415
+                        ),
+                        Food.createMeal(
+                            name = "Vegane Lasagne",
+                            priceStudent = 445,
+                            priceGuest = 685,
+                            priceEmployee = 590
+                        ),
+                        Food.createMeal(
+                            name = "Mensa-Vital: Gemüse Couscous-Pfanne mit Joghurt-Ingwer-Dip",
+                            priceStudent = 235,
+                            priceGuest = 460,
+                            priceEmployee = 365
+                        )
+                    )
                 )
             ),
             imageResourceId = R.drawable.m3,
@@ -323,6 +392,29 @@ object DummyDataSource {
             menus = listOf(
                 Menu.createMenuOfDay(
                     date = LocalDate.of(2022, 8, 23),
+                    food = setOf(
+                        Food.createMeal(
+                            name = "Köttbullar mit Rahmsoße",
+                            priceStudent = 280,
+                            priceGuest = 510,
+                            priceEmployee = 415
+                        ),
+                        Food.createMeal(
+                            name = "Vegane Lasagne",
+                            priceStudent = 445,
+                            priceGuest = 685,
+                            priceEmployee = 590
+                        ),
+                        Food.createMeal(
+                            name = "Mensa-Vital: Gemüse Couscous-Pfanne mit Joghurt-Ingwer-Dip",
+                            priceStudent = 235,
+                            priceGuest = 460,
+                            priceEmployee = 365
+                        )
+                    )
+                ),
+                Menu.createMenuOfDay(
+                    date = LocalDate.of(2022, 8, 24),
                     food = setOf(
                         Food.createMeal(
                             name = "Köttbullar mit Rahmsoße",
