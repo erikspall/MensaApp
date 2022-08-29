@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import de.erikspall.mensaapp.databinding.FragmentFoodProviderCanteenLibBinding
 import de.erikspall.mensaapp.domain.const.MaterialSizes
 import de.erikspall.mensaapp.domain.utils.Conversion
+import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
 import de.erikspall.mensaapp.ui.adapter.FoodProviderCardAdapter
 
@@ -32,10 +33,9 @@ class CanteenListFragment : Fragment() {
         _binding = FragmentFoodProviderCanteenLibBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        pushRecyclerContentUp(
-            binding.recyclerViewCanteen,
-            HeightExtractor.getNavigationBarHeight(requireContext())
-                + MaterialSizes.BOTTOM_NAV_HEIGHT
+        binding.recyclerViewCanteen.pushContentUpBy(
+            HeightExtractor.getNavigationBarHeight(requireContext()) +
+                    MaterialSizes.BOTTOM_NAV_HEIGHT
         )
 
         binding.recyclerViewCanteen.adapter = FoodProviderCardAdapter(
@@ -51,9 +51,5 @@ class CanteenListFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun pushRecyclerContentUp(recyclerView: RecyclerView, dp: Int = 50) {
-        recyclerView.setPadding(8, 0, 8, Conversion.dpToPx(dp))
     }
 }

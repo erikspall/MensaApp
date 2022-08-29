@@ -2,6 +2,7 @@ package de.erikspall.mensaapp.ui.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +30,7 @@ class MenuAdapter(
 
     @SuppressLint("SetTextI18n") // TODO: Change later
     override fun onBindViewHolder(holder: MenuViewHolder, position: Int) {
+        Log.d("MenuAdapter", "Binding: ${data[position].getDate()}")
         holder.textDate.text = "Essen am ${data[position].getDate().dayOfWeek}, den ${data[position].getDate()}"
         for (meal in data[position].getMeals()) {
             val mealViewHolder = LayoutInflater.from(context).inflate(R.layout.item_meal, holder.layoutMenus, false)

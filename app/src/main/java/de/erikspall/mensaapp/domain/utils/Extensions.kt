@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.MaterialColors
 import de.erikspall.mensaapp.R
@@ -19,5 +20,9 @@ object Extensions {
         val exColor = typedArray.getColor(0, 0)
         typedArray.recycle()
         return exColor
+    }
+
+    fun RecyclerView.pushContentUpBy(dp: Int = 50){
+        this.setPadding(8, 0, 8, Conversion.dpToPx(dp))
     }
 }
