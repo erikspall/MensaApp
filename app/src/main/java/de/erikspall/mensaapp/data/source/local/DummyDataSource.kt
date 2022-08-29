@@ -21,7 +21,7 @@ object DummyDataSource {
             priceEmployee = 415
         ),
         Food.createMeal(
-            name = "Vegane Lasagne",
+            name = "Super duper Cheeseburger mit Pommes etc.",
             priceStudent = 445,
             priceGuest = 685,
             priceEmployee = 590
