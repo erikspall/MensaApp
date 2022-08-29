@@ -7,16 +7,40 @@
 
     <fragment
         android:id="@+id/mensa_list_dest"
-        android:name="de.erikspall.mensaapp.ui.mensalist.MensaListFragment"
-        android:label="MensaListFragment" />
+        android:name="de.erikspall.mensaapp.ui.canteenlist.CanteenListFragment"
+        android:label="CanteenListFragment"
+        tools:layout="@layout/fragment_food_provider_canteen_lib">
+        <argument
+            android:name="canteenId"
+            app:argType="integer"
+            android:defaultValue="0"/>
+        <action
+            android:id="@+id/action_open_details"
+            app:destination="@id/food_provider_detail_dest">
+            <argument
+                android:name="canteenId"
+                app:argType="integer"
+                android:defaultValue="0"/>
+        </action>
+    </fragment>
+
     <fragment
         android:id="@+id/cafe_list_dest"
         android:name="de.erikspall.mensaapp.ui.cafelist.CafeListFragment"
         android:label="fragment_cafelist"
-        tools:layout="@layout/fragment_cafelist" />
+        tools:layout="@layout/fragment_cafelist" >
+        <action
+            android:id="@+id/action_cafe_list_dest_to_foodProviderDetailFragment"
+            app:destination="@id/food_provider_detail_dest" />
+    </fragment>
     <fragment
         android:id="@+id/settings_dest"
         android:name="de.erikspall.mensaapp.ui.settings.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/food_provider_detail_dest"
+        android:name="de.erikspall.mensaapp.ui.foodproviderdetail.FoodProviderDetailFragment"
+        android:label="fragment_mensadetail"
+        tools:layout="@layout/fragment_food_provider_detail" />
 </navigation>

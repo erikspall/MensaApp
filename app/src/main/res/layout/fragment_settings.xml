@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/settings_item"
+            tools:listitem="@layout/item_settings"
             android:nestedScrollingEnabled="false">
         </androidx.recyclerview.widget.RecyclerView>
 

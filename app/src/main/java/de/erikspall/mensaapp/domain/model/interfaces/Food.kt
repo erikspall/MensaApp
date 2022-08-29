@@ -6,6 +6,7 @@ import de.erikspall.mensaapp.domain.model.enums.Role
 interface Food {
     fun getName(): String
     fun getPrice(role: Role): Int
+    fun getCategory(): String
    // fun getIngredients(): String
 
     companion object {

@@ -5,9 +5,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/container_food_provider"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardElevation="1dp"
+    android:clickable="true"
     android:outlineSpotShadowColor="@android:color/transparent"
     app:cardCornerRadius="28dp"
     app:contentPaddingBottom="16dp">
@@ -61,6 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:chipStrokeWidth="0dp"
+            android:clickable="false"
             tools:text="Mensa"
             />
 

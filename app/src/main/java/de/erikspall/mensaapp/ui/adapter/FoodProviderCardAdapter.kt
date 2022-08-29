@@ -2,25 +2,25 @@ package de.erikspall.mensaapp.ui.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.textview.MaterialTextView
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.source.local.DummyDataSource
 import de.erikspall.mensaapp.domain.utils.Extensions.getDynamicColorIfAvailable
-import java.security.AccessController.getContext
-import java.security.PrivateKey
+import de.erikspall.mensaapp.ui.canteenlist.CanteenListFragmentDirections
 
 class FoodProviderCardAdapter(
-    private val context: Context?
+    private val context: Context?,
+    private val navController: NavController
 ) : RecyclerView.Adapter<FoodProviderCardAdapter.FoodProviderViewHolder>() {
 
     private val dummyList = DummyDataSource.canteens
@@ -31,6 +31,7 @@ class FoodProviderCardAdapter(
         val foodProviderOpeningInfoText: MaterialTextView = view!!.findViewById(R.id.text_food_provider_opening_info)
         val foodProviderNameText: MaterialTextView = view!!.findViewById(R.id.text_food_provider_name)
         val imageViewTime: ImageView = view!!.findViewById(R.id.image_view_time)
+        val container: MaterialCardView = view!!.findViewById(R.id.container_food_provider)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoodProviderViewHolder {
@@ -55,7 +56,10 @@ class FoodProviderCardAdapter(
             holder.foodProviderOpeningInfoText.setTextColor(errorColor)
 
         }
-
+        holder.container.setOnClickListener {
+            val action = CanteenListFragmentDirections.actionOpenDetails(position)
+            navController.navigate(action)
+        }
     }
 
     override fun getItemCount(): Int {
