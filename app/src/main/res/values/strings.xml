@@ -4,4 +4,5 @@
     <string name="text_label_nav_cafe">Cafeterien</string>
     <string name="text_label_nav_settings">Einstellungen</string>
     <string name="mensa_image_descriptor">Image of mensa</string>
+    <string name="hide_back_button_on_scroll_behavior">de.erikspall.mensaapp.ui.behavior.HideBackButtonOnScrollBehavior</string>
 </resources>
