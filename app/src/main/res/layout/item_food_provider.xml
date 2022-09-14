@@ -12,7 +12,8 @@
     android:clickable="true"
     android:outlineSpotShadowColor="@android:color/transparent"
     app:cardCornerRadius="28dp"
-    app:contentPaddingBottom="16dp">
+    app:contentPaddingBottom="16dp"
+    android:transitionName="container_food_provider_small">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -26,17 +27,19 @@
             app:cardCornerRadius="4dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            >
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/image_food_provider"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 tools:srcCompat="@drawable/m1"
-                android:contentDescription="@string/mensa_image_descriptor" />
+                android:contentDescription="@string/mensa_image_descriptor"
+                />
 
         </FrameLayout>
         </com.google.android.material.card.MaterialCardView>
