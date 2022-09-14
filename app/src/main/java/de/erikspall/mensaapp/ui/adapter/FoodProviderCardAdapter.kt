@@ -9,6 +9,7 @@ import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.navigation.NavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
@@ -20,7 +21,8 @@ import de.erikspall.mensaapp.ui.canteenlist.CanteenListFragmentDirections
 
 class FoodProviderCardAdapter(
     private val context: Context?,
-    private val navController: NavController
+    private val navController: NavController,
+   // private val onProviderClicked: (Unit) -> Unit
 ) : RecyclerView.Adapter<FoodProviderCardAdapter.FoodProviderViewHolder>() {
 
     private val dummyList = DummyDataSource.canteens
@@ -32,6 +34,7 @@ class FoodProviderCardAdapter(
         val foodProviderNameText: MaterialTextView = view!!.findViewById(R.id.text_food_provider_name)
         val imageViewTime: ImageView = view!!.findViewById(R.id.image_view_time)
         val container: MaterialCardView = view!!.findViewById(R.id.container_food_provider)
+        val containerFoodProviderImage: MaterialCardView = view!!.findViewById(R.id.container_food_provider_image)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoodProviderViewHolder {
@@ -41,6 +44,8 @@ class FoodProviderCardAdapter(
 
     @SuppressLint("SetTextI18n") // TODO: Change later
     override fun onBindViewHolder(holder: FoodProviderViewHolder, position: Int) {
+        holder.container.transitionName = holder.container.transitionName + position // make it unique
+
         val item = dummyList[position]
         holder.foodProviderImage.setImageResource(item.getImageResourceId())
         holder.foodProviderNameText.text = item.getName()
@@ -57,8 +62,15 @@ class FoodProviderCardAdapter(
 
         }
         holder.container.setOnClickListener {
-            val action = CanteenListFragmentDirections.actionOpenDetails(position)
-            navController.navigate(action)
+
+
+            val foodProviderCardDetailName = context!!.getString(R.string.food_provider_card_detail_transition_name)
+
+
+
+            val extras = FragmentNavigatorExtras(holder.container to "container_big")
+            val directions = CanteenListFragmentDirections.actionOpenDetails(position)
+            navController.navigate(directions, extras)
         }
     }
 

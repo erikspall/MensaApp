@@ -1,5 +1,6 @@
 package de.erikspall.mensaapp.ui.foodproviderdetail
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +11,14 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.transition.TransitionInflater
+import com.google.android.material.transition.MaterialContainerTransform
+import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.source.local.DummyDataSource
 import de.erikspall.mensaapp.databinding.FragmentFoodProviderDetailBinding
 import de.erikspall.mensaapp.domain.const.MaterialSizes
 import de.erikspall.mensaapp.domain.model.interfaces.FoodProvider
+import de.erikspall.mensaapp.domain.utils.Extensions.getDynamicColorIfAvailable
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
 import de.erikspall.mensaapp.ui.adapter.MenuAdapter
@@ -27,7 +32,19 @@ class FoodProviderDetailFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val animation = TransitionInflater.from(requireContext()).inflateTransition(
+            android.R.transition.move
+        )
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.nav_host_fragment
+            duration = 500.toLong()
+            scrimColor = Color.TRANSPARENT
+            //setAllContainerColors(requireContext().getDynamicColorIfAvailable(R.attr.colorSurface))
+        }
+        //sharedElementReturnTransition = animation
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,6 +56,10 @@ class FoodProviderDetailFragment : Fragment() {
         val root: View = binding.root
 
         setMarginForIconButton()
+
+        binding.buttonBack.setOnClickListener {
+            activity?.onBackPressed()
+        }
 
         val safeArgs: CanteenListFragmentArgs by navArgs()
         val foodProviderId = safeArgs.canteenId
@@ -79,7 +100,7 @@ class FoodProviderDetailFragment : Fragment() {
     }
 
     fun setMarginForIconButton() {
-        ViewCompat.setOnApplyWindowInsetsListener(binding.iconButton) { view, windowInsets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.buttonBack) { view, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
             view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
