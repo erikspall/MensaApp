@@ -1,6 +1,5 @@
 package de.erikspall.mensaapp.ui.adapter
 
-import android.animation.LayoutTransition
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
@@ -11,7 +10,6 @@ import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.AutoTransition
-import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
@@ -23,14 +21,14 @@ import de.erikspall.mensaapp.domain.model.interfaces.Menu
 
 class MenuAdapter(
     private val context: Context,
-    private val data: List<Menu>
+    private val data: List<Menu>,
+    private val menusHolder: ConstraintLayout
 ): RecyclerView.Adapter<MenuAdapter.MenuViewHolder>()  {
 
 
     class MenuViewHolder(view: View?): RecyclerView.ViewHolder(view!!) {
         val textDate: MaterialTextView = view!!.findViewById(R.id.text_menu_date)
         val layoutMenus: LinearLayout = view!!.findViewById(R.id.linear_layout_menus)
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuViewHolder {
@@ -68,12 +66,9 @@ class MenuAdapter(
             test.text = "Hi"
             chipGroupAllergenics.addView(test)
 
-           // containerAllergenics.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
-
             buttonExpand.setOnClickListener {
                 val v = if (containerAllergenics.visibility == View.GONE) View.VISIBLE else View.GONE
-
-                TransitionManager.beginDelayedTransition(layout, AutoTransition())
+                TransitionManager.beginDelayedTransition(menusHolder, AutoTransition())
                 containerAllergenics.visibility = v
             }
 

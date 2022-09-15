@@ -60,7 +60,7 @@ class FoodProviderDetailFragment : Fragment() {
         setMarginForIconButton()
 
         binding.buttonBack.setOnClickListener {
-            activity?.onBackPressed()
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
         val safeArgs: CanteenListFragmentArgs by navArgs()
@@ -97,7 +97,8 @@ class FoodProviderDetailFragment : Fragment() {
     fun fillInMenus(foodProvider: FoodProvider) {
         binding.recyclerViewMenus.adapter = MenuAdapter(
             requireContext(),
-            foodProvider.getMenus()
+            foodProvider.getMenus(),
+            binding.menusHolder
         )
     }
 
