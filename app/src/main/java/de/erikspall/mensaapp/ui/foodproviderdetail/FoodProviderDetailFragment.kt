@@ -40,12 +40,11 @@ class FoodProviderDetailFragment : Fragment() {
         enterTransition = MaterialFadeThrough().apply {
             duration = 300L
         }
-        exitTransition = MaterialElevationScale(false).apply {
-            duration = 100L
-        }
-        reenterTransition = MaterialElevationScale(true).apply {
-            duration = 300L
-        }
+       // exitTransition = MaterialElevationScale(false).apply {
+       //     duration = 100L
+       // }
+       // reenterTransition = MaterialElevationScale(true).apply {
+       //// }
         //sharedElementReturnTransition = animation
     }
 
