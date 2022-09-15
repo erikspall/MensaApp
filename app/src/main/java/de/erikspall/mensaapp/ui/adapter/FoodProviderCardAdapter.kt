@@ -44,7 +44,7 @@ class FoodProviderCardAdapter(
 
     @SuppressLint("SetTextI18n") // TODO: Change later
     override fun onBindViewHolder(holder: FoodProviderViewHolder, position: Int) {
-        holder.container.transitionName = holder.container.transitionName + position // make it unique
+       // holder.container.transitionName = holder.container.transitionName + position // make it unique
 
         val item = dummyList[position]
         holder.foodProviderImage.setImageResource(item.getImageResourceId())
@@ -62,15 +62,11 @@ class FoodProviderCardAdapter(
 
         }
         holder.container.setOnClickListener {
-
-
             val foodProviderCardDetailName = context!!.getString(R.string.food_provider_card_detail_transition_name)
 
-
-
-            val extras = FragmentNavigatorExtras(holder.container to "container_big")
+            //val extras = FragmentNavigatorExtras(holder.container to "container_big")
             val directions = CanteenListFragmentDirections.actionOpenDetails(position)
-            navController.navigate(directions, extras)
+            navController.navigate(directions)
         }
     }
 

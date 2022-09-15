@@ -13,6 +13,8 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.transition.TransitionInflater
 import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialElevationScale
+import com.google.android.material.transition.MaterialFadeThrough
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.source.local.DummyDataSource
 import de.erikspall.mensaapp.databinding.FragmentFoodProviderDetailBinding
@@ -34,15 +36,15 @@ class FoodProviderDetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val animation = TransitionInflater.from(requireContext()).inflateTransition(
-            android.R.transition.move
-        )
-        sharedElementEnterTransition = MaterialContainerTransform().apply {
-            drawingViewId = R.id.nav_host_fragment
-            duration = 500.toLong()
-            scrimColor = Color.TRANSPARENT
-            //setAllContainerColors(requireContext().getDynamicColorIfAvailable(R.attr.colorSurface))
+
+        enterTransition = MaterialFadeThrough().apply {
+            duration = 300L
         }
+       // exitTransition = MaterialElevationScale(false).apply {
+       //     duration = 100L
+       // }
+       // reenterTransition = MaterialElevationScale(true).apply {
+       //// }
         //sharedElementReturnTransition = animation
     }
 
