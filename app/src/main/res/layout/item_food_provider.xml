@@ -1,97 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    style="@style/Widget.Material3.CardView.Elevated"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:id="@+id/container_food_provider"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardElevation="1dp"
-    android:clickable="true"
-    android:outlineSpotShadowColor="@android:color/transparent"
-    app:cardCornerRadius="28dp"
-    app:contentPaddingBottom="16dp"
-    android:transitionName="container_food_provider_small">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+
+    <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/container_food_provider"
+        style="@style/Widget.Material3.CardView.Elevated"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:clickable="true"
+        android:outlineSpotShadowColor="@android:color/transparent"
+        android:transitionName="container_food_provider_small"
+        app:cardCornerRadius="28dp"
+        app:cardElevation="1dp"
+        app:contentPaddingBottom="16dp">
 
-        <com.google.android.material.card.MaterialCardView
-            style="@style/Widget.Material3.CardView.Filled"
-            android:id="@+id/container_food_provider_image"
-            android:layout_width="wrap_content"
-            android:layout_height="125dp"
-            app:cardCornerRadius="4dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            >
-        <FrameLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/image_food_provider"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/container_food_provider_image"
+                style="@style/Widget.Material3.CardView.Filled"
+                android:layout_width="wrap_content"
+                android:layout_height="125dp"
+                app:cardCornerRadius="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/image_food_provider"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/mensa_image_descriptor"
+                        android:scaleType="centerCrop"
+                        tools:srcCompat="@drawable/m1" />
+
+                </FrameLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_food_provider_name"
+                style="@style/TextAppearance.Material3.BodyLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/container_food_provider_image"
+                tools:text="Campus Hubland Nord" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_food_provider_type"
+                style="@style/MyChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="12dp"
+                android:clickable="false"
+                app:chipBackgroundColor="?attr/colorPrimaryContainer"
+                app:chipStrokeWidth="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Mensa" />
+
+            <ImageView
+                android:id="@+id/image_view_time"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="8dp"
                 android:scaleType="centerCrop"
-                tools:srcCompat="@drawable/m1"
-                android:contentDescription="@string/mensa_image_descriptor"
-                />
+                android:src="@drawable/ic_time"
+                app:layout_constraintStart_toStartOf="@id/text_food_provider_name"
+                app:layout_constraintTop_toBottomOf="@id/text_food_provider_name"
+                app:tint="?attr/colorOutline" />
 
-        </FrameLayout>
-        </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_food_provider_opening_info"
+                style="@style/TextAppearance.Material3.BodySmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textColor="?attr/colorOutline"
+                app:layout_constraintBottom_toBottomOf="@id/image_view_time"
+                app:layout_constraintStart_toEndOf="@id/image_view_time"
+                app:layout_constraintTop_toTopOf="@id/image_view_time"
+                tools:text="Noch 2h geöffnet" />
 
-        <com.google.android.material.textview.MaterialTextView
-            style="@style/TextAppearance.Material3.BodyLarge"
-            android:layout_width="wrap_content"
-            android:id="@+id/text_food_provider_name"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/container_food_provider_image"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            tools:text="Campus Hubland Nord"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.chip.Chip
-            style="@style/MyChip"
-            android:id="@+id/chip_food_provider_type"
-            app:chipBackgroundColor="?attr/colorPrimaryContainer"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="12dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:chipStrokeWidth="0dp"
-            android:clickable="false"
-            tools:text="Mensa"
-            />
-
-        <ImageView
-            android:id="@+id/image_view_time"
-            app:layout_constraintTop_toBottomOf="@id/text_food_provider_name"
-            app:layout_constraintStart_toStartOf="@id/text_food_provider_name"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:scaleType="centerCrop"
-            android:layout_marginTop="8dp"
-            app:tint="?attr/colorOutline"
-            android:src="@drawable/ic_time"/>
-
-        <com.google.android.material.textview.MaterialTextView
-            style="@style/TextAppearance.Material3.BodySmall"
-            android:layout_width="wrap_content"
-            android:id="@+id/text_food_provider_opening_info"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/image_view_time"
-            app:layout_constraintTop_toTopOf="@id/image_view_time"
-            app:layout_constraintBottom_toBottomOf="@id/image_view_time"
-            android:layout_marginStart="8dp"
-            android:textColor="?attr/colorOutline"
-            tools:text="Noch 2h geöffnet"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</com.google.android.material.card.MaterialCardView>

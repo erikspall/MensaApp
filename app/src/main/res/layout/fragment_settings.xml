@@ -1,56 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="de.erikspall.mensaapp.ui.settings.SettingsFragment"
-    >
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        >
+<layout>
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            style="?attr/collapsingToolbarLayoutMediumStyle"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/collapsingToolbarLayoutMediumSize"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            app:collapsedTitleTextAppearance="@style/TextAppearance.App.TitleLarge"
-            app:expandedTitleTextAppearance="@style/TextAppearance.App.TitleLarge">
-
-        <!--app:contentScrim="?attr/colorBackgroundFloating"-->
-
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:elevation="0dp"
-                app:layout_collapseMode="pin"
-                app:title="@string/text_label_nav_settings"
-                />
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/cafe_nested_scroll"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="?attr/collapsingToolbarLayoutMediumSize"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/cafe_recycler_view"
+        android:transitionGroup="true"
+        tools:context="de.erikspall.mensaapp.ui.settings.SettingsFragment">
+
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_settings"
-            android:nestedScrollingEnabled="false">
-        </androidx.recyclerview.widget.RecyclerView>
+            android:fitsSystemWindows="true">
 
-    </androidx.core.widget.NestedScrollView>
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                style="?attr/collapsingToolbarLayoutMediumStyle"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/collapsingToolbarLayoutMediumSize"
+                app:collapsedTitleTextAppearance="@style/TextAppearance.App.TitleLarge"
+                app:expandedTitleTextAppearance="@style/TextAppearance.App.TitleLarge"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+                <!--app:contentScrim="?attr/colorBackgroundFloating"-->
+
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:elevation="0dp"
+                    app:layout_collapseMode="pin"
+                    app:title="@string/text_label_nav_settings" />
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/cafe_nested_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="?attr/collapsingToolbarLayoutMediumSize"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include
+                    layout="@layout/item_settings"
+                    app:settingsName='@{"Rolle"}'
+                    app:settingsValue='@{"Student"}'
+                    app:settingsImage="@{@drawable/ic_role}"/>
+
+                <include
+                    layout="@layout/item_settings"
+                    app:settingsName='@{"Standort"}'
+                    app:settingsValue='@{"Würzburg"}'
+                    app:settingsImage="@{@drawable/ic_location}"/>
+
+                <include
+                    layout="@layout/item_settings"
+                    app:settingsName='@{"Allergien"}'
+                    app:settingsValue='@{"Warnungen deaktiviert"}'
+                    app:settingsImage="@{@drawable/ic_warning}"/>
+
+                <include
+                    layout="@layout/item_settings"
+                    app:settingsName='@{"Über die App"}'
+                    app:settingsValue='@{"Impressum, Datenschutz"}'
+                    app:settingsImage="@{@drawable/ic_info}"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

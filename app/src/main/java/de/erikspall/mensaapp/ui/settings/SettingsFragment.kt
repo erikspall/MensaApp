@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.transition.MaterialElevationScale
+import com.google.android.material.transition.MaterialFadeThrough
 import de.erikspall.mensaapp.databinding.FragmentSettingsBinding
 
 class SettingsFragment : Fragment() {
@@ -14,6 +16,19 @@ class SettingsFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialFadeThrough().apply {
+            duration = 300L
+        }
+        exitTransition = MaterialElevationScale(false).apply {
+            duration = 100L
+        }
+        reenterTransition = MaterialElevationScale(true).apply {
+            duration = 300L
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
