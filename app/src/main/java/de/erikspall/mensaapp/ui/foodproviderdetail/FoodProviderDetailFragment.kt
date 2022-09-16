@@ -10,10 +10,10 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.MaterialFadeThrough
-import de.erikspall.mensaapp.data.sources.local.DummyDataSource
+//import de.erikspall.mensaapp.data.sources.local.dummy.DummyDataSource
 import de.erikspall.mensaapp.databinding.FragmentFoodProviderDetailBinding
 import de.erikspall.mensaapp.domain.const.MaterialSizes
-import de.erikspall.mensaapp.domain.model.interfaces.FoodProvider
+//import de.erikspall.mensaapp.domain.model.interfaces.FoodProvider
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
 import de.erikspall.mensaapp.ui.adapter.MenuAdapter
@@ -58,8 +58,8 @@ class FoodProviderDetailFragment : Fragment() {
 
         val safeArgs: CanteenListFragmentArgs by navArgs()
         val foodProviderId = safeArgs.canteenId
-        binding.textFoodProviderName.text = DummyDataSource.canteens[foodProviderId].getName()
-        binding.imageFoodProvider.setImageResource(DummyDataSource.canteens[foodProviderId].getImageResourceId())
+       // binding.textFoodProviderName.text = DummyDataSource.canteens[foodProviderId].getName()
+       // binding.imageFoodProvider.setImageResource(DummyDataSource.canteens[foodProviderId].getImageResourceId())
 
 
 
@@ -69,7 +69,7 @@ class FoodProviderDetailFragment : Fragment() {
         )
 
 
-        fillInMenus(DummyDataSource.canteens[foodProviderId])
+       // fillInMenus(DummyDataSource.canteens[foodProviderId])
 
 
 
@@ -86,14 +86,14 @@ class FoodProviderDetailFragment : Fragment() {
         _binding = null
     }
 
-    /* BAD PRACTICE */
+    /* BAD PRACTICE
     fun fillInMenus(foodProvider: FoodProvider) {
         binding.recyclerViewMenus.adapter = MenuAdapter(
             requireContext(),
             foodProvider.getMenus(),
             binding.menusHolder
         )
-    }
+    } */
 
     fun setMarginForIconButton() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.buttonBack) { view, windowInsets ->

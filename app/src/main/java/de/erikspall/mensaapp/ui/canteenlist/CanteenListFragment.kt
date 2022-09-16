@@ -6,25 +6,28 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
-import de.erikspall.mensaapp.R
+import dagger.hilt.android.AndroidEntryPoint
 import de.erikspall.mensaapp.databinding.FragmentFoodProviderCanteenLibBinding
 import de.erikspall.mensaapp.domain.const.MaterialSizes
-import de.erikspall.mensaapp.domain.utils.Conversion
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
 import de.erikspall.mensaapp.ui.adapter.FoodProviderCardAdapter
+import de.erikspall.mensaapp.ui.canteenlist.viewmodel.CanteenListViewModel
 
+@AndroidEntryPoint
 class CanteenListFragment : Fragment() {
     private var _binding: FragmentFoodProviderCanteenLibBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private val viewModel: CanteenListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,22 +55,24 @@ class CanteenListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        val canteenListViewModel =
-            ViewModelProvider(this)[CanteenListViewModel::class.java]
-
         _binding = FragmentFoodProviderCanteenLibBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        val adapter = FoodProviderCardAdapter(
+            requireContext(),
+            findNavController()
+        )
 
         binding.recyclerViewCanteen.pushContentUpBy(
             HeightExtractor.getNavigationBarHeight(requireContext()) +
                     MaterialSizes.BOTTOM_NAV_HEIGHT
         )
 
-        binding.recyclerViewCanteen.adapter = FoodProviderCardAdapter(
-            requireContext(),
-            findNavController()
-        )
+        binding.recyclerViewCanteen.adapter = adapter
+
+        viewModel.canteens.observe(viewLifecycleOwner) { canteens ->
+            canteens.let { adapter.submitList(it) }
+        }
 
         binding.recyclerViewCanteen.setHasFixedSize(true)
 
