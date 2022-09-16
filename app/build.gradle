@@ -69,5 +69,12 @@ dependencies {
     // Hilt
     implementation "com.google.dagger:hilt-android:2.43.2"
     kapt "com.google.dagger:hilt-compiler:2.43.2"
+
+    // LiveData
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+   // implementation 'androidx.lifecycle:lifecycle-process:2.5.1'
+   // implementation 'androidx.lifecycle:lifecycle-service:2.5.1'
 }
 

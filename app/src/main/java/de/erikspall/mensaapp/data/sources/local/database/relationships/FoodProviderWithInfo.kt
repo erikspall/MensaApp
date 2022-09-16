@@ -6,8 +6,9 @@ import de.erikspall.mensaapp.data.sources.local.database.entities.FoodProvider
 import de.erikspall.mensaapp.data.sources.local.database.entities.Location
 import de.erikspall.mensaapp.data.sources.local.database.entities.OpeningHours
 
-data class FoodProviderWithoutMenus (
-    @Embedded val foodProvider: FoodProvider,
+data class FoodProviderWithInfo (
+    @Embedded
+    val foodProvider: FoodProvider,
     @Relation(
         parentColumn = "location_id",
         entityColumn = "lid"

@@ -77,10 +77,13 @@ class AppRepository(
             foodProviderRepository.insert(
                 FoodProvider(
                     fid = apiFoodProvider.id,
-                    name = apiFoodProvider.name,
+                    name = apiFoodProvider.name.substringAfter(" ", "unknown")
+                        .substringBeforeLast(" "),
                     locationId = getOrInsertLocation(apiFoodProvider.location),
                     info = apiFoodProvider.info,
-                    additionalInfo = apiFoodProvider.additionalInfo
+                    additionalInfo = apiFoodProvider.additionalInfo,
+                    type = apiFoodProvider.name.substringBefore(" ", "unknown"),
+                    isFavorite = false
                 )
             )
         }
