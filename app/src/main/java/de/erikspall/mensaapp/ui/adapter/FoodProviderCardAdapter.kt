@@ -14,7 +14,7 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.textview.MaterialTextView
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.data.sources.local.DummyDataSource
+//import de.erikspall.mensaapp.data.sources.local.dummy.DummyDataSource
 import de.erikspall.mensaapp.domain.utils.Extensions.getDynamicColorIfAvailable
 import de.erikspall.mensaapp.ui.canteenlist.CanteenListFragmentDirections
 
@@ -24,7 +24,7 @@ class FoodProviderCardAdapter(
    // private val onProviderClicked: (Unit) -> Unit
 ) : RecyclerView.Adapter<FoodProviderCardAdapter.FoodProviderViewHolder>() {
 
-    private val dummyList = DummyDataSource.canteens
+   // private val dummyList = DummyDataSource.canteens
 
     class FoodProviderViewHolder(view: View?): RecyclerView.ViewHolder(view!!) {
         val foodProviderImage: ImageView = view!!.findViewById(R.id.image_food_provider)
@@ -45,7 +45,8 @@ class FoodProviderCardAdapter(
     override fun onBindViewHolder(holder: FoodProviderViewHolder, position: Int) {
        // holder.container.transitionName = holder.container.transitionName + position // make it unique
 
-        val item = dummyList[position]
+        //val item = dummyList[position]
+        /*
         holder.foodProviderImage.setImageResource(item.getImageResourceId())
         holder.foodProviderNameText.text = item.getName()
         holder.foodProviderTypeChip.text = item.getType().toString()
@@ -66,10 +67,10 @@ class FoodProviderCardAdapter(
             //val extras = FragmentNavigatorExtras(holder.container to "container_big")
             val directions = CanteenListFragmentDirections.actionOpenDetails(position)
             navController.navigate(directions)
-        }
+        }*/
     }
 
     override fun getItemCount(): Int {
-        return dummyList.size
+        return 0
     }
 }

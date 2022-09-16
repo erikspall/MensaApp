@@ -16,12 +16,12 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textview.MaterialTextView
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.domain.model.enums.Role
-import de.erikspall.mensaapp.domain.model.interfaces.Menu
+//import de.erikspall.mensaapp.domain.model.enums.Role
+//import de.erikspall.mensaapp.domain.model.interfaces.Menu
 
 class MenuAdapter(
     private val context: Context,
-    private val data: List<Menu>,
+ //   private val data: List<Menu>,
     private val menusHolder: ConstraintLayout
 ): RecyclerView.Adapter<MenuAdapter.MenuViewHolder>()  {
 
@@ -38,7 +38,7 @@ class MenuAdapter(
 
     @SuppressLint("SetTextI18n") // TODO: Change later
     override fun onBindViewHolder(holder: MenuViewHolder, position: Int) {
-        Log.d("MenuAdapter", "Binding: ${data[position].getDate()}")
+        /*Log.d("MenuAdapter", "Binding: ${data[position].getDate()}")
         holder.textDate.text = "Essen am ${data[position].getDate().dayOfWeek}," +
                 " den ${data[position].getDate()}"
 
@@ -74,10 +74,10 @@ class MenuAdapter(
 
             holder.layoutMenus.addView(mealViewHolder)
             index++
-        }
+        }*/
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return 0
     }
 }

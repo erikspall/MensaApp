@@ -9,14 +9,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
-import de.erikspall.mensaapp.data.sources.remote.ApiSource
+import dagger.hilt.android.AndroidEntryPoint
+import de.erikspall.mensaapp.data.repositories.AppRepository
+import de.erikspall.mensaapp.data.sources.remote.RemoteApiDataSource
 import de.erikspall.mensaapp.databinding.FragmentSettingsBinding
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
+
+    @Inject
+    lateinit var test: AppRepository
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -48,7 +53,7 @@ class SettingsFragment : Fragment() {
 
         binding.settingInfo.container.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
-                ApiSource().getLatestFoodProviderInfo()
+                test.fetchAndSaveLatestData()
             }
 
         }
