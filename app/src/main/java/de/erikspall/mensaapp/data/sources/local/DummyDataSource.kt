@@ -1,8 +1,6 @@
-package de.erikspall.mensaapp.data.source.local
+package de.erikspall.mensaapp.data.sources.local
 
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.domain.model.Meal
-import de.erikspall.mensaapp.domain.model.OpeningHours
 import de.erikspall.mensaapp.domain.model.enums.FoodProviderType
 import de.erikspall.mensaapp.domain.model.enums.Location
 import de.erikspall.mensaapp.domain.model.interfaces.Food

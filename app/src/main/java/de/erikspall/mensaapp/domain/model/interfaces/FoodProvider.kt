@@ -1,8 +1,7 @@
 package de.erikspall.mensaapp.domain.model.interfaces
 
-import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
-import de.erikspall.mensaapp.domain.model.Canteen
+import de.erikspall.mensaapp.domain.model.FoodProvider
 import de.erikspall.mensaapp.domain.model.enums.FoodProviderType
 import de.erikspall.mensaapp.domain.model.enums.Location
 import java.util.*
@@ -29,8 +28,8 @@ interface FoodProvider {
             menus: List<Menu>,
             @DrawableRes imageResourceId: Int,
             type: FoodProviderType
-        ): FoodProvider {
-            return Canteen(
+        ): de.erikspall.mensaapp.domain.model.interfaces.FoodProvider {
+            return FoodProvider(
                 name,
                 location,
                 titleInfo,

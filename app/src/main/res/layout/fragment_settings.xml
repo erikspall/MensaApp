@@ -49,24 +49,28 @@
                 android:orientation="vertical">
 
                 <include
+                    android:id="@+id/setting_role"
                     layout="@layout/item_settings"
                     app:settingsName='@{"Rolle"}'
                     app:settingsValue='@{"Student"}'
                     app:settingsImage="@{@drawable/ic_role}"/>
 
                 <include
+                    android:id="@+id/setting_location"
                     layout="@layout/item_settings"
                     app:settingsName='@{"Standort"}'
                     app:settingsValue='@{"Würzburg"}'
                     app:settingsImage="@{@drawable/ic_location}"/>
 
                 <include
+                    android:id="@+id/setting_allergenics"
                     layout="@layout/item_settings"
                     app:settingsName='@{"Allergien"}'
                     app:settingsValue='@{"Warnungen deaktiviert"}'
                     app:settingsImage="@{@drawable/ic_warning}"/>
 
                 <include
+                    android:id="@+id/setting_info"
                     layout="@layout/item_settings"
                     app:settingsName='@{"Über die App"}'
                     app:settingsValue='@{"Impressum, Datenschutz"}'

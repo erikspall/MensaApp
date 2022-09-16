@@ -4,12 +4,11 @@ import androidx.annotation.DrawableRes
 import de.erikspall.mensaapp.domain.model.enums.FoodProviderType
 import de.erikspall.mensaapp.domain.model.enums.Location
 import de.erikspall.mensaapp.domain.model.interfaces.FoodProvider
-import de.erikspall.mensaapp.domain.model.interfaces.Food
 import de.erikspall.mensaapp.domain.model.interfaces.Menu
 import de.erikspall.mensaapp.domain.model.interfaces.OpeningInfo
 import java.util.*
 
-class Canteen(
+class FoodProvider(
     private val name: String,
     private val location: Location,
     private val titleInfo: String,

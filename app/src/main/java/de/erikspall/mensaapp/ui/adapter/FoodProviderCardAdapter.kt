@@ -9,13 +9,12 @@ import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.navigation.NavController
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.textview.MaterialTextView
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.data.source.local.DummyDataSource
+import de.erikspall.mensaapp.data.sources.local.DummyDataSource
 import de.erikspall.mensaapp.domain.utils.Extensions.getDynamicColorIfAvailable
 import de.erikspall.mensaapp.ui.canteenlist.CanteenListFragmentDirections
 
