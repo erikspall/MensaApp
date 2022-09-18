@@ -20,7 +20,6 @@ import de.erikspall.mensaapp.domain.usecases.foodprovider.FoodProviderUseCases
 //import de.erikspall.mensaapp.domain.model.interfaces.FoodProvider
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
-import de.erikspall.mensaapp.ui.adapter.MenuAdapter
 import de.erikspall.mensaapp.ui.canteenlist.CanteenListFragmentArgs
 import javax.inject.Inject
 
@@ -73,9 +72,10 @@ class FoodProviderDetailFragment : Fragment() {
                     .replace(", ", "\n\n").replace(") ", ")\n\n") +
                         if (it.foodProvider.info.isNotBlank()) "\n\n" else "" +
                         it.foodProvider.additionalInfo.replace(", ", "\n\n").replace(") ", ")\n\n")
+            binding.imageFoodProvider.setImageResource(it.foodProvider.icon)
         }
        // binding.textFoodProviderName.text = DummyDataSource.canteens[foodProviderId].getName()
-        binding.imageFoodProvider.setImageResource(R.drawable.m1)
+
 
 
 

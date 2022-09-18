@@ -6,8 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -17,12 +15,9 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.textview.MaterialTextView
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.sources.local.database.relationships.FoodProviderWithoutMenus
-import de.erikspall.mensaapp.domain.usecases.foodprovider.FoodProviderUseCases
 import de.erikspall.mensaapp.domain.usecases.foodprovider.GetOpeningHoursAsString
 //import de.erikspall.mensaapp.data.sources.local.dummy.DummyDataSource
-import de.erikspall.mensaapp.domain.utils.Extensions.getDynamicColorIfAvailable
 import de.erikspall.mensaapp.ui.canteenlist.CanteenListFragmentDirections
-import javax.inject.Inject
 
 class FoodProviderCardAdapter(
     private val context: Context?,
@@ -53,7 +48,7 @@ class FoodProviderCardAdapter(
 
         val item = getItem(position)
 
-        holder.foodProviderImage.setImageResource(R.drawable.m1)
+        holder.foodProviderImage.setImageResource(item.foodProvider.icon)
         holder.foodProviderNameText.text = item.foodProvider.name
         holder.foodProviderTypeChip.text = item.foodProvider.type
         holder.foodProviderOpeningInfoText.text = GetOpeningHoursAsString().invoke(item.openingHours) // TODO : BAD

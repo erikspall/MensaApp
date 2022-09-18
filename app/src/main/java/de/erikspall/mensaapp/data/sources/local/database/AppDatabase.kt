@@ -14,7 +14,7 @@ import de.erikspall.mensaapp.data.sources.local.database.entities.Weekday
 import de.erikspall.mensaapp.data.sources.local.database.entities.Location
 
 @Database(entities = [FoodProvider::class, Location::class, OpeningHours::class, Weekday::class],
-    version = 5, exportSchema = false)
+    version = 1, exportSchema = false)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun foodProviderDao(): FoodProviderDao
     abstract fun locationDao(): LocationDao
@@ -27,6 +27,9 @@ abstract class AppDatabase: RoomDatabase() {
 
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
+
+                context.applicationContext.deleteDatabase("app_database") // TODO: remove before release
+
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,

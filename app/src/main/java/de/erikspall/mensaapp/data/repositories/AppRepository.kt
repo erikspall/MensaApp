@@ -1,5 +1,7 @@
 package de.erikspall.mensaapp.data.repositories
 
+import androidx.annotation.DrawableRes
+import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.sources.local.database.entities.FoodProvider
 import de.erikspall.mensaapp.data.sources.local.database.entities.Location
 import de.erikspall.mensaapp.data.sources.local.database.entities.OpeningHours
@@ -12,6 +14,7 @@ import de.erikspall.mensaapp.data.sources.remote.api.model.LocationApiModel
 import de.erikspall.mensaapp.data.sources.remote.api.model.OpeningInfoApiModel
 import de.erikspall.mensaapp.data.sources.remote.api.model.WeekdayApiModel
 import kotlinx.coroutines.flow.Flow
+import java.util.stream.Collectors
 
 class AppRepository(
     private val foodProviderRepository: FoodProviderRepository,
@@ -23,6 +26,8 @@ class AppRepository(
 
     val allFoodProvidersWithoutMenus: Flow<List<FoodProviderWithoutMenus>> =
         foodProviderRepository.getFoodProvidersWithoutMenus()
+
+
 
     /**
      * Fetches and saves all new data (including weekdays, menus, etc.)
@@ -76,22 +81,44 @@ class AppRepository(
     }
 
     private suspend fun getOrInsertFoodProvider(apiFoodProvider: FoodProviderApiModel): Long {
+        val foodProviderImageMap = mapOf(
+            "burse_am_studentenhaus_wuerzburg" to R.drawable.burse_am_studentenhaus_wuerzburg,
+            "interimsmensa_sprachenzentrum_wuerzburg" to R.drawable.interimsmensa_sprachenzentrum_wuerzburg,
+            "mensa_am_studentenhaus_wuerzburg" to R.drawable.mensa_am_studentenhaus_wuerzburg,
+            "mensa_austrasse_bamberg" to R.drawable.mensa_austrasse_bamberg,
+            "mensa_feldkirchenstrasse_bamberg" to R.drawable.mensa_feldkirchenstrasse_bamberg,
+            "mensa_fhws_campus_schweinfurt" to R.drawable.mensa_fhws_campus_schweinfurt,
+            "mensa_hochschulcampus_aschaffenburg" to R.drawable.mensa_hochschulcampus_aschaffenburg,
+            "mensa_josef_schneider_strasse_wuerzburg" to R.drawable.mensa_josef_schneider_strasse_wuerzburg,
+            "mensa_roentgenring_wuerzburg" to R.drawable.mensa_roentgenring_wuerzburg,
+            "mensateria_campus_hubland_nord_wuerzburg" to R.drawable.mensateria_campus_hubland_nord_wuerzburg
+        )
+
         return if (foodProviderRepository.exists(apiFoodProvider.id)) {
             apiFoodProvider.id
         } else {
+            val type = apiFoodProvider.name.substringBefore(" ", "unknown")
+            val name = apiFoodProvider.name.substringAfter(" ", "unknown")
+                .substringBeforeLast(" ").replaceFirstChar { c -> c.uppercase() }
             foodProviderRepository.insert(
                 FoodProvider(
                     fid = apiFoodProvider.id,
-                    name = apiFoodProvider.name.substringAfter(" ", "unknown")
-                        .substringBeforeLast(" "),
+                    name = name,
                     locationId = getOrInsertLocation(apiFoodProvider.location),
                     info = apiFoodProvider.info,
                     additionalInfo = apiFoodProvider.additionalInfo,
-                    type = apiFoodProvider.name.substringBefore(" ", "unknown"),
-                    isFavorite = false
+                    type = type,
+                    isFavorite = false,
+                    icon = getIconId(name, type, apiFoodProvider.location.name, foodProviderImageMap)
                 )
             )
         }
+    }
+
+    @DrawableRes
+    private fun getIconId(name: String, type: String, location: String, imgMap: Map<String, Int>): Int {
+        val formattedName = "${type.formatToResString()}_${name.formatToResString()}_${location.formatToResString()}"
+        return imgMap[formattedName] ?: R.drawable.mensateria_campus_hubland_nord_wuerzburg // TODO: set default img
     }
 
     private suspend fun getOrInsertLocation(apiLocation: LocationApiModel): Long {
@@ -103,5 +130,15 @@ class AppRepository(
                 name = apiLocation.name
             ))
         }
+    }
+
+    private fun String.formatToResString(): String {
+        return this.lowercase()
+            .replace("-", "_")
+            .replace("ä", "ae")
+            .replace("ö", "oe")
+            .replace("ü", "ue")
+            .replace("ß", "ss")
+            .replace(" ", "_")
     }
 }
