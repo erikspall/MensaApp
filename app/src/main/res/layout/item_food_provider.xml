@@ -40,7 +40,7 @@
                         android:layout_height="match_parent"
                         android:contentDescription="@string/mensa_image_descriptor"
                         android:scaleType="centerCrop"
-                        tools:srcCompat="@drawable/m1" />
+                        tools:srcCompat="@drawable/mensateria_campus_hubland_nord_wuerzburg" />
 
                 </FrameLayout>
             </com.google.android.material.card.MaterialCardView>

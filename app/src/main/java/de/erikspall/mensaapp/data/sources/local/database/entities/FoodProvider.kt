@@ -1,5 +1,6 @@
 package de.erikspall.mensaapp.data.sources.local.database.entities
 
+import androidx.annotation.DrawableRes
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
@@ -15,6 +16,10 @@ data class FoodProvider (
     val info: String,
     @ColumnInfo(name = "additional_info") val additionalInfo: String,
     @ColumnInfo(name = "is_favorite") val isFavorite: Boolean,
+
+    @DrawableRes
+    @ColumnInfo(name = "icon_res")
+    val icon: Int
     //@ColumnInfo(name = "opening_info") val openingInfo: String
 ) {
     override fun equals(other: Any?): Boolean {
