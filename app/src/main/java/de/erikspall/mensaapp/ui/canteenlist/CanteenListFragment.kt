@@ -14,6 +14,7 @@ import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import de.erikspall.mensaapp.databinding.FragmentFoodProviderCanteenLibBinding
 import de.erikspall.mensaapp.domain.const.MaterialSizes
+import de.erikspall.mensaapp.domain.usecases.foodprovider.GetOpeningHoursAsString
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
 import de.erikspall.mensaapp.ui.adapter.FoodProviderCardAdapter

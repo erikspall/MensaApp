@@ -8,20 +8,28 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.MaterialFadeThrough
+import dagger.hilt.android.AndroidEntryPoint
+import de.erikspall.mensaapp.R
 //import de.erikspall.mensaapp.data.sources.local.dummy.DummyDataSource
 import de.erikspall.mensaapp.databinding.FragmentFoodProviderDetailBinding
 import de.erikspall.mensaapp.domain.const.MaterialSizes
+import de.erikspall.mensaapp.domain.usecases.foodprovider.FoodProviderUseCases
 //import de.erikspall.mensaapp.domain.model.interfaces.FoodProvider
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
 import de.erikspall.mensaapp.ui.adapter.MenuAdapter
 import de.erikspall.mensaapp.ui.canteenlist.CanteenListFragmentArgs
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class FoodProviderDetailFragment : Fragment() {
     private var _binding: FragmentFoodProviderDetailBinding? = null
+
+    @Inject
+    lateinit var foodProviderUseCases: FoodProviderUseCases
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -58,8 +66,16 @@ class FoodProviderDetailFragment : Fragment() {
 
         val safeArgs: CanteenListFragmentArgs by navArgs()
         val foodProviderId = safeArgs.canteenId
+        foodProviderUseCases.getInfoOfFoodProvider(fid = foodProviderId.toLong())
+            .asLiveData().observe(viewLifecycleOwner) {
+            binding.textFoodProviderName.text = it.foodProvider.name
+                binding.infoFoodProviderOpening.infoText = it.foodProvider.info
+                    .replace(", ", "\n\n").replace(") ", ")\n\n") +
+                        if (it.foodProvider.info.isNotBlank()) "\n\n" else "" +
+                        it.foodProvider.additionalInfo.replace(", ", "\n\n").replace(") ", ")\n\n")
+        }
        // binding.textFoodProviderName.text = DummyDataSource.canteens[foodProviderId].getName()
-       // binding.imageFoodProvider.setImageResource(DummyDataSource.canteens[foodProviderId].getImageResourceId())
+        binding.imageFoodProvider.setImageResource(R.drawable.m1)
 
 
 

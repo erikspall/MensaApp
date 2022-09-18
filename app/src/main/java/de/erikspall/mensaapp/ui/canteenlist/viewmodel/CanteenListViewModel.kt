@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CanteenListViewModel @Inject constructor(
-    private val foodProviderUseCases: FoodProviderUseCases
+    foodProviderUseCases: FoodProviderUseCases
 ) : ViewModel() {
 
     val state = CanteenListState()

@@ -19,7 +19,7 @@
             app:destination="@id/food_provider_detail_dest">
             <argument
                 android:name="canteenId"
-                app:argType="long"
+                app:argType="integer"
                 android:defaultValue="0"/>
         </action>
     </fragment>

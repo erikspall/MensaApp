@@ -11,7 +11,7 @@ data class OpeningHours (
     @ColumnInfo(name = "weekday_id") val weekdayId: Long,
     @ColumnInfo(name = "opens_at") val opensAt: String,
     @ColumnInfo(name = "closes_at") val closesAt: String,
-    @ColumnInfo(name = "get_food_till") val getFoodTill: String,
+    //@ColumnInfo(name = "get_food_till") val getFoodTill: String,
     val opened: Boolean
 ) {
     override fun equals(other: Any?): Boolean {
@@ -25,7 +25,7 @@ data class OpeningHours (
         if (weekdayId != other.weekdayId) return false
         if (opensAt != other.opensAt) return false
         if (closesAt != other.closesAt) return false
-        if (getFoodTill != other.getFoodTill) return false
+        ////if (getFoodTill != other.getFoodTill) return false
         if (opened != other.opened) return false
 
         return true
@@ -37,7 +37,7 @@ data class OpeningHours (
         result = 31 * result + weekdayId.hashCode()
         result = 31 * result + opensAt.hashCode()
         result = 31 * result + closesAt.hashCode()
-        result = 31 * result + getFoodTill.hashCode()
+       // result = 31 * result + getFoodTill.hashCode()
         result = 31 * result + opened.hashCode()
         return result
     }

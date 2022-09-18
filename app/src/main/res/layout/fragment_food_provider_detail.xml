@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -76,40 +77,49 @@
                 />
 
             <com.google.android.material.textview.MaterialTextView
-                android:textAppearance="@style/TextAppearance.Material3.HeadlineLarge"
                 android:id="@+id/text_food_provider_name"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="8dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="32dp"
                 android:maxLines="2"
-                tools:text="Campus Hubland Nord"
+                android:textAppearance="@style/TextAppearance.Material3.HeadlineLarge"
+                app:layout_constraintEnd_toStartOf="@id/heartButton"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/image_food_provider"
-                app:layout_constraintEnd_toStartOf="@id/heartButton"/>
+                tools:text="Campus Hubland Nord" />
 
             <com.google.android.material.button.MaterialButton
                 style="?attr/materialIconButtonFilledTonalStyle"
                 android:id="@+id/heartButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="20dp"
                 app:icon="@drawable/ic_round_favorite_border"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/text_food_provider_name"
-                app:layout_constraintBottom_toBottomOf="@id/text_food_provider_name"
+                app:layout_constraintTop_toBottomOf="@id/image_food_provider"
                 />
-
+            <include layout="@layout/item_info"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_width="match_parent"
+                app:infoImage="@{@drawable/ic_info}"
+                android:id="@+id/info_food_provider_opening"
+                app:layout_constraintTop_toBottomOf="@id/text_food_provider_name"
+                />
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_menus"
                 android:layout_width="match_parent"
+                android:layout_marginTop="16dp"
                 tools:listitem="@layout/item_menu"
                 android:layout_height="wrap_content"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:nestedScrollingEnabled="false"
-                app:layout_constraintTop_toBottomOf="@id/text_food_provider_name">
+                app:layout_constraintTop_toBottomOf="@id/info_food_provider_opening">
             </androidx.recyclerview.widget.RecyclerView>
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!-- <LinearLayout
@@ -156,7 +166,7 @@
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
-
+</layout>
 
 
 
