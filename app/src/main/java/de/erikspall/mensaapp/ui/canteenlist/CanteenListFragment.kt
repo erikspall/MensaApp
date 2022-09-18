@@ -3,7 +3,9 @@ package de.erikspall.mensaapp.ui.canteenlist
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.*
 import android.view.ViewGroup
+import androidx.annotation.RawRes
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -72,6 +74,16 @@ class CanteenListFragment : Fragment() {
         binding.recyclerViewCanteen.adapter = adapter
 
         viewModel.canteens.observe(viewLifecycleOwner) { canteens ->
+            if (canteens.isEmpty()) {
+                binding.lottieContainer.visibility = VISIBLE
+                binding.libraryAppbarLayout.visibility = INVISIBLE
+                binding.libraryNestedScroll.visibility = INVISIBLE
+            } else {
+                binding.lottieContainer.visibility = GONE
+                binding.libraryAppbarLayout.visibility = VISIBLE
+                binding.libraryNestedScroll.visibility = VISIBLE
+
+            }
             canteens.let { adapter.submitList(it) }
         }
 
