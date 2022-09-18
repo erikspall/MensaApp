@@ -17,18 +17,19 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.textview.MaterialTextView
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.sources.local.database.relationships.FoodProviderWithoutMenus
+import de.erikspall.mensaapp.domain.usecases.foodprovider.FoodProviderUseCases
+import de.erikspall.mensaapp.domain.usecases.foodprovider.GetOpeningHoursAsString
 //import de.erikspall.mensaapp.data.sources.local.dummy.DummyDataSource
 import de.erikspall.mensaapp.domain.utils.Extensions.getDynamicColorIfAvailable
 import de.erikspall.mensaapp.ui.canteenlist.CanteenListFragmentDirections
+import javax.inject.Inject
 
 class FoodProviderCardAdapter(
     private val context: Context?,
-    private val navController: NavController,
-   // private val onProviderClicked: (Unit) -> Unit
+    private val navController: NavController
 ) : ListAdapter<FoodProviderWithoutMenus, FoodProviderCardAdapter.FoodProviderViewHolder>(
     FOOD_PROVIDER_COMPARATOR
 ) {
-
    // private val dummyList = DummyDataSource.canteens
 
     class FoodProviderViewHolder(view: View?): RecyclerView.ViewHolder(view!!) {
@@ -55,7 +56,8 @@ class FoodProviderCardAdapter(
         holder.foodProviderImage.setImageResource(R.drawable.m1)
         holder.foodProviderNameText.text = item.foodProvider.name
         holder.foodProviderTypeChip.text = item.foodProvider.type
-        if (item.openingHours.get(0).opened) {
+        holder.foodProviderOpeningInfoText.text = GetOpeningHoursAsString().invoke(item.openingHours) // TODO : BAD
+        /*if (item.openingHours.get(0).opened) {
             holder.foodProviderOpeningInfoText.text = "Noch 2h geöffnet"
         } else {
             val drawableWrap = DrawableCompat.wrap(AppCompatResources.getDrawable(context!!, R.drawable.ic_time)!!).mutate();
@@ -65,12 +67,12 @@ class FoodProviderCardAdapter(
             holder.foodProviderOpeningInfoText.text = "Geschlossen!"
             holder.foodProviderOpeningInfoText.setTextColor(errorColor)
 
-        }
+        }*/
         holder.container.setOnClickListener {
             //val foodProviderCardDetailName = context!!.getString(R.string.food_provider_card_detail_transition_name)
 
             //val extras = FragmentNavigatorExtras(holder.container to "container_big")
-            val directions = CanteenListFragmentDirections.actionOpenDetails(item.foodProvider.fid)
+            val directions = CanteenListFragmentDirections.actionOpenDetails(item.foodProvider.fid.toInt())
             navController.navigate(directions)
         }
     }

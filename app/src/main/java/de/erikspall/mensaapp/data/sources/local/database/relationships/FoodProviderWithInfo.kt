@@ -10,13 +10,9 @@ data class FoodProviderWithInfo (
     @Embedded
     val foodProvider: FoodProvider,
     @Relation(
-        parentColumn = "location_id",
-        entityColumn = "lid"
-    )
-    val location: Location,
-    @Relation(
         parentColumn = "fid",
         entityColumn = "food_provider_id"
     )
     val openingHours: List<OpeningHours>
+    // TODO: Add menus
 )

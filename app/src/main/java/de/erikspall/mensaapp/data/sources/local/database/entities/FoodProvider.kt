@@ -14,7 +14,8 @@ data class FoodProvider (
     //@ColumnInfo(name = "opening_hours_id") val openingHoursId: Int,
     val info: String,
     @ColumnInfo(name = "additional_info") val additionalInfo: String,
-    @ColumnInfo(name = "is_favorite") val isFavorite: Boolean
+    @ColumnInfo(name = "is_favorite") val isFavorite: Boolean,
+    //@ColumnInfo(name = "opening_info") val openingInfo: String
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

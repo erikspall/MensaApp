@@ -14,7 +14,7 @@ import de.erikspall.mensaapp.data.sources.local.database.entities.Weekday
 import de.erikspall.mensaapp.data.sources.local.database.entities.Location
 
 @Database(entities = [FoodProvider::class, Location::class, OpeningHours::class, Weekday::class],
-    version = 4, exportSchema = false)
+    version = 5, exportSchema = false)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun foodProviderDao(): FoodProviderDao
     abstract fun locationDao(): LocationDao

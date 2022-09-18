@@ -5,15 +5,11 @@
 
     <data>
         <variable
-            name="settingsName"
+            name="infoText"
             type="java.lang.String" />
 
         <variable
-            name="settingsValue"
-            type="java.lang.String" />
-        
-        <variable
-            name="settingsImage"
+            name="infoImage"
             type="android.graphics.drawable.Drawable" />
 
     </data>
@@ -24,43 +20,34 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:orientation="vertical">
-        
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/name"
-            app:layout_constraintBottom_toBottomOf="@id/value"
+            app:layout_constraintTop_toTopOf="parent"
             android:layout_marginStart="24dp"
             tools:src="@drawable/ic_round_error"
-            app:tint="?attr/colorOnBackground"
-            android:src="@{settingsImage}"/>
-        
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@{settingsName}"
-            android:layout_marginStart="16dp"
-            android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/image"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Rolle" />
+            app:tint="?attr/colorOutline"
+            android:src="@{infoImage}"/>
+
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/value"
+            android:layout_marginTop="3dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="52dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/name"
-            app:layout_constraintStart_toStartOf="@id/name"
-            app:layout_constraintEnd_toEndOf="@id/name"
+            app:layout_constraintTop_toTopOf="@id/image"
+            app:layout_constraintStart_toEndOf="@id/image"
+            app:layout_constraintEnd_toEndOf="parent"
             android:textColor="?attr/colorOutline"
-            android:text="@{settingsValue}"
+            android:text="@{infoText}"
             android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
             tools:layout_editor_absoluteX="16dp"
-            tools:text="Student" />
+            tools:text="vom 30.07. bis 03.10. geschlossen,\n\nBrötchenverkauf von 8.30 - 14.00 Uhr über die Mensatheke" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

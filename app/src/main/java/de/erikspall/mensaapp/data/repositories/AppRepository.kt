@@ -4,6 +4,7 @@ import de.erikspall.mensaapp.data.sources.local.database.entities.FoodProvider
 import de.erikspall.mensaapp.data.sources.local.database.entities.Location
 import de.erikspall.mensaapp.data.sources.local.database.entities.OpeningHours
 import de.erikspall.mensaapp.data.sources.local.database.entities.Weekday
+import de.erikspall.mensaapp.data.sources.local.database.relationships.FoodProviderWithInfo
 import de.erikspall.mensaapp.data.sources.local.database.relationships.FoodProviderWithoutMenus
 import de.erikspall.mensaapp.data.sources.remote.RemoteApiDataSource
 import de.erikspall.mensaapp.data.sources.remote.api.model.FoodProviderApiModel
@@ -40,6 +41,10 @@ class AppRepository(
 
     }
 
+    fun getFoodProviderWithInfo(fid: Long): Flow<FoodProviderWithInfo> {
+        return foodProviderRepository.getFoodProviderWithInfo(fid)
+    }
+
     private suspend fun getOrInsertOpeningHours(apiOpeningHours: OpeningInfoApiModel, fid: Long): Long {
         return if (openingHoursRepository.exists(apiOpeningHours.id)) {
             apiOpeningHours.id
@@ -50,7 +55,7 @@ class AppRepository(
                 weekdayId = getOrInsertWeekday(apiOpeningHours.weekday),
                 opensAt = apiOpeningHours.opensAt,
                 closesAt = apiOpeningHours.closesAt,
-                getFoodTill = apiOpeningHours.getFoodTill,
+                //getFoodTill = apiOpeningHours.getFoodTill,
                 opened = apiOpeningHours.opened
             )
             )

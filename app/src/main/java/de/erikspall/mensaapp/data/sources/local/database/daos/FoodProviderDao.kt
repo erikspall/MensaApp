@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import de.erikspall.mensaapp.data.sources.local.database.entities.FoodProvider
+import de.erikspall.mensaapp.data.sources.local.database.relationships.FoodProviderWithInfo
 import de.erikspall.mensaapp.data.sources.local.database.relationships.FoodProviderWithoutMenus
 import kotlinx.coroutines.flow.Flow
 
@@ -37,4 +38,7 @@ interface FoodProviderDao {
 
     @Query("SELECT * FROM food_providers")
     fun getAll(): Flow<List<FoodProvider>>
+
+    @Query("SELECT * FROM food_providers WHERE fid = :fid")
+    fun getFoodProvidersWithInfo(fid: Long): Flow<FoodProviderWithInfo>
 }
