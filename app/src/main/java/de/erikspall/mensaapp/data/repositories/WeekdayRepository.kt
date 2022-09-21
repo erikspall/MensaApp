@@ -14,12 +14,16 @@ class WeekdayRepository(
         return weekdayDao.insert(weekday)
     }
 
-    suspend fun exists(wid: Long): Boolean {
-        return weekdayDao.exists(wid)
+    suspend fun exists(name: String): Boolean {
+        return weekdayDao.exists(name)
     }
 
     suspend fun delete(weekday: Weekday) {
         weekdayDao.delete(weekday)
+    }
+
+    suspend fun get(name: String): Weekday? {
+        return weekdayDao.get(name)
     }
 
     suspend fun update(vararg weekdays: Weekday) {

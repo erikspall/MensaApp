@@ -20,14 +20,14 @@ interface WeekdayDao {
     @Update
     suspend fun updateWeekday(vararg weekday: Weekday)
 
-    @Query("SELECT EXISTS(SELECT * FROM weekday WHERE wid = :wid COLLATE NOCASE)")
-    suspend fun exists(wid: Long): Boolean
+    @Query("SELECT EXISTS(SELECT * FROM weekday WHERE name = :name COLLATE NOCASE)")
+    suspend fun exists(name: String): Boolean
 
     @Delete
     suspend fun delete(weekday: Weekday)
 
-    @Query("SELECT * FROM weekday WHERE wid = :wid")
-    suspend fun get(wid: Int): Weekday?
+    @Query("SELECT * FROM weekday WHERE name = :name")
+    suspend fun get(name: String): Weekday?
 
     @Query("SELECT * FROM weekday")
     fun getAll(): Flow<List<Weekday>>

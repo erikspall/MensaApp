@@ -19,14 +19,18 @@ interface OpeningHoursDao {
     @Update
     suspend fun updateOpeningHours(vararg openingHours: OpeningHours)
 
-    @Query("SELECT EXISTS(SELECT * FROM opening_hours WHERE oid = :oid COLLATE NOCASE)")
-    suspend fun exists(oid: Long): Boolean
+    @Query("SELECT EXISTS(SELECT * FROM opening_hours WHERE food_provider_id = :fid AND weekday_id = :wid COLLATE NOCASE)")
+    suspend fun exists(fid: Long, wid: Long): Boolean
 
     @Delete
     suspend fun delete(openingHours: OpeningHours)
 
     @Query("SELECT * FROM opening_hours WHERE oid = :oid")
     suspend fun get(oid: Int): OpeningHours?
+
+
+    @Query("SELECT * FROM opening_hours WHERE food_provider_id = :fid AND weekday_id = :wid")
+    suspend fun get(fid: Long, wid: Long): OpeningHours?
 
     @Query("SELECT * FROM opening_hours")
     fun getAll(): Flow<List<OpeningHours>>

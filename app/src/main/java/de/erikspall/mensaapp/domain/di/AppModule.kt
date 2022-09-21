@@ -47,6 +47,12 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideFoodProviderTypeRepository(db: AppDatabase): FoodProviderTypeRepository {
+        return FoodProviderTypeRepository(db.foodProviderTypeDao())
+    }
+
+    @Provides
+    @Singleton
     fun provideApiDataSource(@IoDispatcher ioDispatcher: CoroutineDispatcher): RemoteApiDataSource {
         return RemoteApiDataSource(ioDispatcher)
     }
@@ -58,6 +64,7 @@ object AppModule {
         locationRepository: LocationRepository,
         openingHoursRepository: OpeningHoursRepository,
         weekdayRepository: WeekdayRepository,
+        foodProviderTypeRepository: FoodProviderTypeRepository,
         apiDataSource: RemoteApiDataSource
     ): AppRepository {
         return AppRepository(
@@ -65,6 +72,7 @@ object AppModule {
             locationRepository,
             openingHoursRepository,
             weekdayRepository,
+            foodProviderTypeRepository,
             apiDataSource
         )
     }

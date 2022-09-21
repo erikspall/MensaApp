@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "weekday")
 data class Weekday (
-    @PrimaryKey val wid: Long,
+    @PrimaryKey(autoGenerate = true) val wid: Long = 0,
     val name: String
 ) {
     override fun equals(other: Any?): Boolean {

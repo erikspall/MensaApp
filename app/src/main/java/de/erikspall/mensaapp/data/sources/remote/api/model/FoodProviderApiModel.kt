@@ -1,12 +1,13 @@
 package de.erikspall.mensaapp.data.sources.remote.api.model
 
 data class FoodProviderApiModel(
-    val id: Long,
+    val foodProviderType: String,
     val name: String,
-    val location: LocationApiModel,
-    val openingHours: List<OpeningInfoApiModel>,
-    val info: String,
     val additionalInfo: String,
+    val location: String,
+    val openingHours: List<OpeningInfoApiModel>,
     val linkToFoodPlan: String,
-    val menus: List<MenuApiModel>
+    val id: Long,
+    val info: String,
+    //val menus: List<MenuApiModel>
 )

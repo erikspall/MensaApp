@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "locations")
 data class Location (
-    @PrimaryKey val lid: Long,
+    @PrimaryKey(autoGenerate = true) val lid: Long = 0,
     val name: String
 ) {
     override fun equals(other: Any?): Boolean {

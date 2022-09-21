@@ -14,12 +14,12 @@ class LocationRepository(
         return locationDao.insert(location)
     }
 
-    suspend fun exists(lid: Long): Boolean {
-        return locationDao.exists(lid)
+    suspend fun exists(name: String): Boolean {
+        return locationDao.exists(name)
     }
 
-    suspend fun get(lid: Int): Location? {
-        return locationDao.get(lid)
+    suspend fun get(name: String): Location? {
+        return locationDao.get(name)
     }
 
     suspend fun delete(location: Location) {

@@ -2,25 +2,20 @@ package de.erikspall.mensaapp.data.repositories
 
 import androidx.annotation.DrawableRes
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.data.sources.local.database.entities.FoodProvider
-import de.erikspall.mensaapp.data.sources.local.database.entities.Location
-import de.erikspall.mensaapp.data.sources.local.database.entities.OpeningHours
-import de.erikspall.mensaapp.data.sources.local.database.entities.Weekday
+import de.erikspall.mensaapp.data.sources.local.database.entities.*
 import de.erikspall.mensaapp.data.sources.local.database.relationships.FoodProviderWithInfo
 import de.erikspall.mensaapp.data.sources.local.database.relationships.FoodProviderWithoutMenus
 import de.erikspall.mensaapp.data.sources.remote.RemoteApiDataSource
 import de.erikspall.mensaapp.data.sources.remote.api.model.FoodProviderApiModel
-import de.erikspall.mensaapp.data.sources.remote.api.model.LocationApiModel
 import de.erikspall.mensaapp.data.sources.remote.api.model.OpeningInfoApiModel
-import de.erikspall.mensaapp.data.sources.remote.api.model.WeekdayApiModel
 import kotlinx.coroutines.flow.Flow
-import java.util.stream.Collectors
 
 class AppRepository(
     private val foodProviderRepository: FoodProviderRepository,
     private val locationRepository: LocationRepository,
     private val openingHoursRepository: OpeningHoursRepository,
     private val weekdayRepository: WeekdayRepository,
+    private val foodProviderTypeRepository: FoodProviderTypeRepository,
     private val remoteApiDataSource: RemoteApiDataSource
 ) {
 
@@ -33,13 +28,14 @@ class AppRepository(
      * Fetches and saves all new data (including weekdays, menus, etc.)
      */
     suspend fun fetchAndSaveLatestData() {
-        val fetched = remoteApiDataSource.fetchLatestData()
+        val fetched = remoteApiDataSource.fetchLatestFoodProviders()
 
         if (fetched.isPresent){
             for (fetchedProvider in fetched.get()) {
                 val fid = getOrInsertFoodProvider(fetchedProvider)
                 for (openingHours in fetchedProvider.openingHours) {
-                    getOrInsertOpeningHours(openingHours, fid)
+                    val wid = getOrInsertWeekday(openingHours.weekday)
+                    getOrInsertOpeningHours(openingHours, fid, wid)
                 }
             }
         }
@@ -50,31 +46,29 @@ class AppRepository(
         return foodProviderRepository.getFoodProviderWithInfo(fid)
     }
 
-    private suspend fun getOrInsertOpeningHours(apiOpeningHours: OpeningInfoApiModel, fid: Long): Long {
-        return if (openingHoursRepository.exists(apiOpeningHours.id)) {
-            apiOpeningHours.id
+    private suspend fun getOrInsertOpeningHours(apiOpeningHours: OpeningInfoApiModel, fid: Long, wid: Long): Long {
+        return if (openingHoursRepository.exists(fid, wid)) {
+            openingHoursRepository.get(fid, wid)!!.oid
         } else {
             openingHoursRepository.insert(OpeningHours(
-                oid = apiOpeningHours.id,
                 foodProviderId = fid,
                 weekdayId = getOrInsertWeekday(apiOpeningHours.weekday),
                 opensAt = apiOpeningHours.opensAt,
                 closesAt = apiOpeningHours.closesAt,
                 //getFoodTill = apiOpeningHours.getFoodTill,
-                opened = apiOpeningHours.opened
+                opened = apiOpeningHours.isOpened
             )
             )
         }
     }
 
-    private suspend fun getOrInsertWeekday(apiWeekday: WeekdayApiModel): Long {
-        return if (weekdayRepository.exists(apiWeekday.id)) {
-            apiWeekday.id
+    private suspend fun getOrInsertWeekday(apiWeekday: String): Long {
+        return if (weekdayRepository.exists(apiWeekday)) {
+            weekdayRepository.get(apiWeekday)!!.wid
         } else {
             weekdayRepository.insert(
                 Weekday(
-                wid = apiWeekday.id,
-                name = apiWeekday.name
+                name = apiWeekday
             )
             )
         }
@@ -104,14 +98,23 @@ class AppRepository(
                 FoodProvider(
                     fid = apiFoodProvider.id,
                     name = name,
+                    foodProviderTypeId = getOrInsertFoodProviderType(apiFoodProvider.foodProviderType),
                     locationId = getOrInsertLocation(apiFoodProvider.location),
                     info = apiFoodProvider.info,
                     additionalInfo = apiFoodProvider.additionalInfo,
                     type = type,
                     isFavorite = false,
-                    icon = getIconId(name, type, apiFoodProvider.location.name, foodProviderImageMap)
+                    icon = getIconId(name, type, apiFoodProvider.location, foodProviderImageMap)
                 )
             )
+        }
+    }
+
+    private suspend fun getOrInsertFoodProviderType(foodProviderType: String): Long {
+        return if (foodProviderTypeRepository.exists(foodProviderType)) {
+            foodProviderTypeRepository.get(foodProviderType)!!.tid
+        } else {
+            foodProviderTypeRepository.insert(FoodProviderType(name = foodProviderType))
         }
     }
 
@@ -121,13 +124,12 @@ class AppRepository(
         return imgMap[formattedName] ?: R.drawable.mensateria_campus_hubland_nord_wuerzburg // TODO: set default img
     }
 
-    private suspend fun getOrInsertLocation(apiLocation: LocationApiModel): Long {
-        return if (locationRepository.exists(apiLocation.id)) {
-            apiLocation.id
+    private suspend fun getOrInsertLocation(apiLocation: String): Long {
+        return if (locationRepository.exists(apiLocation)) {
+            locationRepository.get(apiLocation)!!.lid
         } else {
             locationRepository.insert(Location(
-                lid = apiLocation.id,
-                name = apiLocation.name
+                name = apiLocation
             ))
         }
     }

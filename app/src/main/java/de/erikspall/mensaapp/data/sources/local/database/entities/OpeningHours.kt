@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "opening_hours")
 data class OpeningHours (
-    @PrimaryKey val oid: Long,
+    @PrimaryKey(autoGenerate = true) val oid: Long = 0,
     @ColumnInfo(name = "food_provider_id") val foodProviderId: Long,
     @ColumnInfo(name = "weekday_id") val weekdayId: Long,
     @ColumnInfo(name = "opens_at") val opensAt: String,
