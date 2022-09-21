@@ -22,6 +22,7 @@ object Dialogs {
         message: String,
         items: List<StringResEnum>,
         selectedValue: StringResEnum,
+        iconRes: Int,
         onSave: (StringResEnum) -> (Unit)
     ): MaterialAlertDialogBuilder {
         val dialogView = inflater.inflate(R.layout.dialog_settings, null)
@@ -52,6 +53,6 @@ object Dialogs {
                 val index = radioGroup.indexOfChild(checkedRadioButton)
                 onSave(items[index])
             }
-            .setIcon(AppCompatResources.getDrawable(context, R.drawable.ic_role))
+            .setIcon(AppCompatResources.getDrawable(context, iconRes))
     }
 }

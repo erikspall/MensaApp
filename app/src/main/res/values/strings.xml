@@ -17,4 +17,5 @@
     <string name="location_schweinfurt">Schweinfurt</string>
     <string name="shared_pref_location">SharedPrefLocation</string>
     <string name="role_invalid">Ungültig</string>
+    <string name="location_invalid">Ungültig</string>
 </resources>

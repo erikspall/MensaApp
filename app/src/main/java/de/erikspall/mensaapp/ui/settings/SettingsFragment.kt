@@ -12,7 +12,9 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
+import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.repositories.AppRepository
+import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Location
 import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Role
 import de.erikspall.mensaapp.databinding.FragmentSettingsBinding
 import de.erikspall.mensaapp.domain.utils.Dialogs
@@ -69,7 +71,7 @@ class SettingsFragment : Fragment() {
             binding.settingRole.settingsValue = requireContext().getString(it.getValue())
         }
         viewModel.state.location.observe(viewLifecycleOwner) {
-            binding.settingLocation.settingsValue = it
+            binding.settingLocation.settingsValue = requireContext().getString(it.getValue())
         }
     }
 
@@ -82,11 +84,28 @@ class SettingsFragment : Fragment() {
                 message = "Die Preise für Gerichte passen sich an deine Rolle an",
                 items = listOf(Role.STUDENT, Role.EMPLOYEE, Role.GUEST),
                 selectedValue = viewModel.state.role.value ?: Role.STUDENT,
+                iconRes = R.drawable.ic_role,
                 onSave = {
                     viewModel.onEvent(SettingsEvent.OnNewRole(it))
                 }
             ).show()
         }
+
+        binding.settingLocation.container.setOnClickListener {
+            Dialogs.createSettingsRadioDialog(
+                context = requireContext(),
+                inflater = layoutInflater,
+                title = "Standort auswählen",
+                message = "Wähle hier welche Mensen und Cafeterien du sehen möchtest",
+                items = listOf(Location.WUERZBURG, Location.ASCHAFFENBURG, Location.BAMBERG, Location.SCHWEINFURT),
+                selectedValue = viewModel.state.location.value ?: Location.WUERZBURG,
+                iconRes = R.drawable.ic_location,
+                onSave = {
+                    viewModel.onEvent(SettingsEvent.OnNewLocation(it))
+                }
+            ).show()
+        }
+
         binding.settingInfo.container.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
                 test.fetchAndSaveLatestData()

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.erikspall.mensaapp.R
+import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Location
 import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Role
 import de.erikspall.mensaapp.data.sources.local.database.entities.enums.StringResEnum
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
@@ -32,6 +33,15 @@ class SettingsViewModel @Inject constructor(
                     )
                 )
 
+                state.location.postValue(
+                    StringResEnum.locationFrom(
+                        sharedPreferences.getValueRes(
+                            key = R.string.shared_pref_location,
+                            defaultValue = Location.WUERZBURG.getValue()
+                        )
+                    )
+                )
+
                 sharedPreferences.registerListener { prefs, key ->
                     if (key == context.getString(R.string.shared_pref_role)) {
                         state.role.postValue(
@@ -40,6 +50,15 @@ class SettingsViewModel @Inject constructor(
                                 prefs.getInt(
                                     context.getString(R.string.shared_pref_role),
                                     Role.STUDENT.getValue()
+                                )
+                            )
+                        )
+                    } else if (key == context.getString(R.string.shared_pref_location)) {
+                        state.location.postValue(
+                            StringResEnum.locationFrom(
+                                prefs.getInt(
+                                    context.getString(R.string.shared_pref_location),
+                                    Location.WUERZBURG.getValue()
                                 )
                             )
                         )

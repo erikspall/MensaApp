@@ -7,7 +7,8 @@ enum class Location(@StringRes private val stringRes: Int): StringResEnum {
     WUERZBURG(R.string.location_wuerzburg),
     ASCHAFFENBURG(R.string.location_aschaffenburg),
     BAMBERG(R.string.location_bamberg),
-    SCHWEINFURT(R.string.location_schweinfurt);
+    SCHWEINFURT(R.string.location_schweinfurt),
+    INVALID(R.string.location_invalid);
 
     @StringRes
     override fun getValue(): Int {

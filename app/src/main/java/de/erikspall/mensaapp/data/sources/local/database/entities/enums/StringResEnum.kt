@@ -16,5 +16,15 @@ interface StringResEnum {
                 else -> Role.INVALID
             }
         }
+
+        fun locationFrom(@StringRes stringRes: Int): StringResEnum {
+            return when (stringRes) {
+                R.string.location_aschaffenburg -> Location.ASCHAFFENBURG
+                R.string.location_bamberg -> Location.BAMBERG
+                R.string.location_schweinfurt -> Location.SCHWEINFURT
+                R.string.location_wuerzburg -> Location.WUERZBURG
+                else -> {Location.INVALID}
+            }
+        }
     }
 }
