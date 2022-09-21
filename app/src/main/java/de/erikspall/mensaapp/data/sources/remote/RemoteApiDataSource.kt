@@ -11,7 +11,7 @@ import kotlin.Exception
 class RemoteApiDataSource(
     private val ioDispatcher: CoroutineDispatcher
 ) {
-    suspend fun fetchLatestData(): Optional<List<FoodProviderApiModel>> = withContext(ioDispatcher) {
+    suspend fun fetchLatestFoodProviders(): Optional<List<FoodProviderApiModel>> = withContext(ioDispatcher) {
         try {
             val result = MensaApi.retrofitService.getLatestFoodProviderInfo()
             return@withContext Optional.of(result.data)

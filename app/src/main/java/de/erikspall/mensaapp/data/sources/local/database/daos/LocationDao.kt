@@ -20,14 +20,14 @@ interface LocationDao {
     @Update
     suspend fun updateLocations(vararg locations: Location)
 
-    @Query("SELECT EXISTS(SELECT * FROM locations WHERE lid = :lid COLLATE NOCASE)")
-    suspend fun exists(lid: Long): Boolean
+    @Query("SELECT EXISTS(SELECT * FROM locations WHERE name = :name COLLATE NOCASE)")
+    suspend fun exists(name: String): Boolean
 
     @Delete
     suspend fun delete(location: Location)
 
-    @Query("SELECT * FROM locations WHERE lid = :lid")
-    suspend fun get(lid: Int): Location?
+    @Query("SELECT * FROM locations WHERE name = :name")
+    suspend fun get(name: String): Location?
 
     @Query("SELECT * FROM locations")
     fun getAll(): Flow<List<Location>>

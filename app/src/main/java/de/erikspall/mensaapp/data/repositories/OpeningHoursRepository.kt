@@ -14,12 +14,16 @@ class OpeningHoursRepository(
         return openingHoursDao.insert(location)
     }
 
-    suspend fun exists(oid: Long): Boolean {
-        return openingHoursDao.exists(oid)
+    suspend fun exists(fid: Long, wid: Long): Boolean {
+        return openingHoursDao.exists(fid, wid)
     }
 
     suspend fun delete(location: OpeningHours) {
         openingHoursDao.delete(location)
+    }
+
+    suspend fun get(fid: Long, wid: Long): OpeningHours? {
+        return openingHoursDao.get(fid, wid)
     }
 
     suspend fun update(vararg locations: OpeningHours) {

@@ -10,6 +10,7 @@ import androidx.room.PrimaryKey
 data class FoodProvider (
     @PrimaryKey val fid: Long,
     val name: String,
+    @ColumnInfo(name = "food_provider_type_id") val foodProviderTypeId: Long,
     @ColumnInfo(name = "location_id") val locationId: Long,
     @ColumnInfo(name = "type") val type: String,
     //@ColumnInfo(name = "opening_hours_id") val openingHoursId: Int,
