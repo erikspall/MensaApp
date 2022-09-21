@@ -1,6 +1,6 @@
 package de.erikspall.mensaapp.data.sources.local.database.entities
 
-import java.util.stream.Collector
+import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Role
 import java.util.stream.Collectors
 
 data class Meal (
@@ -16,6 +16,7 @@ data class Meal (
             Role.STUDENT -> priceStudent
             Role.GUEST -> priceGuest
             Role.EMPLOYEE -> priceEmployee
+            Role.INVALID -> "-1"
         }
     }
 

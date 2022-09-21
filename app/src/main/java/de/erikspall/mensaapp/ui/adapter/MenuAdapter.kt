@@ -18,15 +18,8 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textview.MaterialTextView
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.data.sources.local.database.entities.Ingredient
 import de.erikspall.mensaapp.data.sources.local.database.entities.Menu
-import de.erikspall.mensaapp.data.sources.local.database.entities.Role
-import de.erikspall.mensaapp.data.sources.local.database.relationships.FoodProviderWithoutMenus
-import de.erikspall.mensaapp.data.sources.remote.api.model.MenuApiModel
-import java.time.DayOfWeek
-import java.util.List.of
-import java.util.stream.Collectors
-import java.util.stream.Stream
+import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Role
 
 //import de.erikspall.mensaapp.domain.model.enums.Role
 //import de.erikspall.mensaapp.domain.model.interfaces.Menu

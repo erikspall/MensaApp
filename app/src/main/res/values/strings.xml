@@ -6,4 +6,15 @@
     <string name="mensa_image_descriptor">Image of mensa</string>
     <string name="hide_back_button_on_scroll_behavior">de.erikspall.mensaapp.ui.behavior.HideBackButtonOnScrollBehavior</string>
     <string name="food_provider_card_detail_transition_name">food_provider_detail</string>
+    <string name="shared_pref_name">SharedPrefs</string>
+    <string name="role_student">Student</string>
+    <string name="shared_pref_role">RoleStudent</string>
+    <string name="role_guest">Gast</string>
+    <string name="role_employee">Bediensteter</string>
+    <string name="location_wuerzburg">Würzburg</string>
+    <string name="location_aschaffenburg">Aschaffenburg</string>
+    <string name="location_bamberg">Bamberg</string>
+    <string name="location_schweinfurt">Schweinfurt</string>
+    <string name="shared_pref_location">SharedPrefLocation</string>
+    <string name="role_invalid">Ungültig</string>
 </resources>

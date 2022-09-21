@@ -5,21 +5,20 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioGroup
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import androidx.core.view.iterator
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
-import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.repositories.AppRepository
-import de.erikspall.mensaapp.data.sources.remote.RemoteApiDataSource
+import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Role
 import de.erikspall.mensaapp.databinding.FragmentSettingsBinding
 import de.erikspall.mensaapp.domain.utils.Dialogs
+import de.erikspall.mensaapp.ui.foodproviderdetail.viewmodel.FoodProviderDetailViewModel
+import de.erikspall.mensaapp.ui.settings.event.SettingsEvent
+import de.erikspall.mensaapp.ui.settings.viewmodel.SettingsViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,7 +33,7 @@ class SettingsFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-
+    private val viewModel: SettingsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,15 +53,24 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val settingsViewModel =
-            ViewModelProvider(this)[SettingsViewModel::class.java]
-
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         setupListeners()
+        setupObservers()
+
+        viewModel.onEvent(SettingsEvent.OnInit)
 
         return root
+    }
+
+    fun setupObservers() {
+        viewModel.state.role.observe(viewLifecycleOwner) {
+            binding.settingRole.settingsValue = requireContext().getString(it.getValue())
+        }
+        viewModel.state.location.observe(viewLifecycleOwner) {
+            binding.settingLocation.settingsValue = it
+        }
     }
 
     fun setupListeners() {
@@ -72,10 +80,10 @@ class SettingsFragment : Fragment() {
                 inflater = layoutInflater,
                 title = "Rolle auswählen",
                 message = "Die Preise für Gerichte passen sich an deine Rolle an",
-                items = listOf("Student", "Bediensteter", "Gast"),
-                selectedValue = "Student",
+                items = listOf(Role.STUDENT, Role.EMPLOYEE, Role.GUEST),
+                selectedValue = viewModel.state.role.value ?: Role.STUDENT,
                 onSave = {
-                    Log.d("SettingDialog", it)
+                    viewModel.onEvent(SettingsEvent.OnNewRole(it))
                 }
             ).show()
         }

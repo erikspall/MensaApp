@@ -1,10 +1,14 @@
 package de.erikspall.mensaapp.domain.di
 
 import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.repositories.*
 import de.erikspall.mensaapp.data.sources.local.database.AppDatabase
 import de.erikspall.mensaapp.data.sources.local.database.daos.WeekdayDao
@@ -75,5 +79,13 @@ object AppModule {
             foodProviderTypeRepository,
             apiDataSource
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferences(
+        @ApplicationContext appContext: Context
+    ) : SharedPreferences {
+        return appContext.getSharedPreferences(appContext.getString(R.string.shared_pref_name), Context.MODE_PRIVATE)
     }
 }
