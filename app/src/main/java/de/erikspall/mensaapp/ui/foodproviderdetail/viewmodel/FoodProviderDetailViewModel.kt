@@ -20,8 +20,10 @@ class FoodProviderDetailViewModel @Inject constructor(
     fun onEvent(event: DetailEvent) {
         when (event) {
             is DetailEvent.Init -> {
-                state.fid = event.fid
-                onEvent(DetailEvent.RefreshMenus)
+                if (state.fid == -1L) {
+                    state.fid = event.fid
+                    onEvent(DetailEvent.RefreshMenus)
+                }
             }
             is DetailEvent.RefreshMenus -> {
                 viewModelScope.launch {

@@ -24,7 +24,7 @@ class AppRepository(
     private val remoteApiDataSource: RemoteApiDataSource
 ) {
 
-    val allFoodProvidersWithoutMenus: Flow<List<FoodProviderWithoutMenus>> =
+    val cachedProviders: Flow<List<FoodProviderWithoutMenus>> =
         foodProviderRepository.getFoodProvidersWithoutMenus()
 
 
@@ -50,6 +50,10 @@ class AppRepository(
             }
         }
 
+    }
+
+    fun getProvidersByTypeAndLocation(tid: Long, wid: Long): Flow<List<FoodProviderWithoutMenus>> {
+        return foodProviderRepository.getFoodProvidersByTypeAndLocation(tid, wid)
     }
 
     suspend fun fetchLatestMenuOfCanteen(cid: Long): Optional<List<Menu>> {

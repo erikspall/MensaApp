@@ -42,4 +42,8 @@ class FoodProviderRepository(
     fun getFoodProviderWithInfo(fid: Long): Flow<FoodProviderWithInfo> {
         return foodProviderDao.getFoodProvidersWithInfo(fid)
     }
+
+    fun getFoodProvidersByTypeAndLocation(tid: Long, lid: Long): Flow<List<FoodProviderWithoutMenus>> {
+        return foodProviderDao.getFoodProvidersByTypeAndLocation(tid, lid)
+    }
 }

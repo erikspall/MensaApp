@@ -24,6 +24,10 @@ interface FoodProviderDao {
     @Query("SELECT * FROM food_providers")
     fun getFoodProvidersWithoutMenus(): Flow<List<FoodProviderWithoutMenus>>
 
+    @Transaction
+    @Query("SELECT * FROM food_providers WHERE food_provider_type_id = :tid AND location_id = :lid")
+    fun getFoodProvidersByTypeAndLocation(tid: Long, lid: Long): Flow<List<FoodProviderWithoutMenus>>
+
     @Update
     suspend fun updateFoodProviders(vararg foodProviders: FoodProvider)
 

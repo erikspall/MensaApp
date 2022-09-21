@@ -15,7 +15,7 @@ object UseCaseModel {
     @Singleton
     fun provideFoodProvideUseCases(repository: AppRepository): FoodProviderUseCases {
         return FoodProviderUseCases(
-            getFoodProvidersWithoutMenu = GetFoodProvidersWithoutMenu(repository),
+            getFoodProviders = GetFoodProviders(repository),
             getOpeningHoursAsString = GetOpeningHoursAsString(),
             getInfoOfFoodProvider = GetInfoOfFoodProvider(repository),
             getMenus = GetMenus(repository)

@@ -16,8 +16,10 @@ class CanteenListViewModel @Inject constructor(
 
     val state = CanteenListState()
 
-    val canteens = foodProviderUseCases.getFoodProvidersWithoutMenu(
-        FoodProviderOrder.Name(OrderType.Descending)
+    val canteens = foodProviderUseCases.getFoodProviders(
+        FoodProviderOrder.Name(OrderType.Descending),
+        locationId = 4,
+        typeId = 1
     ).asLiveData()
 
 

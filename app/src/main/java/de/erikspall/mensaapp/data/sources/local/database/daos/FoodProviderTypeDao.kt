@@ -10,7 +10,7 @@ interface FoodProviderTypeDao {
         @Insert(onConflict = OnConflictStrategy.IGNORE)
         suspend fun insertAll(vararg types: FoodProviderType)
 
-        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        @Insert(onConflict = OnConflictStrategy.IGNORE)
         suspend fun insert(type: FoodProviderType): Long
 
         /*@Transaction

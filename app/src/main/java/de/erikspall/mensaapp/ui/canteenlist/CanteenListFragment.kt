@@ -75,6 +75,7 @@ class CanteenListFragment : Fragment() {
 
         viewModel.canteens.observe(viewLifecycleOwner) { canteens ->
             if (canteens.isEmpty()) {
+                // TODO: try to retrieve data
                 binding.lottieContainer.visibility = VISIBLE
                 binding.libraryAppbarLayout.visibility = INVISIBLE
                 binding.libraryNestedScroll.visibility = INVISIBLE
