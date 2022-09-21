@@ -1,5 +1,7 @@
 package de.erikspall.mensaapp.domain.usecases.foodprovider
 
+import android.content.Context
+import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.repositories.AppRepository
 import de.erikspall.mensaapp.data.sources.local.database.entities.Location
 import de.erikspall.mensaapp.data.sources.local.database.relationships.FoodProviderWithoutMenus
@@ -11,17 +13,17 @@ import kotlinx.coroutines.flow.map
 import kotlin.streams.toList
 
 class GetFoodProviders(
-    private val repository: AppRepository
+    private val repository: AppRepository,
 ) {
     operator fun invoke(
         foodProviderOrder: FoodProviderOrder = FoodProviderOrder.Name(OrderType.Descending),
-        locationId: Long = -1,
-        typeId: Long = -1
+        location: String = "",
+        typeId: Long = -1L
     ): Flow<List<FoodProviderWithoutMenus>> {
         return repository.cachedProviders
             .map { rawFoodProviders ->
                 val foodProviders = rawFoodProviders.filter { provider ->
-                    provider.location.lid == locationId && provider.foodProvider.foodProviderTypeId == typeId
+                    provider.location.name == location && provider.foodProvider.foodProviderTypeId == typeId
                 }
             when (foodProviderOrder.orderType) {
                 is OrderType.Ascending -> {

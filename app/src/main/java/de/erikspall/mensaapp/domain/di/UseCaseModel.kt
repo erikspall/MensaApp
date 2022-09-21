@@ -10,6 +10,8 @@ import dagger.hilt.components.SingletonComponent
 import de.erikspall.mensaapp.data.repositories.AppRepository
 import de.erikspall.mensaapp.domain.usecases.foodprovider.*
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
 
 @Module
@@ -17,7 +19,8 @@ import javax.inject.Singleton
 object UseCaseModel {
     @Provides
     @Singleton
-    fun provideFoodProvideUseCases(repository: AppRepository): FoodProviderUseCases {
+    fun provideFoodProvideUseCases(
+        repository: AppRepository): FoodProviderUseCases {
         return FoodProviderUseCases(
             getFoodProviders = GetFoodProviders(repository),
             getOpeningHoursAsString = GetOpeningHoursAsString(),

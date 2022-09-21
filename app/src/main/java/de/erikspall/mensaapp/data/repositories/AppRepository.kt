@@ -178,6 +178,10 @@ class AppRepository(
         }
     }
 
+    suspend fun getLocation(apiLocation: String): Long? {
+        return locationRepository.get(apiLocation)?.lid
+    }
+
     private fun String.formatToResString(): String {
         return this.lowercase()
             .replace("-", "_")
