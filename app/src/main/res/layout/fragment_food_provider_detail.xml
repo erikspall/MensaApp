@@ -116,10 +116,11 @@
                 android:layout_width="match_parent"
                 android:layout_marginTop="16dp"
                 tools:listitem="@layout/item_menu"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:nestedScrollingEnabled="false"
-                app:layout_constraintTop_toBottomOf="@id/info_food_provider_opening">
+                app:layout_constraintTop_toBottomOf="@id/info_food_provider_opening"
+                app:layout_constraintBottom_toBottomOf="parent">
             </androidx.recyclerview.widget.RecyclerView>
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!-- <LinearLayout

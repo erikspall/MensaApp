@@ -7,8 +7,13 @@ import de.erikspall.mensaapp.data.sources.local.database.relationships.FoodProvi
 import de.erikspall.mensaapp.data.sources.local.database.relationships.FoodProviderWithoutMenus
 import de.erikspall.mensaapp.data.sources.remote.RemoteApiDataSource
 import de.erikspall.mensaapp.data.sources.remote.api.model.FoodProviderApiModel
+import de.erikspall.mensaapp.data.sources.remote.api.model.MealApiModel
+import de.erikspall.mensaapp.data.sources.remote.api.model.MenuApiModel
 import de.erikspall.mensaapp.data.sources.remote.api.model.OpeningInfoApiModel
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
+import java.util.Optional
+import kotlin.streams.toList
 
 class AppRepository(
     private val foodProviderRepository: FoodProviderRepository,
@@ -25,21 +30,56 @@ class AppRepository(
 
 
     /**
-     * Fetches and saves all new data (including weekdays, menus, etc.)
+     * Fetches and saves all new data
      */
     suspend fun fetchAndSaveLatestData() {
         val fetched = remoteApiDataSource.fetchLatestFoodProviders()
 
         if (fetched.isPresent){
-            for (fetchedProvider in fetched.get()) {
+            val temp = fetched.get()
+            for (fetchedProvider in temp) {
                 val fid = getOrInsertFoodProvider(fetchedProvider)
-                for (openingHours in fetchedProvider.openingHours) {
+                val hours = fetchedProvider.openingHours
+                //if (hours.isEmpty()){
+               //    hours = hours + listOf(OpeningInfoApiModel(false, "", "", ""))
+                //}
+                for (openingHours in hours) {
                     val wid = getOrInsertWeekday(openingHours.weekday)
                     getOrInsertOpeningHours(openingHours, fid, wid)
                 }
             }
         }
 
+    }
+
+    suspend fun fetchLatestMenuOfCanteen(cid: Long): Optional<List<Menu>> {
+        return remoteApiDataSource.fetchMenusOfCanteen(cid).map { list ->
+            list.stream().map { parseMenu(it) }.toList()
+        }
+    }
+
+    private fun parseMenu(fetchMenuOfCanteen: MenuApiModel): Menu {
+        return Menu(
+            date = LocalDate.parse(fetchMenuOfCanteen.date),
+            meals = fetchMenuOfCanteen.meals.map { it ->
+                parseMeal(it)
+            }
+        )
+    }
+
+    private fun parseMeal(fetchedMealOfCanteen: MealApiModel): Meal {
+        return Meal(
+            name = fetchedMealOfCanteen.name,
+            priceStudent = fetchedMealOfCanteen.priceStudent,
+            priceEmployee = fetchedMealOfCanteen.priceEmployee,
+            priceGuest = fetchedMealOfCanteen.priceGuest,
+            ingredients = fetchedMealOfCanteen.ingredients.split(",").stream()
+                .map { raw -> Ingredient(raw.trim()) }
+                .toList(),
+            allergens = fetchedMealOfCanteen.allergens.split(",").stream()
+                .map { raw -> Allergenic(raw.trim()) }
+                .toList()
+        )
     }
 
     fun getFoodProviderWithInfo(fid: Long): Flow<FoodProviderWithInfo> {

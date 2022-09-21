@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
@@ -16,14 +18,25 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textview.MaterialTextView
 import de.erikspall.mensaapp.R
+import de.erikspall.mensaapp.data.sources.local.database.entities.Ingredient
+import de.erikspall.mensaapp.data.sources.local.database.entities.Menu
+import de.erikspall.mensaapp.data.sources.local.database.entities.Role
+import de.erikspall.mensaapp.data.sources.local.database.relationships.FoodProviderWithoutMenus
+import de.erikspall.mensaapp.data.sources.remote.api.model.MenuApiModel
+import java.time.DayOfWeek
+import java.util.List.of
+import java.util.stream.Collectors
+import java.util.stream.Stream
+
 //import de.erikspall.mensaapp.domain.model.enums.Role
 //import de.erikspall.mensaapp.domain.model.interfaces.Menu
 
 class MenuAdapter(
     private val context: Context,
- //   private val data: List<Menu>,
     private val menusHolder: ConstraintLayout
-): RecyclerView.Adapter<MenuAdapter.MenuViewHolder>()  {
+): ListAdapter<Menu, MenuAdapter.MenuViewHolder>(
+    MENU_COMPARATOR
+)  {
 
 
     class MenuViewHolder(view: View?): RecyclerView.ViewHolder(view!!) {
@@ -38,18 +51,18 @@ class MenuAdapter(
 
     @SuppressLint("SetTextI18n") // TODO: Change later
     override fun onBindViewHolder(holder: MenuViewHolder, position: Int) {
-        /*Log.d("MenuAdapter", "Binding: ${data[position].getDate()}")
-        holder.textDate.text = "Essen am ${data[position].getDate().dayOfWeek}," +
-                " den ${data[position].getDate()}"
+        Log.d("MenuAdapter", "Binding: ${getItem(position).date}")
+        holder.textDate.text = "Essen am ${getItem(position).date.dayOfWeek}," +
+                " den ${getItem(position).date}"
 
         var index = 0
-        for (meal in data[position].getMeals()) {
+        for (meal in getItem(position).meals) {
             val mealViewHolder = LayoutInflater.from(context)
                 .inflate(R.layout.item_meal, holder.layoutMenus, false)
-            mealViewHolder.findViewById<MaterialTextView>(R.id.text_meal_name).text = meal.getName()
+            mealViewHolder.findViewById<MaterialTextView>(R.id.text_meal_name).text = meal.name
             mealViewHolder.findViewById<MaterialTextView>(R.id.text_meal_price).text =
-                meal.getPrice(Role.STUDENT).toString()
-            mealViewHolder.findViewById<Chip>(R.id.chip_meal_category).text = meal.getCategory()
+                meal.getPrice(Role.STUDENT)
+            mealViewHolder.findViewById<Chip>(R.id.chip_meal_category).text = meal.getIngredientsAsString()
 
             val layout = mealViewHolder.findViewById<ConstraintLayout>(R.id.layout_menu)
 
@@ -62,9 +75,12 @@ class MenuAdapter(
             val chipGroupAllergenics =
                 mealViewHolder.findViewById<ChipGroup>(R.id.chip_group_allergenics)
 
-            val test = Chip(context)
-            test.text = "Hi"
-            chipGroupAllergenics.addView(test)
+            meal.allergens.stream().forEach {
+                val test = Chip(context)
+                test.text = it.name
+                chipGroupAllergenics.addView(test)
+            }
+
 
             buttonExpand.setOnClickListener {
                 val v = if (containerAllergenics.visibility == View.GONE) View.VISIBLE else View.GONE
@@ -74,10 +90,25 @@ class MenuAdapter(
 
             holder.layoutMenus.addView(mealViewHolder)
             index++
-        }*/
+        }
     }
 
-    override fun getItemCount(): Int {
-        return 0
+    companion object {
+        private val MENU_COMPARATOR = object : DiffUtil.ItemCallback<Menu>() {
+            override fun areItemsTheSame(
+                oldItem: Menu,
+                newItem: Menu
+            ): Boolean {
+                return oldItem.date == newItem.date
+            }
+
+            override fun areContentsTheSame(
+                oldItem: Menu,
+                newItem: Menu
+            ): Boolean {
+                return oldItem.date == newItem.date &&
+                        oldItem.meals.containsAll(newItem.meals)
+            }
+        }
     }
 }

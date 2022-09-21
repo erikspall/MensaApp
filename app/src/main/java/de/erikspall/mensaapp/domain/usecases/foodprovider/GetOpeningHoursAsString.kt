@@ -12,10 +12,17 @@ class GetOpeningHoursAsString {
     operator fun invoke(
         openingHours: List<OpeningHours>
     ): String {
-        val temp = openingHours.sortedBy { it.weekdayId }.filter { it.opensAt.isNotBlank() }
-        val first = DayOfWeek.of(temp.first().weekdayId.toInt()).getDisplayName(TextStyle.SHORT, Locale.getDefault()).removeSuffix(".")
-        val last = DayOfWeek.of(temp.last().weekdayId.toInt()).getDisplayName(TextStyle.SHORT, Locale.getDefault()).removeSuffix(".")
-        return "$first - $last: ${temp.first().opensAt} - ${temp.last().closesAt} Uhr"
+        return try {
+            val temp = openingHours.sortedBy { it.weekdayId }.filter { it.opensAt.isNotBlank() }
+            if (temp.isEmpty())
+                return "Error parsing opening hours!"
+            val first = DayOfWeek.of(temp.first().weekdayId.toInt()).getDisplayName(TextStyle.SHORT, Locale.getDefault()).removeSuffix(".")
+            val last = DayOfWeek.of(temp.last().weekdayId.toInt()).getDisplayName(TextStyle.SHORT, Locale.getDefault()).removeSuffix(".")
+            "$first - $last: ${temp.first().opensAt} - ${temp.last().closesAt} Uhr"
+        } catch (e: Exception) {
+            "Error parsing opening hours!"
+        }
+
     }
 
 

@@ -5,10 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import de.erikspall.mensaapp.data.repositories.AppRepository
-import de.erikspall.mensaapp.domain.usecases.foodprovider.FoodProviderUseCases
-import de.erikspall.mensaapp.domain.usecases.foodprovider.GetFoodProvidersWithoutMenu
-import de.erikspall.mensaapp.domain.usecases.foodprovider.GetInfoOfFoodProvider
-import de.erikspall.mensaapp.domain.usecases.foodprovider.GetOpeningHoursAsString
+import de.erikspall.mensaapp.domain.usecases.foodprovider.*
 import javax.inject.Singleton
 
 @Module
@@ -20,7 +17,8 @@ object UseCaseModel {
         return FoodProviderUseCases(
             getFoodProvidersWithoutMenu = GetFoodProvidersWithoutMenu(repository),
             getOpeningHoursAsString = GetOpeningHoursAsString(),
-            getInfoOfFoodProvider = GetInfoOfFoodProvider(repository)
+            getInfoOfFoodProvider = GetInfoOfFoodProvider(repository),
+            getMenus = GetMenus(repository)
         )
     }
 }
