@@ -37,10 +37,21 @@
         android:id="@+id/settings_dest"
         android:name="de.erikspall.mensaapp.ui.settings.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settings_dest_to_allergenicFragment"
+            app:destination="@id/allergenicFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
+    </fragment>
     <fragment
         android:id="@+id/food_provider_detail_dest"
         android:name="de.erikspall.mensaapp.ui.foodproviderdetail.FoodProviderDetailFragment"
         android:label="fragment_mensadetail"
         tools:layout="@layout/fragment_food_provider_detail" />
+    <fragment
+        android:id="@+id/allergenicFragment"
+        android:name="de.erikspall.mensaapp.ui.settings.allergenic.AllergenicFragment"
+        android:label="fragment_settings_allergenic"
+        tools:layout="@layout/fragment_settings_allergenic" />
 </navigation>

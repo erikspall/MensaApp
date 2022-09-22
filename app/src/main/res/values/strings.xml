@@ -18,4 +18,6 @@
     <string name="shared_pref_location">SharedPrefLocation</string>
     <string name="role_invalid">Ungültig</string>
     <string name="location_invalid">Ungültig</string>
+    <string name="text_label_allergenic">Unverträglichkeiten</string>
+    <string name="settings_allergenic_switch_label_text">Vor Unverträglichkeiten warnen</string>
 </resources>
