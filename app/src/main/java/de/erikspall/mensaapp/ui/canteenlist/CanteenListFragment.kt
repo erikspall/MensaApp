@@ -34,14 +34,14 @@ class CanteenListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enterTransition = MaterialFadeThrough().apply {
-            duration = 300L
+        enterTransition = MaterialElevationScale(true).apply {
+            duration = 150L
         }
         exitTransition = MaterialElevationScale(false).apply {
             duration = 100L
         }
         reenterTransition = MaterialElevationScale(true).apply {
-            duration = 300L
+            duration = 150L,
         }
     }
 

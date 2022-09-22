@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import de.erikspall.mensaapp.R
@@ -51,9 +52,12 @@ class FoodProviderDetailFragment : Fragment() {
         enterTransition = MaterialFadeThrough().apply {
             duration = 300L
         }
-        // exitTransition = MaterialElevationScale(false).apply {
-        //     duration = 100L
-        // }
+        returnTransition = MaterialElevationScale(false).apply {
+            duration = 100L
+        }
+         exitTransition = MaterialElevationScale(false).apply {
+             duration = 300L
+         }
         // reenterTransition = MaterialElevationScale(true).apply {
         //// }
         //sharedElementReturnTransition = animation
