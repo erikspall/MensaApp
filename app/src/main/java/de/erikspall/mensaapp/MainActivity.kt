@@ -1,7 +1,11 @@
 package de.erikspall.mensaapp
 
+import android.animation.ObjectAnimator
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -34,6 +38,28 @@ class MainActivity : AppCompatActivity() {
     private fun setupBottomNavMenu(navController: NavController) {
         val bottomNav = findViewById<BottomNavigationView>(R.id.nav_view)
         bottomNav?.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if(destination.id == R.id.cafe_list_dest || destination.id == R.id.mensa_list_dest || destination.id == R.id.settings_dest) {
+                //val height = bottomNav.translationY
+                ObjectAnimator.ofFloat(bottomNav, "translationY", 0f).apply {
+                    duration = 300
+                    doOnStart {
+                        bottomNav.visibility = View.VISIBLE
+                    }
+                    start()
+                }
+            } else {
+                ObjectAnimator.ofFloat(bottomNav, "translationY", bottomNav.height.toFloat()-50f).apply {
+                    duration = 300
+                    doOnEnd {
+                        bottomNav.visibility = View.GONE
+                    }
+                    start()
+                }
+
+            }
+        }
     }
 
         //setContentView(R.layout.activity_main)

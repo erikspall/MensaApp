@@ -41,7 +41,7 @@ class CanteenListFragment : Fragment() {
             duration = 100L
         }
         reenterTransition = MaterialElevationScale(true).apply {
-            duration = 150L,
+            duration = 150L
         }
     }
 
