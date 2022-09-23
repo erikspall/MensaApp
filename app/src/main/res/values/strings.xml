@@ -20,4 +20,7 @@
     <string name="location_invalid">Ungültig</string>
     <string name="text_label_allergenic">Unverträglichkeiten</string>
     <string name="settings_allergenic_switch_label_text">Vor Unverträglichkeiten warnen</string>
+    <string name="setting_warnings_enabled">0</string>
+    <string name="text_warnings_enabled">Warnungen aktiviert</string>
+    <string name="text_warnings_disabled">Warnungen deaktiviert</string>
 </resources>

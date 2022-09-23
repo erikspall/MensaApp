@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -12,6 +13,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
+import com.google.android.material.transition.MaterialSharedAxis
+import com.google.android.material.transition.MaterialSharedAxis.Axis
 import dagger.hilt.android.AndroidEntryPoint
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.repositories.AppRepository
@@ -39,15 +42,23 @@ class SettingsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enterTransition = MaterialFadeThrough().apply {
-            duration = 300L
+        enterTransition = MaterialElevationScale(true).apply {
+            duration = 150L
         }
         exitTransition = MaterialElevationScale(false).apply {
             duration = 100L
         }
         reenterTransition = MaterialElevationScale(true).apply {
-            duration = 300L
+            duration = 150L
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
+
     }
 
     override fun onCreateView(
@@ -72,6 +83,12 @@ class SettingsFragment : Fragment() {
         }
         viewModel.state.location.observe(viewLifecycleOwner) {
             binding.settingLocation.settingsValue = requireContext().getString(it.getValue())
+        }
+        viewModel.state.warningsActivated.observe(viewLifecycleOwner) {
+            if (it)
+                binding.settingAllergenics.settingsValue = requireContext().getString(R.string.text_warnings_enabled)
+            else
+                binding.settingAllergenics.settingsValue = requireContext().getString(R.string.text_warnings_disabled)
         }
     }
 
@@ -114,6 +131,12 @@ class SettingsFragment : Fragment() {
         }
 
         binding.settingAllergenics.container.setOnClickListener {
+            exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
+                duration = 250L
+            }
+            reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false).apply {
+                duration = 500L
+            }
             val directions = SettingsFragmentDirections.actionSettingsDestToAllergenicFragment()
             findNavController().navigate(directions)
         }

@@ -5,7 +5,8 @@
     android:id="@+id/settings_allergenic_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.erikspall.mensaapp.ui.settings.allergenic.AllergenicFragment">
+    tools:context="de.erikspall.mensaapp.ui.settings.allergenic.AllergenicFragment"
+    android:transitionGroup="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/settings_allergenic_appbar_layout"
