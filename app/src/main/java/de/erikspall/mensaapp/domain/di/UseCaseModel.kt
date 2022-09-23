@@ -9,6 +9,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import de.erikspall.mensaapp.data.repositories.AppRepository
 import de.erikspall.mensaapp.domain.usecases.foodprovider.*
+import de.erikspall.mensaapp.domain.usecases.mealcomponents.GetAllergenic
+import de.erikspall.mensaapp.domain.usecases.mealcomponents.GetIngredients
+import de.erikspall.mensaapp.domain.usecases.mealcomponents.MealComponentsUseCases
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.*
 import javax.inject.Singleton
 
@@ -18,28 +21,40 @@ object UseCaseModel {
     @Provides
     @Singleton
     fun provideFoodProvideUseCases(
-            repository: AppRepository): FoodProviderUseCases {
+        repository: AppRepository
+    ): FoodProviderUseCases {
         return FoodProviderUseCases(
-                getFoodProviders = GetFoodProviders(repository),
-                getOpeningHoursAsString = GetOpeningHoursAsString(),
-                getInfoOfFoodProvider = GetInfoOfFoodProvider(repository),
-                getMenus = GetMenus(repository)
+            getFoodProviders = GetFoodProviders(repository),
+            getOpeningHoursAsString = GetOpeningHoursAsString(),
+            getInfoOfFoodProvider = GetInfoOfFoodProvider(repository),
+            getMenus = GetMenus(repository)
         )
     }
 
     @Provides
     @Singleton
     fun provideSharedPreferenceUseCases(
-            @ApplicationContext appContext: Context,
-            sharedPref: SharedPreferences
+        @ApplicationContext appContext: Context,
+        sharedPref: SharedPreferences
     ): SharedPreferenceUseCases {
         return SharedPreferenceUseCases(
-                setValue = SetValue(appContext, sharedPref),
-                getValue = GetValue(appContext, sharedPref),
-                registerListener = RegisterListener(sharedPref),
-                getValueRes = GetValueRes(appContext, sharedPref),
-                setBoolean = SetBoolean(appContext, sharedPref),
-                getBoolean = GetBoolean(appContext, sharedPref)
+            setValue = SetValue(appContext, sharedPref),
+            getValue = GetValue(appContext, sharedPref),
+            registerListener = RegisterListener(sharedPref),
+            getValueRes = GetValueRes(appContext, sharedPref),
+            setBoolean = SetBoolean(appContext, sharedPref),
+            getBoolean = GetBoolean(appContext, sharedPref)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideMealComponentsUseCases(
+        repository: AppRepository
+    ): MealComponentsUseCases {
+        return MealComponentsUseCases(
+            getAllergenic = GetAllergenic(repository),
+            getIngredients = GetIngredients(repository)
         )
     }
 }

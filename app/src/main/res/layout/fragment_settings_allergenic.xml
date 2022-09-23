@@ -29,6 +29,8 @@
                 android:layout_height="?attr/actionBarSize"
                 android:elevation="0dp"
                 app:layout_collapseMode="pin"
+                app:navigationIcon="@drawable/ic_round_arrow_back"
+                app:navigationIconTint="?attr/colorOnPrimaryContainer"
                 app:title="@string/text_label_allergenic" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -42,7 +44,9 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:animateLayoutChanges="true">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/settings_allergenic_card"
@@ -89,6 +93,10 @@
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/settings_allergenic_chip_group"
+                android:visibility="invisible"
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />

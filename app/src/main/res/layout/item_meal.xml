@@ -14,15 +14,15 @@
         android:id="@+id/layout_menu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="8dp">
+        android:paddingBottom="16dp">
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_meal_category"
             style="@style/MyChip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             app:chipBackgroundColor="?attr/colorPrimaryContainer"
             app:chipStrokeWidth="0dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +44,7 @@
             android:id="@+id/text_meal_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="24dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
@@ -58,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="20dp"
             android:orientation="vertical"
             android:visibility="gone"
@@ -72,9 +72,11 @@
                 android:layout_height="wrap_content"/>
 
             <com.google.android.material.chip.ChipGroup
+                android:layout_marginTop="16dp"
                 android:id="@+id/chip_group_allergenics"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:chipSpacingVertical="8dp"/>
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
@@ -82,7 +84,7 @@
             style="?attr/materialIconButtonFilledTonalStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:backgroundTint="?attr/colorOnPrimary"

@@ -70,7 +70,10 @@ class MenuAdapter(
 
             meal.allergens.stream().forEach {
                 val test = Chip(context)
-                test.text = it.name
+                test.text = it.getName()
+                test.setEnsureMinTouchTargetSize(false)
+                test.isClickable = false
+                // TODO: if not liked make it visible
                 chipGroupAllergenics.addView(test)
             }
 

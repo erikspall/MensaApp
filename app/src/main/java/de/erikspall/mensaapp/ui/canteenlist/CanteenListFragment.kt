@@ -14,7 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
-import de.erikspall.mensaapp.databinding.FragmentFoodProviderCanteenLibBinding
+import de.erikspall.mensaapp.databinding.FragmentCanteenListBinding
 import de.erikspall.mensaapp.domain.const.MaterialSizes
 import de.erikspall.mensaapp.domain.usecases.foodprovider.GetOpeningHoursAsString
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
@@ -24,7 +24,7 @@ import de.erikspall.mensaapp.ui.canteenlist.viewmodel.CanteenListViewModel
 
 @AndroidEntryPoint
 class CanteenListFragment : Fragment() {
-    private var _binding: FragmentFoodProviderCanteenLibBinding? = null
+    private var _binding: FragmentCanteenListBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -58,7 +58,7 @@ class CanteenListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentFoodProviderCanteenLibBinding.inflate(inflater, container, false)
+        _binding = FragmentCanteenListBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val adapter = FoodProviderCardAdapter(

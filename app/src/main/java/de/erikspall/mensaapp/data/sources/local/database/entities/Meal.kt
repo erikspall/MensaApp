@@ -8,8 +8,8 @@ data class Meal (
     val priceStudent: String,
     val priceGuest: String,
     val priceEmployee: String,
-    val ingredients: List<Ingredient>,
-    val allergens: List<Allergenic>
+    val ingredients: List<MealComponent>,
+    val allergens: List<MealComponent>
 ) {
     fun getPrice(role: Role): String{
         return when(role) {
@@ -21,6 +21,6 @@ data class Meal (
     }
 
     fun getIngredientsAsString(): String {
-        return ingredients.stream().map { it -> it.name }.collect(Collectors.joining(", "))
+        return ingredients.stream().map { it -> it.getName() }.collect(Collectors.joining(", "))
     }
 }

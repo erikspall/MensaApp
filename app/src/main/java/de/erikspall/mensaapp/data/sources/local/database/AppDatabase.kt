@@ -13,7 +13,9 @@ import de.erikspall.mensaapp.data.sources.local.database.entities.*
         Location::class,
         OpeningHours::class,
         Weekday::class,
-        FoodProviderType::class
+        FoodProviderType::class,
+        Allergenic::class,
+        Ingredient::class
     ],
     version = 1, exportSchema = false
 )
@@ -23,6 +25,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun openingHoursDao(): OpeningHoursDao
     abstract fun weekdayDao(): WeekdayDao
     abstract fun foodProviderTypeDao(): FoodProviderTypeDao
+    abstract fun allergenicDao(): AllergenicDao
+    abstract fun ingredientsDao(): IngredientDao
 
     companion object {
         @Volatile
