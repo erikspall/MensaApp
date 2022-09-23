@@ -42,6 +42,13 @@ class SettingsViewModel @Inject constructor(
                     )
                 )
 
+                state.warningsActivated.postValue(
+                        sharedPreferences.getBoolean(
+                                R.string.setting_warnings_enabled,
+                                false
+                        )
+                )
+
                 sharedPreferences.registerListener { prefs, key ->
                     if (key == context.getString(R.string.shared_pref_role)) {
                         state.role.postValue(
@@ -61,6 +68,13 @@ class SettingsViewModel @Inject constructor(
                                     Location.WUERZBURG.getValue()
                                 )
                             )
+                        )
+                    } else if (key == context.getString(R.string.setting_warnings_enabled)) {
+                        state.warningsActivated.postValue(
+                                prefs.getBoolean(
+                                        context.getString(R.string.setting_warnings_enabled),
+                                        false
+                                )
                         )
                     }
                 }

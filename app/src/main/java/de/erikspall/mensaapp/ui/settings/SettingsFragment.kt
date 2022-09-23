@@ -84,6 +84,12 @@ class SettingsFragment : Fragment() {
         viewModel.state.location.observe(viewLifecycleOwner) {
             binding.settingLocation.settingsValue = requireContext().getString(it.getValue())
         }
+        viewModel.state.warningsActivated.observe(viewLifecycleOwner) {
+            if (it)
+                binding.settingAllergenics.settingsValue = requireContext().getString(R.string.text_warnings_enabled)
+            else
+                binding.settingAllergenics.settingsValue = requireContext().getString(R.string.text_warnings_disabled)
+        }
     }
 
     fun setupListeners() {

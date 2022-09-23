@@ -6,5 +6,7 @@ data class SharedPreferenceUseCases(
     val setValue: SetValue,
     val getValue: GetValue,
     val getValueRes: GetValueRes,
-    val registerListener: RegisterListener
+    val registerListener: RegisterListener,
+    val getBoolean: GetBoolean,
+    val setBoolean: SetBoolean
 )
