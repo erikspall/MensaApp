@@ -39,27 +39,26 @@ class MainActivity : AppCompatActivity() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.nav_view)
         bottomNav?.setupWithNavController(navController)
 
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            if(destination.id == R.id.cafe_list_dest || destination.id == R.id.mensa_list_dest || destination.id == R.id.settings_dest) {
-                //val height = bottomNav.translationY
-                ObjectAnimator.ofFloat(bottomNav, "translationY", 0f).apply {
-                    duration = 300
-                    doOnStart {
-                        bottomNav.visibility = View.VISIBLE
+            navController.addOnDestinationChangedListener { _, destination, _ ->
+                if(destination.id == R.id.cafe_list_dest || destination.id == R.id.mensa_list_dest || destination.id == R.id.settings_dest) {
+                    //val height = bottomNav.translationY
+                    ObjectAnimator.ofFloat(bottomNav, "translationY", 0f).apply {
+                        duration = 300
+                        doOnStart {
+                            bottomNav.visibility = View.VISIBLE
+                        }
+                        start()
                     }
-                    start()
-                }
-            } else {
-                ObjectAnimator.ofFloat(bottomNav, "translationY", bottomNav.height.toFloat()-50f).apply {
-                    duration = 300
-                    doOnEnd {
-                        bottomNav.visibility = View.GONE
+                } else {
+                    ObjectAnimator.ofFloat(bottomNav, "translationY", bottomNav.height.toFloat()-50f).apply {
+                        duration = 300
+                        doOnEnd {
+                            bottomNav.visibility = View.GONE
+                        }
+                        start()
                     }
-                    start()
                 }
-
             }
-        }
     }
 
         //setContentView(R.layout.activity_main)
