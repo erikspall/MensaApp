@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import de.erikspall.mensaapp.databinding.FragmentCafelistBinding
+import de.erikspall.mensaapp.databinding.FragmentCafeteriaListBinding
 
 class CafeListFragment : Fragment() {
-    private var _binding: FragmentCafelistBinding? = null
+    private var _binding: FragmentCafeteriaListBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -23,7 +23,7 @@ class CafeListFragment : Fragment() {
         val cafeListViewModel =
             ViewModelProvider(this)[CafeListViewModel::class.java]
 
-        _binding = FragmentCafelistBinding.inflate(inflater, container, false)
+        _binding = FragmentCafeteriaListBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         return root

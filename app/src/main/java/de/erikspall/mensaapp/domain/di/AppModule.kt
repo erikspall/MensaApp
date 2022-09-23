@@ -51,6 +51,18 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideAllergenicRepository(db: AppDatabase): AllergenicRepository {
+        return AllergenicRepository(db.allergenicDao())
+    }
+
+    @Provides
+    @Singleton
+    fun provideIngredientRepository(db: AppDatabase): IngredientRepository {
+        return IngredientRepository(db.ingredientsDao())
+    }
+
+    @Provides
+    @Singleton
     fun provideFoodProviderTypeRepository(db: AppDatabase): FoodProviderTypeRepository {
         return FoodProviderTypeRepository(db.foodProviderTypeDao())
     }
@@ -69,6 +81,8 @@ object AppModule {
         openingHoursRepository: OpeningHoursRepository,
         weekdayRepository: WeekdayRepository,
         foodProviderTypeRepository: FoodProviderTypeRepository,
+        allergenicRepository: AllergenicRepository,
+        ingredientRepository: IngredientRepository,
         apiDataSource: RemoteApiDataSource
     ): AppRepository {
         return AppRepository(
@@ -77,6 +91,8 @@ object AppModule {
             openingHoursRepository,
             weekdayRepository,
             foodProviderTypeRepository,
+            allergenicRepository,
+            ingredientRepository,
             apiDataSource
         )
     }

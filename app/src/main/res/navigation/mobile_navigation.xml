@@ -9,7 +9,7 @@
         android:id="@+id/mensa_list_dest"
         android:name="de.erikspall.mensaapp.ui.canteenlist.CanteenListFragment"
         android:label="CanteenListFragment"
-        tools:layout="@layout/fragment_food_provider_canteen_lib">
+        tools:layout="@layout/fragment_canteen_list">
         <argument
             android:name="canteenId"
             app:argType="integer"
@@ -28,7 +28,7 @@
         android:id="@+id/cafe_list_dest"
         android:name="de.erikspall.mensaapp.ui.cafelist.CafeListFragment"
         android:label="fragment_cafelist"
-        tools:layout="@layout/fragment_cafelist" >
+        tools:layout="@layout/fragment_cafeteria_list" >
         <action
             android:id="@+id/action_cafe_list_dest_to_foodProviderDetailFragment"
             app:destination="@id/food_provider_detail_dest" />
