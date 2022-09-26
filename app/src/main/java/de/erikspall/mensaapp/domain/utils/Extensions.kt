@@ -13,6 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.MaterialColors
 import de.erikspall.mensaapp.R
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.toList
 
 object Extensions {
     @ColorInt
@@ -44,4 +48,6 @@ object Extensions {
             }
         })
     }
+    suspend fun <T> Flow<List<T>>.flattenToList() =
+        flatMapConcat { it.asFlow() }.toList()
 }

@@ -17,12 +17,14 @@ import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.sources.local.database.entities.Menu
+import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Role
 import de.erikspall.mensaapp.data.sources.remote.api.model.FoodProviderApiModel
 import de.erikspall.mensaapp.data.sources.remote.api.model.MenuApiModel
 //import de.erikspall.mensaapp.data.sources.local.dummy.DummyDataSource
 import de.erikspall.mensaapp.databinding.FragmentFoodProviderDetailBinding
 import de.erikspall.mensaapp.domain.const.MaterialSizes
 import de.erikspall.mensaapp.domain.usecases.foodprovider.FoodProviderUseCases
+import de.erikspall.mensaapp.domain.utils.Extensions.observeOnce
 //import de.erikspall.mensaapp.domain.model.interfaces.FoodProvider
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
@@ -98,7 +100,9 @@ class FoodProviderDetailFragment : Fragment() {
 
         val adapter = MenuAdapter(
             requireContext(),
-            binding.menusHolder
+            binding.menusHolder,
+            viewModel.state.warningsEnabled,
+            viewModel.state.role
         )
 
         //binding.recyclerViewMenus.setHasFixedSize(true)
@@ -112,6 +116,8 @@ class FoodProviderDetailFragment : Fragment() {
 
         viewModel.state.menus.observe(viewLifecycleOwner) { menus ->
             // TODO: Show lotti if non found
+            adapter.warningsEnabled = viewModel.state.warningsEnabled
+            adapter.role = viewModel.state.role
             menus.let { adapter.submitList(it) }
         }
 

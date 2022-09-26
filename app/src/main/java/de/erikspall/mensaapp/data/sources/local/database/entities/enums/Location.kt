@@ -14,4 +14,18 @@ enum class Location(@StringRes private val stringRes: Int): StringResEnum {
     override fun getValue(): Int {
         return stringRes
     }
+
+    companion object {
+        fun from(str: String): Location {
+            return when (str) {
+                "Aschaffenburg" -> Location.ASCHAFFENBURG
+                "Bamberg" -> Location.BAMBERG
+                "Schweinfurt" -> Location.SCHWEINFURT
+                "Würzburg" -> Location.WUERZBURG
+                else -> {
+                    Location.INVALID
+                }
+            }
+        }
+    }
 }

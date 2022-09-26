@@ -17,13 +17,12 @@ class GetFoodProviders(
 ) {
     operator fun invoke(
         foodProviderOrder: FoodProviderOrder = FoodProviderOrder.Name(OrderType.Descending),
-        location: String = "",
         typeId: Long = -1L
     ): Flow<List<FoodProviderWithoutMenus>> {
         return repository.cachedProviders
             .map { rawFoodProviders ->
                 val foodProviders = rawFoodProviders.filter { provider ->
-                    provider.location.name == location && provider.foodProvider.foodProviderTypeId == typeId
+                    provider.foodProvider.foodProviderTypeId == typeId
                 }
             when (foodProviderOrder.orderType) {
                 is OrderType.Ascending -> {

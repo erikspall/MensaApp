@@ -8,7 +8,7 @@ interface StringResEnum {
     fun getValue(): Int
 
     companion object {
-        fun roleFrom(@StringRes stringRes: Int): StringResEnum {
+        fun roleFrom(@StringRes stringRes: Int): Role {
             return when (stringRes) {
                 R.string.role_student -> Role.STUDENT
                 R.string.role_guest -> Role.GUEST
@@ -17,7 +17,7 @@ interface StringResEnum {
             }
         }
 
-        fun locationFrom(@StringRes stringRes: Int): StringResEnum {
+        fun locationFrom(@StringRes stringRes: Int): Location {
             return when (stringRes) {
                 R.string.location_aschaffenburg -> Location.ASCHAFFENBURG
                 R.string.location_bamberg -> Location.BAMBERG

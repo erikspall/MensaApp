@@ -24,17 +24,19 @@ import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.sources.local.database.entities.Menu
 import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Role
 import de.erikspall.mensaapp.domain.utils.Extensions.getDynamicColorIfAvailable
+import java.util.stream.Collectors
 
 //import de.erikspall.mensaapp.domain.model.enums.Role
 //import de.erikspall.mensaapp.domain.model.interfaces.Menu
 
 class MenuAdapter(
     private val context: Context,
-    private val menusHolder: ConstraintLayout
+    private val menusHolder: ConstraintLayout,
+    var warningsEnabled: Boolean,
+    var role: Role
 ): ListAdapter<Menu, MenuAdapter.MenuViewHolder>(
     MENU_COMPARATOR
 )  {
-
 
     class MenuViewHolder(view: View?): RecyclerView.ViewHolder(view!!) {
         val textDate: MaterialTextView = view!!.findViewById(R.id.text_menu_date)
@@ -58,10 +60,18 @@ class MenuAdapter(
                 .inflate(R.layout.item_meal, holder.layoutMenus, false)
             mealViewHolder.findViewById<MaterialTextView>(R.id.text_meal_name).text = meal.name
             mealViewHolder.findViewById<MaterialTextView>(R.id.text_meal_price).text =
-                meal.getPrice(Role.STUDENT)
-            mealViewHolder.findViewById<Chip>(R.id.chip_meal_category).text = meal.getIngredientsAsString()
+                meal.getPrice(role)
 
             val warningIcon = mealViewHolder.findViewById<AppCompatImageView>(R.id.image_meal_error)
+
+            mealViewHolder.findViewById<Chip>(R.id.chip_meal_category).text = meal.ingredients.stream().map {
+                if (it.getUserDoesNotLike())
+                    if (warningIcon.visibility == View.INVISIBLE && warningsEnabled)
+                        warningIcon.visibility = View.VISIBLE
+                it.getName()
+            }.collect(Collectors.joining(", "))
+
+
 
             val layout = mealViewHolder.findViewById<ConstraintLayout>(R.id.layout_menu)
 
@@ -81,7 +91,7 @@ class MenuAdapter(
                     isClickable = false
                     if (mealComponent.getUserDoesNotLike()) {
                         chipIcon = ContextCompat.getDrawable(context, R.drawable.ic_info)
-                        if (warningIcon.visibility == View.INVISIBLE)
+                        if (warningIcon.visibility == View.INVISIBLE && warningsEnabled)
                             warningIcon.visibility = View.VISIBLE
                     }
                     chipGroupAllergenics.addView(this)
