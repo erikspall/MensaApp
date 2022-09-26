@@ -16,7 +16,7 @@ object MensaApi {
     }
 
     private const val BASE_URL =
-        "http://192.168.0.17:8080"
+        "http://192.168.178.50:8080"
 
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
@@ -30,9 +30,9 @@ object MensaApi {
 }
 
 interface MensaApiService {
-    @GET("food_providers")
+    @GET("foodproviders")
     suspend fun getLatestFoodProviderInfo(): ApiResponse<List<FoodProviderApiModel>>
 
-    @GET("/canteens/{id}/menus/today_and_beyond")
+    @GET("/canteens/{id}/menus/today-and-beyond")
     suspend fun getLatestMenusOfCanteen(@Path("id") cid: Long): ApiResponse<List<MenuApiModel>>
 }

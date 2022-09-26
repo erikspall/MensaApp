@@ -70,6 +70,14 @@ class AppRepository(
         return foodProviderRepository.getFoodProvidersByTypeAndLocation(tid, wid)
     }
 
+    suspend fun setAllergenicLikeStatus(name: String, userDoesNotLike: Boolean) {
+        allergenicRepository.updateLike(name, userDoesNotLike)
+    }
+
+    suspend fun setIngredientLikeStatus(name: String, userDoesNotLike: Boolean) {
+        ingredientRepository.updateLike(name, userDoesNotLike)
+    }
+
     @OptIn(ExperimentalStdlibApi::class)
     suspend fun fetchLatestMenuOfCanteen(cid: Long): Optional<List<Menu>> {
         return Optional.of(
@@ -111,9 +119,10 @@ class AppRepository(
                     name = name,
                     icon = R.drawable.ic_mensa // TODO: extract icon
             )
-            ingredientRepository.insert(
-                    ingredient
-            )
+            if (ingredient.getName().isNotBlank()) // TODO: find a better way if meal cannot be parsed
+                ingredientRepository.insert(
+                        ingredient
+                )
             ingredient
         }
     }
@@ -126,9 +135,10 @@ class AppRepository(
                     name = name,
                     icon = R.drawable.ic_mensa // TODO: extract icon
             )
-            allergenicRepository.insert(
-                    allergenic
-            )
+            if (allergenic.getName().isNotBlank())
+                allergenicRepository.insert(
+                        allergenic
+                )
             allergenic
         }
     }
@@ -189,7 +199,7 @@ class AppRepository(
                     FoodProvider(
                             fid = apiFoodProvider.id,
                             name = name,
-                            foodProviderTypeId = getOrInsertFoodProviderType(apiFoodProvider.foodProviderType),
+                            foodProviderTypeId = getOrInsertFoodProviderType(apiFoodProvider.type),
                             locationId = getOrInsertLocation(apiFoodProvider.location),
                             info = apiFoodProvider.info,
                             additionalInfo = apiFoodProvider.additionalInfo,

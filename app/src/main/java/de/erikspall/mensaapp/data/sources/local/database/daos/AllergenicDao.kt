@@ -15,6 +15,9 @@ interface AllergenicDao {
     @Update
     suspend fun updateAllergenic(vararg allergenic: Allergenic)
 
+    @Query("UPDATE allergenic SET userDoesNotLike=:userDoesNotLike WHERE name = :name")
+    suspend fun updateLike(name: String, userDoesNotLike: Boolean)
+
     @Query("SELECT EXISTS(SELECT * FROM allergenic WHERE name = :name COLLATE NOCASE)")
     suspend fun exists(name: String): Boolean
 

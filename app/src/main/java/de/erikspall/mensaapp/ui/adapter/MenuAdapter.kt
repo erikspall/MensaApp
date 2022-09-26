@@ -7,7 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +23,7 @@ import com.google.android.material.textview.MaterialTextView
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.sources.local.database.entities.Menu
 import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Role
+import de.erikspall.mensaapp.domain.utils.Extensions.getDynamicColorIfAvailable
 
 //import de.erikspall.mensaapp.domain.model.enums.Role
 //import de.erikspall.mensaapp.domain.model.interfaces.Menu
@@ -57,6 +61,8 @@ class MenuAdapter(
                 meal.getPrice(Role.STUDENT)
             mealViewHolder.findViewById<Chip>(R.id.chip_meal_category).text = meal.getIngredientsAsString()
 
+            val warningIcon = mealViewHolder.findViewById<AppCompatImageView>(R.id.image_meal_error)
+
             val layout = mealViewHolder.findViewById<ConstraintLayout>(R.id.layout_menu)
 
             val buttonExpand: MaterialButton =
@@ -68,13 +74,19 @@ class MenuAdapter(
             val chipGroupAllergenics =
                 mealViewHolder.findViewById<ChipGroup>(R.id.chip_group_allergenics)
 
-            meal.allergens.stream().forEach {
-                val test = Chip(context)
-                test.text = it.getName()
-                test.setEnsureMinTouchTargetSize(false)
-                test.isClickable = false
-                // TODO: if not liked make it visible
-                chipGroupAllergenics.addView(test)
+            meal.allergens.stream().forEach { mealComponent ->
+                Chip(context).apply {
+                    text = mealComponent.getName()
+                    setEnsureMinTouchTargetSize(false)
+                    isClickable = false
+                    if (mealComponent.getUserDoesNotLike()) {
+                        chipIcon = ContextCompat.getDrawable(context, R.drawable.ic_info)
+                        if (warningIcon.visibility == View.INVISIBLE)
+                            warningIcon.visibility = View.VISIBLE
+                    }
+                    chipGroupAllergenics.addView(this)
+
+                }
             }
 
 

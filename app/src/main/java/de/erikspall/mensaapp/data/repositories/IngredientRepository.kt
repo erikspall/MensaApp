@@ -24,6 +24,10 @@ class IngredientRepository(
         return ingredientDao.get(name)
     }
 
+    suspend fun updateLike(name: String, userDoesNotLike: Boolean) {
+        ingredientDao.updateLike(name, userDoesNotLike)
+    }
+
     fun getAll(): Flow<List<Ingredient>> {
         return ingredientDao.getAll()
     }

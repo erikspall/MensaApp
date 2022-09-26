@@ -5,6 +5,10 @@ import android.graphics.Color
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.MaterialColors
@@ -24,5 +28,20 @@ object Extensions {
 
     fun RecyclerView.pushContentUpBy(dp: Int = 50){
         this.setPadding(8, 0, 8, Conversion.dpToPx(dp))
+    }
+
+    fun LinearLayoutCompat.pushContentUpBy(
+        pushDp: Int = 50
+    ) {
+        this.setPaddingRelative(paddingStart,paddingTop,paddingEnd, Conversion.dpToPx(pushDp))
+    }
+
+    fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+        observe(lifecycleOwner, object : Observer<T> {
+            override fun onChanged(t: T?) {
+                observer.onChanged(t)
+                removeObserver(this)
+            }
+        })
     }
 }

@@ -1,7 +1,7 @@
 package de.erikspall.mensaapp.data.sources.remote.api.model
 
 data class FoodProviderApiModel(
-    val foodProviderType: String,
+    val type: String,
     val name: String,
     val additionalInfo: String,
     val location: String,

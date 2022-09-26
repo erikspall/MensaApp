@@ -11,7 +11,12 @@ import androidx.fragment.app.viewModels
 import com.google.android.material.chip.Chip
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
+import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.databinding.FragmentSettingsAllergenicBinding
+import de.erikspall.mensaapp.domain.const.MaterialSizes
+import de.erikspall.mensaapp.domain.utils.Extensions.observeOnce
+import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
+import de.erikspall.mensaapp.domain.utils.HeightExtractor
 import de.erikspall.mensaapp.ui.settings.allergenic.event.AllergenicEvent
 import de.erikspall.mensaapp.ui.settings.allergenic.viewmodel.AllergenicViewModel
 
@@ -52,6 +57,10 @@ class AllergenicFragment() : Fragment() {
         _binding = FragmentSettingsAllergenicBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        binding.containerFilterGroups.pushContentUpBy(
+            HeightExtractor.getNavigationBarHeight(requireContext()) +
+                    /* buffer so user does not accidentally hit nav buttons */ 8
+        )
 
         prepareSwitchAndCard()
         setupObservers()
@@ -63,7 +72,7 @@ class AllergenicFragment() : Fragment() {
     private fun prepareSwitchAndCard() {
 
         if (viewModel.state.warningsActivated.value == true) {
-            binding.settingsAllergenicChipGroup.visibility = View.VISIBLE
+            binding.containerFilterGroups.visibility = View.VISIBLE
             // Color card
             val transitionDrawable =
                 (binding.settingsAllergenicCardLayout.background as TransitionDrawable)
@@ -74,16 +83,46 @@ class AllergenicFragment() : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.state.ingredients.observe(viewLifecycleOwner) { ingredients ->
+        viewModel.state.ingredients.observeOnce(viewLifecycleOwner) { ingredients ->
             Log.d("SettingsAllergenic", "${ingredients.size}")
+            binding.filterGroupIngredients.chipGroupFilterGroup.removeAllViews()
             ingredients.forEach { ingredient ->
-                binding.settingsAllergenicChipGroup.addView(Chip(requireContext()).apply {
-                    text = ingredient.getName()
-                    setEnsureMinTouchTargetSize(false)
-                    isCheckable = true
-                })
+                binding.filterGroupIngredients.chipGroupFilterGroup.addView(
+                    (layoutInflater.inflate(
+                        R.layout.layout_filter_chip,
+                        binding.filterGroupIngredients.chipGroupFilterGroup,
+                        false
+                    ) as Chip).apply {
+                        text = ingredient.getName()
+                        setEnsureMinTouchTargetSize(false)
+                        isCheckable = true
+                        isChecked = ingredient.getUserDoesNotLike()
+                        setOnCheckedChangeListener { chip, isChecked ->
+                            viewModel.onEvent(AllergenicEvent.OnIngredientChecked(chip.text.toString(), isChecked))
+                        }
+                    }
+                )
             }
-
+        }
+        viewModel.state.allergenic.observeOnce(viewLifecycleOwner) { allergenic ->
+            binding.filterGroupAllergenic.chipGroupFilterGroup.removeAllViews()
+            allergenic.forEach { allergenic ->
+                binding.filterGroupAllergenic.chipGroupFilterGroup.addView(
+                    (layoutInflater.inflate(
+                        R.layout.layout_filter_chip,
+                        binding.filterGroupIngredients.chipGroupFilterGroup,
+                        false
+                    ) as Chip).apply {
+                        text = allergenic.getName()
+                        setEnsureMinTouchTargetSize(false)
+                        isCheckable = true
+                        isChecked = allergenic.getUserDoesNotLike()
+                        setOnCheckedChangeListener { chip, isChecked ->
+                            viewModel.onEvent(AllergenicEvent.OnAllergenicChecked(chip.text.toString(), isChecked))
+                        }
+                    }
+                )
+            }
         }
     }
 
@@ -95,10 +134,10 @@ class AllergenicFragment() : Fragment() {
                 (binding.settingsAllergenicCardLayout.background as TransitionDrawable)
             if (isChecked) {
                 transitionDrawable.startTransition(300)
-                binding.settingsAllergenicChipGroup.visibility = View.VISIBLE
+                binding.containerFilterGroups.visibility = View.VISIBLE
             } else {
                 transitionDrawable.reverseTransition(300)
-                binding.settingsAllergenicChipGroup.visibility = View.INVISIBLE
+                binding.containerFilterGroups.visibility = View.INVISIBLE
             }
         }
         binding.settingsAllergenicToolbar.setNavigationOnClickListener {

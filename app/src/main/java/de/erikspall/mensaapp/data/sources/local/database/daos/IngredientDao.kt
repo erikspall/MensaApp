@@ -19,6 +19,10 @@ interface IngredientDao {
     @Query("SELECT EXISTS(SELECT * FROM ingredient WHERE name = :name COLLATE NOCASE)")
     suspend fun exists(name: String): Boolean
 
+
+    @Query("UPDATE ingredient SET userDoesNotLike=:userDoesNotLike WHERE name = :name")
+    suspend fun updateLike(name: String, userDoesNotLike: Boolean)
+
     @Delete
     suspend fun delete(ingredient: Ingredient)
 

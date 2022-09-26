@@ -24,6 +24,10 @@ class AllergenicRepository(
         return allergenicDao.get(name)
     }
 
+    suspend fun updateLike(name: String, userDoesNotLike: Boolean) {
+        allergenicDao.updateLike(name, userDoesNotLike)
+    }
+
     fun getAll(): Flow<List<Allergenic>> {
         return allergenicDao.getAll()
     }

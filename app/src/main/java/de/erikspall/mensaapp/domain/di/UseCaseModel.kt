@@ -9,9 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import de.erikspall.mensaapp.data.repositories.AppRepository
 import de.erikspall.mensaapp.domain.usecases.foodprovider.*
-import de.erikspall.mensaapp.domain.usecases.mealcomponents.GetAllergenic
-import de.erikspall.mensaapp.domain.usecases.mealcomponents.GetIngredients
-import de.erikspall.mensaapp.domain.usecases.mealcomponents.MealComponentsUseCases
+import de.erikspall.mensaapp.domain.usecases.mealcomponents.*
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.*
 import javax.inject.Singleton
 
@@ -54,7 +52,9 @@ object UseCaseModel {
     ): MealComponentsUseCases {
         return MealComponentsUseCases(
             getAllergenic = GetAllergenic(repository),
-            getIngredients = GetIngredients(repository)
+            getIngredients = GetIngredients(repository),
+            setAllergenicLikeStatus = SetAllergenicLikeStatus(repository),
+            setIngredientLikeStatus = SetIngredientLikeStatus(repository)
         )
     }
 }
