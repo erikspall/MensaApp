@@ -6,23 +6,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RawRes
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialElevationScale
-import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
+import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.databinding.FragmentCanteenListBinding
 import de.erikspall.mensaapp.domain.const.MaterialSizes
-import de.erikspall.mensaapp.domain.usecases.foodprovider.GetOpeningHoursAsString
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
 import de.erikspall.mensaapp.ui.adapter.FoodProviderCardAdapter
 import de.erikspall.mensaapp.ui.canteenlist.viewmodel.CanteenListViewModel
 import de.erikspall.mensaapp.ui.canteenlist.viewmodel.event.CanteenListEvent
+import de.erikspall.mensaapp.ui.state.UiState
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CanteenListFragment : Fragment() {
@@ -80,35 +82,106 @@ class CanteenListFragment : Fragment() {
 
         binding.recyclerViewCanteen.adapter = adapter
 
-        //binding.recyclerViewCanteen.setHasFixedSize(true)
+        binding.swipeRefresh.setProgressViewOffset(
+            false,
+            binding.swipeRefresh.progressViewStartOffset - 8,
+            binding.swipeRefresh.progressViewEndOffset - 24
+        )
+
+        setupListeners()
+        setupObservers()
 
         viewModel.onEvent(CanteenListEvent.CheckIfNewLocationSet)
 
+        return root
+    }
+
+    private fun setupListeners() {
+        binding.swipeRefresh.setOnRefreshListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.onEvent(CanteenListEvent.GetLatestInfo)
+            }
+        }
+    }
+
+    private fun setupObservers() {
+        viewModel.state.isRefreshing.observe(viewLifecycleOwner) { isRefreshing ->
+            if (!isRefreshing)
+                binding.swipeRefresh.isRefreshing = false
+        }
+
         viewModel.canteens.observe(viewLifecycleOwner) { canteens ->
             if (canteens.isEmpty()) {
-                // TODO: try to retrieve data
-                binding.lottieContainer.visibility = VISIBLE
-                binding.libraryAppbarLayout.visibility = INVISIBLE
-                binding.libraryNestedScroll.visibility = INVISIBLE
+                viewModel.onEvent(CanteenListEvent.GetLatestInfo)
+                viewModel.onEvent(CanteenListEvent.NewUiState(UiState.LOADING))
             } else {
-                binding.lottieContainer.visibility = GONE
-                binding.libraryAppbarLayout.visibility = VISIBLE
-                binding.libraryNestedScroll.visibility = VISIBLE
+                viewModel.onEvent(CanteenListEvent.NewUiState(UiState.NORMAL))
 
             }
             Log.d("CanteenListFragment", "Canteens: $canteens")
             canteens.let {
-                adapter.submitList(it.filter { foodProvider ->
+                (binding.recyclerViewCanteen.adapter as FoodProviderCardAdapter).submitList(it.filter { foodProvider ->
                     foodProvider.location.name == requireContext().getString(viewModel.state.showingLocation.getValue())
                 })
             }
         }
 
+        viewModel.state.uiState.observe(viewLifecycleOwner) { uiState ->
+            when (uiState) {
+                UiState.NORMAL -> {
+                    makeLottieVisible(false)
+                }
+                UiState.ERROR -> {
+
+                        showMessage(R.raw.error, "Something went wrong")
+
+                }
+                UiState.LOADING -> { // TODO: Obsolete here
+
+                        showMessage(R.raw.man_serving_catering_food, "Fetching data ...")
 
 
-        return root
+                }
+                UiState.NO_CONNECTION -> {
+                        showMessage(R.raw.no_connection, "No connection", 0.5f)
+
+                }
+                UiState.NO_INTERNET -> {
+                    showMessage(R.raw.no_internet, "No internet")
+
+
+                }
+                else -> {
+
+                }
+            }
+        }
     }
 
+    private fun showMessage(@RawRes animation: Int, errorMsg: String, animationSpeed: Float = 1f) {
+        if (binding.recyclerViewCanteen.adapter?.itemCount == 0) {
+            binding.lottieAnimationView.speed = animationSpeed
+            binding.lottieAnimationView.clearAnimation()
+            binding.lottieAnimationView.setAnimation(animation)
+            binding.lottieAnimationView.playAnimation()
+            binding.textLottie.text = errorMsg
+            makeLottieVisible(true)
+        } else {
+            Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun makeLottieVisible(visible: Boolean) {
+        if (visible) {
+            binding.lottieContainer.visibility = VISIBLE
+            binding.libraryAppbarLayout.visibility = INVISIBLE
+            binding.libraryNestedScroll.visibility = INVISIBLE
+        } else {
+            binding.lottieContainer.visibility = GONE
+            binding.libraryAppbarLayout.visibility = VISIBLE
+            binding.libraryNestedScroll.visibility = VISIBLE
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

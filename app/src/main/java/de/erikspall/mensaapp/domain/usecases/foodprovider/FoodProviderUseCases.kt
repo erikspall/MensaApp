@@ -4,5 +4,6 @@ data class FoodProviderUseCases (
     val getFoodProviders: GetFoodProviders,
     val getOpeningHoursAsString: GetOpeningHoursAsString,
     val getInfoOfFoodProvider: GetInfoOfFoodProvider,
-    val getMenus: GetMenus
+    val getMenus: GetMenus,
+    val fetchLatest: FetchLatest
 )

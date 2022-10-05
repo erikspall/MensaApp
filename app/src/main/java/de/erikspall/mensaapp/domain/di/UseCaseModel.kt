@@ -25,7 +25,8 @@ object UseCaseModel {
             getFoodProviders = GetFoodProviders(repository),
             getOpeningHoursAsString = GetOpeningHoursAsString(),
             getInfoOfFoodProvider = GetInfoOfFoodProvider(repository),
-            getMenus = GetMenus(repository)
+            getMenus = GetMenus(repository),
+            fetchLatest = FetchLatest(repository)
         )
     }
 

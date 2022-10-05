@@ -1,5 +1,6 @@
 package de.erikspall.mensaapp.ui.foodproviderdetail.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,12 +43,14 @@ class FoodProviderDetailViewModel @Inject constructor(
             }
             is DetailEvent.RefreshMenus -> {
                 viewModelScope.launch {
-                    foodProviderUseCases.getMenus(state.fid).apply {
+                    val result = foodProviderUseCases.getMenus(state.fid).apply {
                         if (this.isPresent)
                             state.menus.postValue(this.get())
                         else
                             state.menus.postValue(emptyList())
                     }
+                    if (result.isEmpty)
+                        Log.d("ErrorPropagation", "Error while retrieving menus: ${result.getMessage()}")
                 }
             }
         }
