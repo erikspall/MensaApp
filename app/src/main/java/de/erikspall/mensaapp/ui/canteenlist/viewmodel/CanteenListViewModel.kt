@@ -15,7 +15,9 @@ import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceU
 import de.erikspall.mensaapp.domain.utils.Extensions.flattenToList
 import de.erikspall.mensaapp.ui.canteenlist.viewmodel.event.CanteenListEvent
 import de.erikspall.mensaapp.ui.canteenlist.viewmodel.state.CanteenListState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,7 +47,22 @@ class CanteenListViewModel @Inject constructor(
 
 
             }
-
+            is CanteenListEvent.NewUiState -> {
+                state.uiState.postValue(event.uiState)
+            }
+            is CanteenListEvent.GetLatestInfo -> {
+                viewModelScope.launch {
+                    state.isRefreshing.postValue(true)
+                    onEvent(
+                        CanteenListEvent.NewUiState(
+                            foodProviderUseCases.fetchLatest()
+                        )
+                    )
+                    withContext(Dispatchers.Main) {
+                        state.isRefreshing.postValue(false)
+                    }
+                }
+            }
         }
     }
 }

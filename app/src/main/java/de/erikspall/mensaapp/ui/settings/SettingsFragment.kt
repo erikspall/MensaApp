@@ -31,9 +31,6 @@ import javax.inject.Inject
 class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
 
-    @Inject
-    lateinit var test: AppRepository
-
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -124,9 +121,6 @@ class SettingsFragment : Fragment() {
         }
 
         binding.settingInfo.container.setOnClickListener {
-            viewLifecycleOwner.lifecycleScope.launch {
-                test.fetchAndSaveLatestData()
-            }
 
         }
 

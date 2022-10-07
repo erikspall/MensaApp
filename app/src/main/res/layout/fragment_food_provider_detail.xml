@@ -120,8 +120,42 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:nestedScrollingEnabled="false"
                 app:layout_constraintTop_toBottomOf="@id/info_food_provider_opening"
-                app:layout_constraintBottom_toBottomOf="parent">
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:visibility="invisible">
             </androidx.recyclerview.widget.RecyclerView>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_marginTop="50dp"
+                android:id="@+id/lottie_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/info_food_provider_opening"
+                android:visibility="visible">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/lottieAnimationView"
+                        android:layout_width="350dp"
+                        android:layout_height="200dp"
+                        android:layout_gravity="center"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/text_lottie"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        tools:text="Retreiving menus ..."/>
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!-- <LinearLayout
 
@@ -163,7 +197,13 @@
         </LinearLayout> -->
 
     </androidx.core.widget.NestedScrollView>
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/fade_image"
+        android:layout_gravity="bottom"
+        android:rotation="180"
+        android:translationZ="89dp"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 

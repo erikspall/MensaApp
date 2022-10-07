@@ -1,4 +1,4 @@
-package de.erikspall.mensaapp.ui.behavior
+package de.erikspall.mensaapp.ui.foodproviderdetail.behavior
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter

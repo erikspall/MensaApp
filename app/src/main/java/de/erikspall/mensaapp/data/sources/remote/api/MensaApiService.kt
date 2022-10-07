@@ -16,7 +16,7 @@ object MensaApi {
     }
 
     private const val BASE_URL =
-        "http://192.168.178.50:8080"
+        "http://192.168.0.18:8080"
 
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
