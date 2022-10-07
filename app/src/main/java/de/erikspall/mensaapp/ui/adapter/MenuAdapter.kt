@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -111,10 +112,28 @@ class MenuAdapter(
                         chipGroupAllergenic.addView(this)
                     }
                 }
-                buttonExpand.setOnClickListener {
+                buttonExpand.setOnClickListener { button ->
                     val v = if (containerAllergenic.visibility == View.GONE) View.VISIBLE else View.GONE
                     TransitionManager.beginDelayedTransition(menusHolder, AutoTransition())
                     containerAllergenic.visibility = v
+
+                    if (v == View.VISIBLE){
+                        button.animate().rotationBy(-180f).apply {
+                            duration = 100
+                            interpolator = AccelerateInterpolator()
+                            withEndAction {
+                                button.rotation = 180f
+                            }
+                        }
+                    } else {
+                        button.animate().rotationBy(180f).apply {
+                            duration = 100
+                            interpolator = AccelerateInterpolator()
+                            withEndAction {
+                                button.rotation = 0f
+                            }
+                        }
+                    }
                 }
 
                 holder.layoutMenus.addView(mealViewHolder)

@@ -78,11 +78,8 @@ class FoodProviderDetailFragment : Fragment() {
         _binding = FragmentFoodProviderDetailBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        showMessage(
-            R.raw.loading_menus,
-            "Sucht nach Gerichten ...",
-            forceLottie = true
-        )
+
+
 
         setMarginForIconButton()
 
@@ -129,14 +126,26 @@ class FoodProviderDetailFragment : Fragment() {
                     MaterialSizes.BOTTOM_NAV_HEIGHT
         )
 
+        var notFirstTime = false
         viewModel.state.menus.observe(viewLifecycleOwner) { menus ->
             // TODO: Show lotti if non found
             adapter.warningsEnabled = viewModel.state.warningsEnabled
             adapter.role = viewModel.state.role
-            menus.let { adapter.submitList(it) }
+            if (menus.isEmpty() && notFirstTime)
+                showMessage(R.raw.no_menus, "Keine Gerichte gefunden :(", forceLottie = true)
+            else {
+                notFirstTime = true
+                menus.let { adapter.submitList(it) }
+            }
         }
 
         viewModel.onEvent(DetailEvent.Init(fid = foodProviderId.toLong()))
+
+        showMessage(
+            R.raw.loading_menus,
+            "Sucht nach Gerichten ...",
+            forceLottie = true
+        )
 
         return root
     }
