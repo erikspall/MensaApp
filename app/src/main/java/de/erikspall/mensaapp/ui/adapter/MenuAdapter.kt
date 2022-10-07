@@ -26,6 +26,10 @@ import de.erikspall.mensaapp.data.sources.local.database.entities.Menu
 import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Role
 import de.erikspall.mensaapp.domain.utils.Extensions.getDynamicColorIfAvailable
 import kotlinx.coroutines.*
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.time.format.TextStyle
+import java.util.*
 import java.util.stream.Collectors
 
 //import de.erikspall.mensaapp.domain.model.enums.Role
@@ -44,6 +48,7 @@ class MenuAdapter(
 ) {
 
     class MenuViewHolder(view: View?) : RecyclerView.ViewHolder(view!!) {
+        val textDayOfWeek: MaterialTextView = view!!.findViewById(R.id.text_day_of_week)
         val textDate: MaterialTextView = view!!.findViewById(R.id.text_menu_date)
         val layoutMenus: LinearLayout = view!!.findViewById(R.id.linear_layout_menus)
     }
@@ -57,8 +62,10 @@ class MenuAdapter(
     @SuppressLint("SetTextI18n") // TODO: Change later
     override fun onBindViewHolder(holder: MenuViewHolder, position: Int) {
         Log.d("MenuAdapter", "Binding: ${getItem(position).date}")
-        holder.textDate.text = "Essen am ${getItem(position).date.dayOfWeek}," +
-                " den ${getItem(position).date}"
+        holder.textDayOfWeek.text = getItem(position).date.dayOfWeek.getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault())
+        holder.textDate.text =
+            ", der ${getItem(position).date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))}"
+
         // For each menu a coroutine populates the viewholder
         lifecycleScope.launch {
             for (meal in getItem(position).meals) {
@@ -113,11 +120,12 @@ class MenuAdapter(
                     }
                 }
                 buttonExpand.setOnClickListener { button ->
-                    val v = if (containerAllergenic.visibility == View.GONE) View.VISIBLE else View.GONE
+                    val v =
+                        if (containerAllergenic.visibility == View.GONE) View.VISIBLE else View.GONE
                     TransitionManager.beginDelayedTransition(menusHolder, AutoTransition())
                     containerAllergenic.visibility = v
 
-                    if (v == View.VISIBLE){
+                    if (v == View.VISIBLE) {
                         button.animate().rotationBy(-180f).apply {
                             duration = 100
                             interpolator = AccelerateInterpolator()
