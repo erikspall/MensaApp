@@ -58,7 +58,7 @@ class MenuAdapter(
         Log.d("MenuAdapter", "Binding: ${getItem(position).date}")
         holder.textDate.text = "Essen am ${getItem(position).date.dayOfWeek}," +
                 " den ${getItem(position).date}"
-
+        // For each menu a coroutine populates the viewholder
         lifecycleScope.launch {
             for (meal in getItem(position).meals) {
                 val mealViewHolder = LayoutInflater.from(context)
@@ -119,6 +119,8 @@ class MenuAdapter(
 
                 holder.layoutMenus.addView(mealViewHolder)
             }
+            if ((itemCount - 1) == position)
+                onFinishedConstructing()
 
         }
     }

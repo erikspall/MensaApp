@@ -1,9 +1,11 @@
 package de.erikspall.mensaapp.ui.foodproviderdetail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
 import android.widget.Toast
 import androidx.annotation.RawRes
 import androidx.core.view.ViewCompat
@@ -59,9 +61,9 @@ class FoodProviderDetailFragment : Fragment() {
         returnTransition = MaterialElevationScale(false).apply {
             duration = 100L
         }
-         exitTransition = MaterialElevationScale(false).apply {
-             duration = 300L
-         }
+        exitTransition = MaterialElevationScale(false).apply {
+            duration = 300L
+        }
         // reenterTransition = MaterialElevationScale(true).apply {
         //// }
         //sharedElementReturnTransition = animation
@@ -76,11 +78,11 @@ class FoodProviderDetailFragment : Fragment() {
         _binding = FragmentFoodProviderDetailBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-       // showMessage(
-       //     R.raw.loading_menus,
-       //     "Sucht nach Gerichten ...",
-       //     forceLottie = true
-      //  )
+        showMessage(
+            R.raw.loading_menus,
+            "Sucht nach Gerichten ...",
+            forceLottie = true
+        )
 
         setMarginForIconButton()
 
@@ -113,7 +115,8 @@ class FoodProviderDetailFragment : Fragment() {
             viewModel.state.role,
             lifecycleScope,
             onFinishedConstructing = {
-                //makeLottieVisible(false)
+                Log.d("DetailPage", "Finished")
+                makeLottieVisible(false)
             }
         )
 
@@ -157,7 +160,8 @@ class FoodProviderDetailFragment : Fragment() {
         @RawRes animation: Int,
         errorMsg: String,
         animationSpeed: Float = 1f,
-        forceLottie: Boolean = false) {
+        forceLottie: Boolean = false
+    ) {
         if (forceLottie || binding.recyclerViewMenus.adapter?.itemCount == 0) {
             binding.lottieAnimationView.speed = animationSpeed
             binding.lottieAnimationView.clearAnimation()
@@ -172,11 +176,35 @@ class FoodProviderDetailFragment : Fragment() {
 
     private fun makeLottieVisible(visible: Boolean) {
         if (visible) {
-            binding.lottieContainer.visibility = View.VISIBLE
-            binding.recyclerViewMenus.visibility = View.INVISIBLE
+            binding.lottieContainer.animate().alpha(1f).apply {
+                duration = 300
+                interpolator = AccelerateInterpolator()
+                withEndAction {
+                    binding.lottieContainer.visibility = View.VISIBLE
+                }
+            }
+            binding.recyclerViewMenus.animate().alpha(0f).apply {
+                duration = 300
+                interpolator = AccelerateInterpolator()
+                withEndAction {
+                    binding.recyclerViewMenus.visibility = View.INVISIBLE
+                }
+            }
         } else {
-            binding.lottieContainer.visibility = View.INVISIBLE
-            binding.recyclerViewMenus.visibility = View.VISIBLE
+            binding.lottieContainer.animate().alpha(0f).apply {
+                duration = 300
+                interpolator = AccelerateInterpolator()
+                withEndAction {
+                    binding.lottieContainer.visibility = View.INVISIBLE
+                }
+            }
+            binding.recyclerViewMenus.animate().alpha(1f).apply {
+                duration = 300
+                interpolator = AccelerateInterpolator()
+                withEndAction {
+                    binding.recyclerViewMenus.visibility = View.VISIBLE
+                }
+            }
         }
     }
 
