@@ -11,12 +11,10 @@ import de.erikspall.mensaapp.data.sources.remote.api.model.FoodProviderApiModel
 import de.erikspall.mensaapp.data.sources.remote.api.model.MealApiModel
 import de.erikspall.mensaapp.data.sources.remote.api.model.MenuApiModel
 import de.erikspall.mensaapp.data.sources.remote.api.model.OpeningInfoApiModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.util.Objects
 import java.util.Optional
@@ -32,7 +30,8 @@ class AppRepository(
     private val foodProviderTypeRepository: FoodProviderTypeRepository,
     private val allergenicRepository: AllergenicRepository,
     private val ingredientRepository: IngredientRepository,
-    private val remoteApiDataSource: RemoteApiDataSource
+    private val remoteApiDataSource: RemoteApiDataSource,
+    private val externalScope: CoroutineScope
 ) {
 
     val cachedProviders: Flow<List<FoodProviderWithoutMenus>> =
@@ -48,25 +47,28 @@ class AppRepository(
     /**
      * Fetches and saves all new data
      */
-    suspend fun fetchAndSaveLatestData(): OptionalResult<Objects?> {
-        val fetched = remoteApiDataSource.fetchLatestFoodProviders()
+    suspend fun fetchAndSaveLatestData(): OptionalResult<List<FoodProviderApiModel>> {
+        return externalScope.async {
+            remoteApiDataSource.fetchLatestFoodProviders().also { networkResult ->
+                if (networkResult.isPresent) {
+                    val result = emptyList<FoodProviderApiModel>()
 
-        if (fetched.isPresent) {
-            val temp = fetched.get()
-            for (fetchedProvider in temp) {
-                val fid = getOrInsertFoodProvider(fetchedProvider)
-                val hours = fetchedProvider.openingHours
-                //if (hours.isEmpty()){
-                //    hours = hours + listOf(OpeningInfoApiModel(false, "", "", ""))
-                //}
-                for (openingHours in hours) {
-                    val wid = getOrInsertWeekday(openingHours.weekday)
-                    getOrInsertOpeningHours(openingHours, fid, wid)
+                    networkResult.get().forEach { fetchedProvider ->
+                        val fid = getOrInsertFoodProvider(fetchedProvider)
+                        val hours = fetchedProvider.openingHours
+                        hours.forEach { openingHours ->
+                            val wid = getOrInsertWeekday(openingHours.weekday)
+                            getOrInsertOpeningHours(openingHours, fid, wid)
+                        }
+                    }
+                    OptionalResult.of(result) // Don't actually propagate result, as its handled by flow
+                } else {
+                    // Propagate possible error
+                    OptionalResult.ofMsg(networkResult.getMessage())
                 }
             }
-            return OptionalResult.of(null) // Don't actually return all
-        }
-        return OptionalResult.ofMsg(fetched.getMessage()) // Propagate possible error
+        }.await()
+
     }
 
     fun getProvidersByTypeAndLocation(tid: Long, wid: Long): Flow<List<FoodProviderWithoutMenus>> {

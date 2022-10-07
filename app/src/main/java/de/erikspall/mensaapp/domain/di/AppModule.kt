@@ -14,6 +14,7 @@ import de.erikspall.mensaapp.data.sources.local.database.AppDatabase
 import de.erikspall.mensaapp.data.sources.local.database.daos.WeekdayDao
 import de.erikspall.mensaapp.data.sources.remote.RemoteApiDataSource
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
 
 @Module
@@ -83,7 +84,8 @@ object AppModule {
         foodProviderTypeRepository: FoodProviderTypeRepository,
         allergenicRepository: AllergenicRepository,
         ingredientRepository: IngredientRepository,
-        apiDataSource: RemoteApiDataSource
+        apiDataSource: RemoteApiDataSource,
+        @DefaultDispatcher defaultDispatcher: CoroutineDispatcher
     ): AppRepository {
         return AppRepository(
             foodProviderRepository,
@@ -93,7 +95,8 @@ object AppModule {
             foodProviderTypeRepository,
             allergenicRepository,
             ingredientRepository,
-            apiDataSource
+            apiDataSource,
+            CoroutineScope(defaultDispatcher)
         )
     }
 
