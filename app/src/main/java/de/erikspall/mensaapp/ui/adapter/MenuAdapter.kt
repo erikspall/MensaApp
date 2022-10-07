@@ -24,6 +24,7 @@ import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.sources.local.database.entities.Menu
 import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Role
 import de.erikspall.mensaapp.domain.utils.Extensions.getDynamicColorIfAvailable
+import kotlinx.coroutines.*
 import java.util.stream.Collectors
 
 //import de.erikspall.mensaapp.domain.model.enums.Role
@@ -33,18 +34,22 @@ class MenuAdapter(
     private val context: Context,
     private val menusHolder: ConstraintLayout,
     var warningsEnabled: Boolean,
-    var role: Role
-): ListAdapter<Menu, MenuAdapter.MenuViewHolder>(
-    MENU_COMPARATOR
-)  {
+    var role: Role,
+    private val lifecycleScope: CoroutineScope,
+    val onFinishedConstructing: () -> Unit
 
-    class MenuViewHolder(view: View?): RecyclerView.ViewHolder(view!!) {
+) : ListAdapter<Menu, MenuAdapter.MenuViewHolder>(
+    MENU_COMPARATOR
+) {
+
+    class MenuViewHolder(view: View?) : RecyclerView.ViewHolder(view!!) {
         val textDate: MaterialTextView = view!!.findViewById(R.id.text_menu_date)
         val layoutMenus: LinearLayout = view!!.findViewById(R.id.linear_layout_menus)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuViewHolder {
-        val adapterLayout = LayoutInflater.from(parent.context).inflate(R.layout.item_menu, parent, false)
+        val adapterLayout =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_menu, parent, false)
         return MenuViewHolder(adapterLayout)
     }
 
@@ -54,60 +59,67 @@ class MenuAdapter(
         holder.textDate.text = "Essen am ${getItem(position).date.dayOfWeek}," +
                 " den ${getItem(position).date}"
 
-        var index = 0
-        for (meal in getItem(position).meals) {
-            val mealViewHolder = LayoutInflater.from(context)
-                .inflate(R.layout.item_meal, holder.layoutMenus, false)
-            mealViewHolder.findViewById<MaterialTextView>(R.id.text_meal_name).text = meal.name
-            mealViewHolder.findViewById<MaterialTextView>(R.id.text_meal_price).text =
-                meal.getPrice(role)
+        lifecycleScope.launch {
+            for (meal in getItem(position).meals) {
+                val mealViewHolder = LayoutInflater.from(context)
+                    .inflate(R.layout.item_meal, holder.layoutMenus, false)
+                lateinit var textMealName: MaterialTextView
+                lateinit var textMealPrice: MaterialTextView
+                lateinit var warningIcon: AppCompatImageView
+                lateinit var chipMealCategory: Chip
+                lateinit var layout: ConstraintLayout
+                lateinit var buttonExpand: MaterialButton
+                lateinit var containerAllergenic: LinearLayout
+                lateinit var chipGroupAllergenic: ChipGroup
 
-            val warningIcon = mealViewHolder.findViewById<AppCompatImageView>(R.id.image_meal_error)
+                withContext(Dispatchers.IO) {
+                    textMealName = mealViewHolder.findViewById(R.id.text_meal_name)
+                    textMealPrice = mealViewHolder.findViewById(R.id.text_meal_price)
 
-            mealViewHolder.findViewById<Chip>(R.id.chip_meal_category).text = meal.ingredients.stream().map {
-                if (it.getUserDoesNotLike())
-                    if (warningIcon.visibility == View.INVISIBLE && warningsEnabled)
-                        warningIcon.visibility = View.VISIBLE
-                it.getName()
-            }.collect(Collectors.joining(", "))
+                    warningIcon = mealViewHolder.findViewById(R.id.image_meal_error)
 
+                    chipMealCategory = mealViewHolder.findViewById(R.id.chip_meal_category)
 
+                    layout = mealViewHolder.findViewById(R.id.layout_menu)
 
-            val layout = mealViewHolder.findViewById<ConstraintLayout>(R.id.layout_menu)
+                    buttonExpand = mealViewHolder.findViewById(R.id.button_expand_meal)
 
-            val buttonExpand: MaterialButton =
-                mealViewHolder.findViewById(R.id.button_expand_meal)
+                    containerAllergenic = mealViewHolder.findViewById(R.id.container_allergenics)
 
-            val containerAllergenics =
-                mealViewHolder.findViewById<LinearLayout>(R.id.container_allergenics)
-
-            val chipGroupAllergenics =
-                mealViewHolder.findViewById<ChipGroup>(R.id.chip_group_allergenics)
-
-            meal.allergens.stream().forEach { mealComponent ->
-                Chip(context).apply {
-                    text = mealComponent.getName()
-                    setEnsureMinTouchTargetSize(false)
-                    isClickable = false
-                    if (mealComponent.getUserDoesNotLike()) {
-                        chipIcon = ContextCompat.getDrawable(context, R.drawable.ic_info)
-                        if (warningIcon.visibility == View.INVISIBLE && warningsEnabled)
-                            warningIcon.visibility = View.VISIBLE
-                    }
-                    chipGroupAllergenics.addView(this)
-
+                    chipGroupAllergenic = mealViewHolder.findViewById(R.id.chip_group_allergenics)
                 }
+
+                textMealName.text = meal.name
+                textMealPrice.text = meal.getPrice(role)
+
+                chipMealCategory.text = meal.ingredients.joinToString { ingredient ->
+                    if (ingredient.getUserDoesNotLike() && warningsEnabled) {
+                        warningIcon.visibility = View.VISIBLE
+                    }
+                    ingredient.getName()
+                }
+
+                meal.allergens.forEach { allergenic ->
+                    Chip(context).apply {
+                        text = allergenic.getName()
+                        setEnsureMinTouchTargetSize(false)
+                        isClickable = false
+                        if (allergenic.getUserDoesNotLike() && warningsEnabled) {
+                            chipIcon = ContextCompat.getDrawable(context, R.drawable.ic_info)
+                            warningIcon.visibility = View.VISIBLE
+                        }
+                        chipGroupAllergenic.addView(this)
+                    }
+                }
+                buttonExpand.setOnClickListener {
+                    val v = if (containerAllergenic.visibility == View.GONE) View.VISIBLE else View.GONE
+                    TransitionManager.beginDelayedTransition(menusHolder, AutoTransition())
+                    containerAllergenic.visibility = v
+                }
+
+                holder.layoutMenus.addView(mealViewHolder)
             }
 
-
-            buttonExpand.setOnClickListener {
-                val v = if (containerAllergenics.visibility == View.GONE) View.VISIBLE else View.GONE
-                TransitionManager.beginDelayedTransition(menusHolder, AutoTransition())
-                containerAllergenics.visibility = v
-            }
-
-            holder.layoutMenus.addView(mealViewHolder)
-            index++
         }
     }
 

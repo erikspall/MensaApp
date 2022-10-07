@@ -48,7 +48,7 @@ class AppRepository(
      * Fetches and saves all new data
      */
     suspend fun fetchAndSaveLatestData(): OptionalResult<List<FoodProviderApiModel>> {
-        return externalScope.async {
+        return externalScope.async { // TODO: reduce to withContext?
             remoteApiDataSource.fetchLatestFoodProviders().also { networkResult ->
                 if (networkResult.isPresent) {
                     val result = emptyList<FoodProviderApiModel>()

@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.annotation.RawRes
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -74,6 +76,12 @@ class FoodProviderDetailFragment : Fragment() {
         _binding = FragmentFoodProviderDetailBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+       // showMessage(
+       //     R.raw.loading_menus,
+       //     "Sucht nach Gerichten ...",
+       //     forceLottie = true
+      //  )
+
         setMarginForIconButton()
 
         binding.buttonBack.setOnClickListener {
@@ -102,7 +110,11 @@ class FoodProviderDetailFragment : Fragment() {
             requireContext(),
             binding.menusHolder,
             viewModel.state.warningsEnabled,
-            viewModel.state.role
+            viewModel.state.role,
+            lifecycleScope,
+            onFinishedConstructing = {
+                //makeLottieVisible(false)
+            }
         )
 
         //binding.recyclerViewMenus.setHasFixedSize(true)
@@ -141,7 +153,34 @@ class FoodProviderDetailFragment : Fragment() {
 
     }
 
-    fun setMarginForIconButton() {
+    private fun showMessage(
+        @RawRes animation: Int,
+        errorMsg: String,
+        animationSpeed: Float = 1f,
+        forceLottie: Boolean = false) {
+        if (forceLottie || binding.recyclerViewMenus.adapter?.itemCount == 0) {
+            binding.lottieAnimationView.speed = animationSpeed
+            binding.lottieAnimationView.clearAnimation()
+            binding.lottieAnimationView.setAnimation(animation)
+            binding.lottieAnimationView.playAnimation()
+            binding.textLottie.text = errorMsg
+            makeLottieVisible(true)
+        } else {
+            Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun makeLottieVisible(visible: Boolean) {
+        if (visible) {
+            binding.lottieContainer.visibility = View.VISIBLE
+            binding.recyclerViewMenus.visibility = View.INVISIBLE
+        } else {
+            binding.lottieContainer.visibility = View.INVISIBLE
+            binding.recyclerViewMenus.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setMarginForIconButton() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.buttonBack) { view, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
