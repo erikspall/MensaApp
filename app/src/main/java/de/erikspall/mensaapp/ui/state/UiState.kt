@@ -5,5 +5,6 @@ enum class UiState {
     NO_INTERNET,
     ERROR,
     NO_CONNECTION,
-    LOADING
+    LOADING,
+    NO_INFO
 }

@@ -15,8 +15,8 @@ class FetchLatest(
             UiState.NORMAL
         else {
             when (result.getMessage()) {
-                "no internet" -> UiState.NO_INTERNET
-                "server unreachable" -> UiState.NO_CONNECTION
+                "server unreachable" -> UiState.NO_INTERNET
+                "server not responding" -> UiState.NO_CONNECTION
                 else -> UiState.ERROR
             }
         }

@@ -132,24 +132,32 @@ class CanteenListFragment : Fragment() {
                     makeLottieVisible(false)
                 }
                 UiState.ERROR -> {
-
-                        showMessage(R.raw.error, "Something went wrong")
-
+                    showMessage(
+                        R.raw.error,
+                        "Ohje! Da ist etwas schiefgelaufen :(" +
+                                "\nVersuche es bitte später erneut!"
+                    )
                 }
-                UiState.LOADING -> { // TODO: Obsolete here
-
-                        showMessage(R.raw.man_serving_catering_food, "Fetching data ...")
-
-
+                UiState.LOADING -> {
+                    showMessage(
+                        R.raw.man_serving_catering_food,
+                        "Sucht nach Mensen ..."
+                    )
                 }
                 UiState.NO_CONNECTION -> {
-                        showMessage(R.raw.no_connection, "No connection", 0.5f)
-
+                    showMessage(
+                        R.raw.no_connection,
+                        "Der Server scheint nicht zu antworten :(\n" +
+                                "Versuche es bitte später erneut!",
+                        0.5f
+                    )
                 }
                 UiState.NO_INTERNET -> {
-                    showMessage(R.raw.no_internet, "No internet")
-
-
+                    showMessage(
+                        R.raw.no_internet,
+                        "Wir können den Server nicht erreichen :(\n" +
+                                "Bitte überprüfe deine Internetverbindung und versuche es erneut!"
+                    )
                 }
                 else -> {
 
