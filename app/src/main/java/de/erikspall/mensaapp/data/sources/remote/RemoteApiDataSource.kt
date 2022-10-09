@@ -7,6 +7,7 @@ import de.erikspall.mensaapp.data.sources.remote.api.model.FoodProviderApiModel
 import de.erikspall.mensaapp.data.sources.remote.api.model.MenuApiModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.util.Optional
@@ -21,9 +22,9 @@ class RemoteApiDataSource(
                 val result = MensaApi.retrofitService.getLatestFoodProviderInfo()
                 return@withContext OptionalResult.of(result.data)
             }catch (socketException: SocketTimeoutException) {
-                return@withContext OptionalResult.ofMsg("server unreachable")
+                return@withContext OptionalResult.ofMsg("server not responding")
             }catch (connectException: ConnectException) {
-                return@withContext OptionalResult.ofMsg("no internet")
+                return@withContext OptionalResult.ofMsg("server unreachable")
             } catch (e: Exception) { // TODO: make this more precise
                 Log.e("Api", e.stackTraceToString())
                 return@withContext OptionalResult.ofMsg("${e.message}")
@@ -35,7 +36,13 @@ class RemoteApiDataSource(
             try {
                 val result = MensaApi.retrofitService.getLatestMenusOfCanteen(cid)
                 return@withContext OptionalResult.of(result.data)
-            } catch (e: Exception) {
+            } catch (socketException: SocketTimeoutException) {
+                return@withContext OptionalResult.ofMsg("server not responding")
+            }catch (connectException: ConnectException) {
+                return@withContext OptionalResult.ofMsg("server unreachable")
+            } catch (e: HttpException) {
+                return@withContext OptionalResult.ofMsg("no meals")
+            } catch (e: Exception) { // TODO: make this more precise
                 Log.e("Api", e.stackTraceToString())
                 return@withContext OptionalResult.ofMsg("${e.message}")
             }

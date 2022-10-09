@@ -20,6 +20,7 @@ import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import de.erikspall.mensaapp.R
+import de.erikspall.mensaapp.data.sources.local.database.entities.FoodProviderType
 import de.erikspall.mensaapp.data.sources.local.database.entities.Menu
 import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Role
 import de.erikspall.mensaapp.data.sources.remote.api.model.FoodProviderApiModel
@@ -36,6 +37,7 @@ import de.erikspall.mensaapp.ui.adapter.MenuAdapter
 import de.erikspall.mensaapp.ui.canteenlist.CanteenListFragmentArgs
 import de.erikspall.mensaapp.ui.foodproviderdetail.event.DetailEvent
 import de.erikspall.mensaapp.ui.foodproviderdetail.viewmodel.FoodProviderDetailViewModel
+import de.erikspall.mensaapp.ui.state.UiState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -90,8 +92,15 @@ class FoodProviderDetailFragment : Fragment() {
         val safeArgs: CanteenListFragmentArgs by navArgs()
         val foodProviderId = safeArgs.canteenId
 
+        // TODO: move this and logic to viewmodel
+        var showingCafeteria = false
+
+        //TODO: Hard to read
         foodProviderUseCases.getInfoOfFoodProvider(fid = foodProviderId.toLong())
             .asLiveData().observe(viewLifecycleOwner) {
+                if (it.foodProvider.type == "Cafeteria")
+                    showingCafeteria = true
+
                 binding.textFoodProviderName.text = it.foodProvider.name
                 if (it.foodProvider.info.isBlank() && it.foodProvider.additionalInfo.isBlank())
                     binding.infoFoodProviderOpening.container.visibility = View.GONE
@@ -117,8 +126,6 @@ class FoodProviderDetailFragment : Fragment() {
             }
         )
 
-        //binding.recyclerViewMenus.setHasFixedSize(true)
-
         binding.recyclerViewMenus.adapter = adapter
 
         binding.recyclerViewMenus.pushContentUpBy(
@@ -126,26 +133,29 @@ class FoodProviderDetailFragment : Fragment() {
                     MaterialSizes.BOTTOM_NAV_HEIGHT
         )
 
-        var notFirstTime = false
+        setupObservers()
+
+        // var notFirstTime = false
         viewModel.state.menus.observe(viewLifecycleOwner) { menus ->
             // TODO: Show lotti if non found
             adapter.warningsEnabled = viewModel.state.warningsEnabled
             adapter.role = viewModel.state.role
-            if (menus.isEmpty() && notFirstTime)
-                showMessage(R.raw.no_menus, "Keine Gerichte gefunden :(", forceLottie = true)
-            else {
-                notFirstTime = true
-                menus.let { adapter.submitList(it) }
-            }
+            //if (menus.isEmpty() && notFirstTime)
+            //    showMessage(R.raw.no_menus, "Keine Gerichte gefunden :(", forceLottie = true)
+            // else {
+            // notFirstTime = true
+            menus.let { adapter.submitList(it) }
+            // }
         }
 
-        viewModel.onEvent(DetailEvent.Init(fid = foodProviderId.toLong()))
-
-        showMessage(
-            R.raw.loading_menus,
-            "Sucht nach Gerichten ...",
-            forceLottie = true
+        viewModel.onEvent(
+            DetailEvent.Init(
+                fid = foodProviderId.toLong(),
+                showingCafeteria = showingCafeteria
+            )
         )
+
+
 
         return root
     }
@@ -160,9 +170,65 @@ class FoodProviderDetailFragment : Fragment() {
         _binding = null
     }
 
+    private fun setupObservers() {
+        viewModel.state.uiState.observe(viewLifecycleOwner) { newUiState ->
+            if (viewModel.state.showingCafeteria) { // Always show cafeteria lottie if cafeteria
+                when (newUiState) {
+                    UiState.NORMAL -> {
+                        // How did you end up here?
+                        makeLottieVisible(false)
+                    }
+                    else -> {
+                        showMessage(
+                            R.raw.cafeteria,
+                            "",
+                            forceLottie = true
+                        )
+                    }
+                }
+            } else when (newUiState) {
+                UiState.LOADING -> {
+                    showMessage(
+                        R.raw.loading_menus,
+                        "Sucht nach Gerichten ...",
+                        forceLottie = true
+                    )
+                }
+                UiState.NO_INFO -> {
 
-    private fun fillInMenus(menus: List<Menu>) {
+                    showMessage(
+                        R.raw.no_menus,
+                        "Keine Gerichte gefunden :(",
+                        forceLottie = true
+                    )
+                }
+                UiState.NORMAL -> {
+                    makeLottieVisible(false)
+                }
+                UiState.ERROR -> {
+                    showMessage(
+                        R.raw.error,
+                        "Ohje! Etwas ist schiefgelaufen :(",
+                        forceLottie = true
+                    )
+                }
+                UiState.NO_CONNECTION -> {
+                    showMessage(
+                        R.raw.no_connection,
+                        "Der Server antwortet nicht :(",
+                    )
+                }
+                UiState.NO_INTERNET -> {
+                    showMessage(
+                        R.raw.no_internet,
+                        "Der Server ist nicht erreichbar :("
+                    )
+                }
+                else -> {
 
+                }
+            }
+        }
     }
 
     private fun showMessage(
@@ -199,6 +265,13 @@ class FoodProviderDetailFragment : Fragment() {
                     binding.recyclerViewMenus.visibility = View.INVISIBLE
                 }
             }
+            binding.fadeBottom.animate().alpha(0f).apply {
+                duration = 300
+                interpolator = AccelerateInterpolator()
+                withEndAction {
+                    binding.fadeBottom.visibility = View.INVISIBLE
+                }
+            }
         } else {
             binding.lottieContainer.animate().alpha(0f).apply {
                 duration = 300
@@ -212,6 +285,13 @@ class FoodProviderDetailFragment : Fragment() {
                 interpolator = AccelerateInterpolator()
                 withEndAction {
                     binding.recyclerViewMenus.visibility = View.VISIBLE
+                }
+            }
+            binding.fadeBottom.animate().alpha(1f).apply {
+                duration = 300
+                interpolator = AccelerateInterpolator()
+                withEndAction {
+                    binding.fadeBottom.visibility = View.VISIBLE
                 }
             }
         }

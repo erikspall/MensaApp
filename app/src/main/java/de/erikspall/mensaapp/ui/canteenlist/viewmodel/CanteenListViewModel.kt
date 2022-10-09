@@ -54,7 +54,7 @@ class CanteenListViewModel @Inject constructor(
                 viewModelScope.launch {
                     state.isRefreshing.postValue(true)
                     onEvent(
-                        CanteenListEvent.NewUiState(
+                        CanteenListEvent.NewUiState( // useless!
                             foodProviderUseCases.fetchLatest()
                         )
                     )
