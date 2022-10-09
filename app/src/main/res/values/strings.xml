@@ -19,8 +19,14 @@
     <string name="role_invalid">Ungültig</string>
     <string name="location_invalid">Ungültig</string>
     <string name="text_label_allergenic">Unverträglichkeiten</string>
+    <string name="text_label_about">Über die App</string>
     <string name="settings_allergenic_switch_label_text">Vor Unverträglichkeiten warnen</string>
     <string name="setting_warnings_enabled">0</string>
     <string name="text_warnings_enabled">Warnungen aktiviert</string>
     <string name="text_warnings_disabled">Warnungen deaktiviert</string>
+
+    <string name="text_app_info">Version: 0.1.0\nBuild-Nummer: A1A1.221009.001</string>
+    <string name="text_open_source_body">
+        Das Projekt ist komplett quelloffen, dass bedeutet jeder kann den Code einsehen, Fehler melden, und sogar selbst Fehler beheben! Wenn du also Lust hast am Projekt mitzuwirken dann schau doch vorbei!:)
+    </string>
 </resources>

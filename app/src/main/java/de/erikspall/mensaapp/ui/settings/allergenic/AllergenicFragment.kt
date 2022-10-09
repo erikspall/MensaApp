@@ -21,7 +21,7 @@ import de.erikspall.mensaapp.ui.settings.allergenic.event.AllergenicEvent
 import de.erikspall.mensaapp.ui.settings.allergenic.viewmodel.AllergenicViewModel
 
 @AndroidEntryPoint
-class AllergenicFragment() : Fragment() {
+class AllergenicFragment : Fragment() {
     private var _binding: FragmentSettingsAllergenicBinding? = null
 
     // This property is only valid between onCreateView and
