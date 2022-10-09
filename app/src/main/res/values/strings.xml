@@ -25,8 +25,43 @@
     <string name="text_warnings_enabled">Warnungen aktiviert</string>
     <string name="text_warnings_disabled">Warnungen deaktiviert</string>
 
-    <string name="text_app_info">Version: 0.1.0\nBuild-Nummer: A1A1.221009.001</string>
+    <string name="text_app_info">
+        Diese App entstand als Spaßprojekt zweier Informatikstudenten der Universität Würzburg.\n
+        \n
+        **Es handelt sich um keine offizielle App des Studentenwerks!**\n
+        \n
+        Aufgrund dessen kann es vorkommen, dass die angezeigten Daten nicht aktuell oder Informationen zu z.B. Inhaltsstoffen, Allergenen oder Preisen nicht korrekt sind. Beachte - besondes wenn du Allergiker bist - bitte immer die Aushänge vor Ort!\n
+        \n
+        Version: 0.1.0 (Aioli)\n
+        Build-Nummer: A1A1.221009.001
+    </string>
     <string name="text_open_source_body">
-        Das Projekt ist komplett quelloffen, dass bedeutet jeder kann den Code einsehen, Fehler melden, und sogar selbst Fehler beheben! Wenn du also Lust hast am Projekt mitzuwirken dann schau doch vorbei!:)
+        Der komplette Code des Projektes ist OpenSource und auf GitHub.\n
+        Solltest du einen Fehler entdecken, kannst du gerne ein Issue im passenden Repository eröffnen.\n
+        Auch Pull-Requests sind herzlich willkommen :)
+    </string>
+    <string name="text_impressum_title">Impressum</string>
+    <string name="text_impressum_body">
+        **Angaben gemäß § 5 TMG**\n
+        \n
+        Erik Spall\n
+        Würzburg\n
+        \n
+        Vertreten durch:\n
+        Erik Spall\n
+        \n
+        **Kontakt:**\n
+        Telefon: -\n
+        E-Mail: -\n
+        \n
+        Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV: Erik Spall, Anschrift wie oben.
+    </string>
+    <string name="text_disclaimer_title">Haftungsausschluss</string>
+    <string name="text_disclaimer_body">
+        **Haftung für Inhalte**\n
+        Die Inhalte dieser Applikation wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.\n
+        \n
+        **Haftung für Links**\n
+        Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen.
     </string>
 </resources>
