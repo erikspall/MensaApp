@@ -1,4 +1,4 @@
-package de.erikspall.mensaapp.ui.adapter
+package de.erikspall.mensaapp.ui.foodproviderlist.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.navigation.NavAction
 import androidx.navigation.NavController
+import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -16,8 +18,9 @@ import com.google.android.material.textview.MaterialTextView
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.sources.local.database.relationships.FoodProviderWithoutMenus
 import de.erikspall.mensaapp.domain.usecases.foodprovider.GetOpeningHoursAsString
+import de.erikspall.mensaapp.ui.foodproviderlist.cafelist.CafeListFragmentDirections
 //import de.erikspall.mensaapp.data.sources.local.dummy.DummyDataSource
-import de.erikspall.mensaapp.ui.canteenlist.CanteenListFragmentDirections
+import de.erikspall.mensaapp.ui.foodproviderlist.canteenlist.CanteenListFragmentDirections
 
 class FoodProviderCardAdapter(
     private val context: Context?,
@@ -67,7 +70,10 @@ class FoodProviderCardAdapter(
             //val foodProviderCardDetailName = context!!.getString(R.string.food_provider_card_detail_transition_name)
 
             //val extras = FragmentNavigatorExtras(holder.container to "container_big")
-            val directions = CanteenListFragmentDirections.actionOpenDetails(item.foodProvider.fid.toInt())
+            val directions = if (item.foodProvider.type == "Cafeteria")
+                CafeListFragmentDirections.actionOpenDetails(item.foodProvider.fid.toInt(), 2)
+            else
+                CanteenListFragmentDirections.actionOpenDetails(item.foodProvider.fid.toInt(), 1)
             navController.navigate(directions)
         }
     }

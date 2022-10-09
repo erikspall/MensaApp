@@ -33,10 +33,11 @@ import de.erikspall.mensaapp.domain.utils.Extensions.observeOnce
 //import de.erikspall.mensaapp.domain.model.interfaces.FoodProvider
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
-import de.erikspall.mensaapp.ui.adapter.MenuAdapter
-import de.erikspall.mensaapp.ui.canteenlist.CanteenListFragmentArgs
+import de.erikspall.mensaapp.ui.foodproviderdetail.adapter.MenuAdapter
+import de.erikspall.mensaapp.ui.foodproviderlist.canteenlist.CanteenListFragmentArgs
 import de.erikspall.mensaapp.ui.foodproviderdetail.event.DetailEvent
 import de.erikspall.mensaapp.ui.foodproviderdetail.viewmodel.FoodProviderDetailViewModel
+import de.erikspall.mensaapp.ui.foodproviderlist.cafelist.CafeListFragmentArgs
 import de.erikspall.mensaapp.ui.state.UiState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -89,8 +90,14 @@ class FoodProviderDetailFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
-        val safeArgs: CanteenListFragmentArgs by navArgs()
-        val foodProviderId = safeArgs.canteenId
+        // If CanteenListArgs contains -1, this means we navigatet from cafeteria list
+        val safeArgsTemp1: CanteenListFragmentArgs by navArgs()
+        val safeArgsTemp2: CafeListFragmentArgs by navArgs()
+        val foodProviderId = if (safeArgsTemp1.foodProviderType == -1)
+            safeArgsTemp2.foodProviderId
+        else
+            safeArgsTemp1.foodProviderId
+
 
         // TODO: move this and logic to viewmodel
         var showingCafeteria = false
@@ -98,21 +105,29 @@ class FoodProviderDetailFragment : Fragment() {
         //TODO: Hard to read
         foodProviderUseCases.getInfoOfFoodProvider(fid = foodProviderId.toLong())
             .asLiveData().observe(viewLifecycleOwner) {
-                if (it.foodProvider.type == "Cafeteria")
-                    showingCafeteria = true
+                if (it == null) {
+                    showMessage(
+                        R.raw.error,
+                        "Ohje! etwas ist schief gelaufen :(",
+                        forceLottie = true
+                    )
+                } else {
+                    if (it.foodProvider.type == "Cafeteria")
+                        showingCafeteria = true
 
-                // Workaround so text wraps nicely
-                binding.textFoodProviderName.text = it.foodProvider.name.replace("-", " ")
+                    // Workaround so text wraps nicely
+                    binding.textFoodProviderName.text = it.foodProvider.name.replace("-", " ")
 
-                if (it.foodProvider.info.isBlank() && it.foodProvider.additionalInfo.isBlank())
-                    binding.infoFoodProviderOpening.container.visibility = View.GONE
-                else
-                    binding.infoFoodProviderOpening.infoText = it.foodProvider.info
-                        .replace(", ", "\n\n").replace(") ", ")\n\n") +
-                            if (it.foodProvider.info.isNotBlank()) "\n\n" else "" +
-                                    it.foodProvider.additionalInfo.replace(", ", "\n\n")
-                                        .replace(") ", ")\n\n")
-                binding.imageFoodProvider.setImageResource(it.foodProvider.icon)
+                    if (it.foodProvider.info.isBlank() && it.foodProvider.additionalInfo.isBlank())
+                        binding.infoFoodProviderOpening.container.visibility = View.GONE
+                    else
+                        binding.infoFoodProviderOpening.infoText = it.foodProvider.info
+                            .replace(", ", "\n\n").replace(") ", ")\n\n") +
+                                if (it.foodProvider.info.isNotBlank()) "\n\n" else "" +
+                                        it.foodProvider.additionalInfo.replace(", ", "\n\n")
+                                            .replace(") ", ")\n\n")
+                    binding.imageFoodProvider.setImageResource(it.foodProvider.icon)
+                }
             }
         // binding.textFoodProviderName.text = DummyDataSource.canteens[foodProviderId].getName()
 

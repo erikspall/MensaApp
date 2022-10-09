@@ -1,4 +1,4 @@
-package de.erikspall.mensaapp.ui.canteenlist
+package de.erikspall.mensaapp.ui.foodproviderlist.canteenlist
 
 import android.os.Bundle
 import android.util.Log
@@ -20,9 +20,8 @@ import de.erikspall.mensaapp.databinding.FragmentCanteenListBinding
 import de.erikspall.mensaapp.domain.const.MaterialSizes
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
-import de.erikspall.mensaapp.ui.adapter.FoodProviderCardAdapter
-import de.erikspall.mensaapp.ui.canteenlist.viewmodel.CanteenListViewModel
-import de.erikspall.mensaapp.ui.canteenlist.viewmodel.event.CanteenListEvent
+import de.erikspall.mensaapp.ui.foodproviderlist.adapter.FoodProviderCardAdapter
+import de.erikspall.mensaapp.ui.foodproviderlist.event.FoodProviderListEvent
 import de.erikspall.mensaapp.ui.state.UiState
 import kotlinx.coroutines.launch
 
@@ -91,7 +90,7 @@ class CanteenListFragment : Fragment() {
         setupListeners()
         setupObservers()
 
-        viewModel.onEvent(CanteenListEvent.CheckIfNewLocationSet)
+        viewModel.onEvent(FoodProviderListEvent.CheckIfNewLocationSet)
 
         return root
     }
@@ -99,7 +98,7 @@ class CanteenListFragment : Fragment() {
     private fun setupListeners() {
         binding.swipeRefresh.setOnRefreshListener {
             viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.onEvent(CanteenListEvent.GetLatestInfo)
+                viewModel.onEvent(FoodProviderListEvent.GetLatestInfo)
             }
         }
     }
@@ -112,16 +111,16 @@ class CanteenListFragment : Fragment() {
 
         viewModel.canteens.observe(viewLifecycleOwner) { canteens ->
             if (canteens.isEmpty()) {
-                viewModel.onEvent(CanteenListEvent.GetLatestInfo)
-                viewModel.onEvent(CanteenListEvent.NewUiState(UiState.LOADING))
+                viewModel.onEvent(FoodProviderListEvent.GetLatestInfo)
+                viewModel.onEvent(FoodProviderListEvent.NewUiState(UiState.LOADING))
             } else {
-                viewModel.onEvent(CanteenListEvent.NewUiState(UiState.NORMAL))
+                viewModel.onEvent(FoodProviderListEvent.NewUiState(UiState.NORMAL))
 
             }
             Log.d("CanteenListFragment", "Canteens: $canteens")
             canteens.let {
                 (binding.recyclerViewCanteen.adapter as FoodProviderCardAdapter).submitList(it.filter { foodProvider ->
-                    foodProvider.location.name == requireContext().getString(viewModel.state.showingLocation.getValue())
+                    foodProvider.location.name == requireContext().getString(viewModel.state.location.getValue())
                 })
             }
         }
@@ -182,12 +181,12 @@ class CanteenListFragment : Fragment() {
     private fun makeLottieVisible(visible: Boolean) {
         if (visible) {
             binding.lottieContainer.visibility = VISIBLE
-            binding.libraryAppbarLayout.visibility = INVISIBLE
-            binding.libraryNestedScroll.visibility = INVISIBLE
+            binding.canteenListAppbarLayout.visibility = INVISIBLE
+            binding.canteenListNestedScroll.visibility = INVISIBLE
         } else {
             binding.lottieContainer.visibility = GONE
-            binding.libraryAppbarLayout.visibility = VISIBLE
-            binding.libraryNestedScroll.visibility = VISIBLE
+            binding.canteenListAppbarLayout.visibility = VISIBLE
+            binding.canteenListNestedScroll.visibility = VISIBLE
         }
     }
 

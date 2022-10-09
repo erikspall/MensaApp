@@ -1,4 +1,4 @@
-package de.erikspall.mensaapp.ui.adapter
+package de.erikspall.mensaapp.ui.foodproviderdetail.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context

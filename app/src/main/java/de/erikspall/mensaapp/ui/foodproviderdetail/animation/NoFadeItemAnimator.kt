@@ -1,4 +1,4 @@
-package de.erikspall.mensaapp.ui.animation
+package de.erikspall.mensaapp.ui.foodproviderdetail.animation
 
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView

@@ -1,20 +1,17 @@
-package de.erikspall.mensaapp.ui.canteenlist.viewmodel
+package de.erikspall.mensaapp.ui.foodproviderlist.canteenlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.data.repositories.AppRepository
-import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Location
 import de.erikspall.mensaapp.data.sources.local.database.entities.enums.StringResEnum
 import de.erikspall.mensaapp.domain.usecases.foodprovider.FoodProviderUseCases
 import de.erikspall.mensaapp.domain.usecases.foodprovider.order.FoodProviderOrder
 import de.erikspall.mensaapp.domain.usecases.foodprovider.order.OrderType
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
-import de.erikspall.mensaapp.domain.utils.Extensions.flattenToList
-import de.erikspall.mensaapp.ui.canteenlist.viewmodel.event.CanteenListEvent
-import de.erikspall.mensaapp.ui.canteenlist.viewmodel.state.CanteenListState
+import de.erikspall.mensaapp.ui.foodproviderlist.event.FoodProviderListEvent
+import de.erikspall.mensaapp.ui.foodproviderlist.state.FoodProviderListState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,35 +23,35 @@ class CanteenListViewModel @Inject constructor(
     private val sharedPreferences: SharedPreferenceUseCases,
 ) : ViewModel() {
 
-    val state = CanteenListState()
+    val state = FoodProviderListState()
 
     val canteens = foodProviderUseCases.getFoodProviders(
         FoodProviderOrder.Name(OrderType.Descending),
         typeId = 1 // TODO: find a way to make this an enum
     ).asLiveData()
 
-    fun onEvent(event: CanteenListEvent) {
+    fun onEvent(event: FoodProviderListEvent) {
         when (event) {
-            is CanteenListEvent.CheckIfNewLocationSet -> {
+            is FoodProviderListEvent.CheckIfNewLocationSet -> {
                 val newLocationValue = sharedPreferences.getValueRes(
                     R.string.shared_pref_location,
                     R.string.location_wuerzburg
                 )
 
-                if (state.showingLocation.getValue() != newLocationValue)
+                if (state.location.getValue() != newLocationValue)
 
-                    state.showingLocation = StringResEnum.locationFrom(newLocationValue)
+                    state.location = StringResEnum.locationFrom(newLocationValue)
 
 
             }
-            is CanteenListEvent.NewUiState -> {
+            is FoodProviderListEvent.NewUiState -> {
                 state.uiState.postValue(event.uiState)
             }
-            is CanteenListEvent.GetLatestInfo -> {
+            is FoodProviderListEvent.GetLatestInfo -> {
                 viewModelScope.launch {
                     state.isRefreshing.postValue(true)
                     onEvent(
-                        CanteenListEvent.NewUiState( // useless!
+                        FoodProviderListEvent.NewUiState( // useless!
                             foodProviderUseCases.fetchLatest()
                         )
                     )
