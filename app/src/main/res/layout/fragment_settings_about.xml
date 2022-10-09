@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/settings_about_coordinator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:transitionGroup="true"
+        tools:context="de.erikspall.mensaapp.ui.settings.about.AboutFragment">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/settings_about_appbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/settings_about_collapsing_toolbar_layout"
+                style="?attr/collapsingToolbarLayoutMediumStyle"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/collapsingToolbarLayoutMediumSize"
+                app:collapsedTitleTextAppearance="@style/TextAppearance.App.TitleLarge"
+                app:expandedTitleTextAppearance="@style/TextAppearance.App.TitleLarge"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/settings_about_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:elevation="0dp"
+                    app:layout_collapseMode="pin"
+                    app:navigationIcon="@drawable/ic_round_arrow_back"
+                    app:navigationIconTint="?attr/colorOnPrimaryContainer"
+                    app:title="@string/text_label_about" />
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/settings_about_nested_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:id="@+id/container_about_cards"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="vertical">
+
+                <include layout="@layout/item_about"
+                    app:title='@{"App-Info"}'
+                    app:textBody="@{@string/text_app_info}"
+                    app:icon="@{@drawable/ic_info}"
+                    app:buttonText='@{""}'
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:showButton='@{false}'
+                    android:layout_marginTop="24dp"/>
+                <include layout="@layout/item_about"
+                    app:title='@{"Für Entwickler"}'
+                    app:textBody="@{@string/text_open_source_body}"
+                    app:icon="@{@drawable/ic_code}"
+                    app:showButton='@{true}'
+                    app:buttonText='@{"Github öffnen"}'
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"/>
+                <include layout="@layout/item_about"
+                    app:title="@{@string/text_impressum_title}"
+                    app:textBody="@{@string/text_impressum_body}"
+                    app:icon="@{@drawable/ic_impressum}"
+                    app:showButton='@{false}'
+                    app:buttonText='@{""}'
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"/>
+                <include layout="@layout/item_about"
+                    app:title="@{@string/text_disclaimer_title}"
+                    app:textBody="@{@string/text_disclaimer_body}"
+                    app:icon="@{@drawable/ic_disclaimer}"
+                    app:showButton='@{false}'
+                    app:buttonText='@{""}'
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.core.widget.NestedScrollView>
+        <View
+            android:id="@+id/fade_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@drawable/fade_image"
+            android:layout_gravity="bottom"
+            android:rotation="180"
+            android:translationZ="89dp"/>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

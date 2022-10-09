@@ -121,7 +121,14 @@ class SettingsFragment : Fragment() {
         }
 
         binding.settingInfo.container.setOnClickListener {
-
+            exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
+                duration = 250L
+            }
+            reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false).apply {
+                duration = 500L
+            }
+            val directions = SettingsFragmentDirections.actionSettingsDestToAboutFragment()
+            findNavController().navigate(directions)
         }
 
         binding.settingAllergenics.container.setOnClickListener {

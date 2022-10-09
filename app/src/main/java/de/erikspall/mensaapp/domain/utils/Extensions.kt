@@ -3,6 +3,7 @@ package de.erikspall.mensaapp.domain.utils
 import android.content.Context
 import android.graphics.Color
 import android.util.TypedValue
+import android.view.View
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.LinearLayoutCompat
@@ -30,7 +31,7 @@ object Extensions {
         return exColor
     }
 
-    fun RecyclerView.pushContentUpBy(dp: Int = 50){
+    fun View.pushContentUpBy(dp: Int = 50){
         this.setPadding(8, 0, 8, Conversion.dpToPx(dp))
     }
 

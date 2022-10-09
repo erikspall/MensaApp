@@ -4,7 +4,9 @@
     <string name="text_label_nav_cafe">Cafeterien</string>
     <string name="text_label_nav_settings">Einstellungen</string>
     <string name="mensa_image_descriptor">Image of mensa</string>
-    <string name="hide_back_button_on_scroll_behavior">de.erikspall.mensaapp.ui.foodproviderdetail.behavior.HideBackButtonOnScrollBehavior</string>
+    <string name="hide_back_button_on_scroll_behavior">
+        de.erikspall.mensaapp.ui.foodproviderdetail.behavior.HideBackButtonOnScrollBehavior
+    </string>
     <string name="food_provider_card_detail_transition_name">food_provider_detail</string>
     <string name="shared_pref_name">SharedPrefs</string>
     <string name="role_student">Student</string>
@@ -19,8 +21,71 @@
     <string name="role_invalid">Ungültig</string>
     <string name="location_invalid">Ungültig</string>
     <string name="text_label_allergenic">Unverträglichkeiten</string>
+    <string name="text_label_about">Über die App</string>
     <string name="settings_allergenic_switch_label_text">Vor Unverträglichkeiten warnen</string>
     <string name="setting_warnings_enabled">0</string>
     <string name="text_warnings_enabled">Warnungen aktiviert</string>
     <string name="text_warnings_disabled">Warnungen deaktiviert</string>
+
+    <string name="text_app_info">
+        Diese App entstand als Spaßprojekt zweier Informatikstudenten der Universität
+        Würzburg.<![CDATA[<br>]]>
+        <![CDATA[<br>]]>
+        <![CDATA[<b>Es handelt sich um keine offizielle App des Studentenwerks!</b><br>]]>
+        <![CDATA[<br>]]>
+        Aufgrund dessen kann es vorkommen, dass die angezeigten Daten nicht aktuell oder
+        Informationen zu z.B. Inhaltsstoffen, Allergenen oder Preisen nicht korrekt sind.
+        Beachte - besondes wenn du Allergiker bist - bitte immer die Aushänge
+        vor Ort!<![CDATA[<br>]]>
+        <![CDATA[<br>]]>
+        Version: 0.1.0 (Aioli)<![CDATA[<br>]]>
+        Build-Nummer: A1A1.221009.001
+    </string>
+    <string name="text_open_source_body">
+        Der komplette Code des Projektes ist OpenSource und auf GitHub.<![CDATA[<br>]]>
+        Solltest du einen Fehler entdecken, kannst du gerne ein Issue im passenden Repository
+        eröffnen.<![CDATA[<br>]]>
+        Auch Pull-Requests sind herzlich willkommen :)
+    </string>
+    <string name="text_impressum_title">Impressum</string>
+    <string name="text_impressum_body">
+        <![CDATA[<b>Angaben gemäß § 5 TMG</b><br>]]>
+        <![CDATA[<br>]]>
+        Erik Spall<![CDATA[<br>]]>
+        Würzburg<![CDATA[<br>]]>
+        <![CDATA[<br>]]>
+        Vertreten durch:<![CDATA[<br>]]>
+        Erik Spall<![CDATA[<br>]]>
+        <![CDATA[<br>]]>
+        <![CDATA[<b>Kontakt:</b><br>]]>
+        Telefon: -<![CDATA[<br>]]>
+        E-Mail: -<![CDATA[<br>]]>
+        <![CDATA[<br>]]>
+        Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV: Erik Spall, Anschrift wie oben.
+    </string>
+    <string name="text_disclaimer_title">Haftungsausschluss</string>
+    <string name="text_disclaimer_body">
+        <![CDATA[<b>Haftung für Inhalte</b><br>]]>
+        Die Inhalte dieser Applikation wurden mit größter Sorgfalt erstellt. Für die Richtigkeit,
+        Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.
+        Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach
+        den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter
+        jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen
+        oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.
+        Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den
+        allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch
+        erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich.
+        Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend
+        entfernen.<![CDATA[<br>]]>
+        <![CDATA[<br>]]>
+        <![CDATA[<b>Haftung für Links</b><br>]]>
+        Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen
+        Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen.
+        Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der
+        Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf
+        mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung
+        nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne
+        konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von
+        Rechtsverletzungen werden wir derartige Links umgehend entfernen.
+    </string>
 </resources>

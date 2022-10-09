@@ -41,6 +41,9 @@
         <action
             android:id="@+id/action_settings_dest_to_allergenicFragment"
             app:destination="@id/allergenicFragment" />
+        <action
+            android:id="@+id/action_settings_dest_to_aboutFragment"
+            app:destination="@id/aboutFragment" />
     </fragment>
     <fragment
         android:id="@+id/food_provider_detail_dest"
@@ -52,4 +55,8 @@
         android:name="de.erikspall.mensaapp.ui.settings.allergenic.AllergenicFragment"
         android:label="fragment_settings_allergenic"
         tools:layout="@layout/fragment_settings_allergenic" />
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="de.erikspall.mensaapp.ui.settings.about.AboutFragment"
+        android:label="AboutFragment" />
 </navigation>
