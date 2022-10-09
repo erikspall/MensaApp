@@ -89,7 +89,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/image_food_provider"
-                tools:text="Campus Hubland Nord" />
+                tools:text="Sprachzentrum" />
 
             <com.google.android.material.button.MaterialButton
                 style="?attr/materialIconButtonFilledTonalStyle"

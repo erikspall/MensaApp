@@ -101,7 +101,9 @@ class FoodProviderDetailFragment : Fragment() {
                 if (it.foodProvider.type == "Cafeteria")
                     showingCafeteria = true
 
-                binding.textFoodProviderName.text = it.foodProvider.name
+                // Workaround so text wraps nicely
+                binding.textFoodProviderName.text = it.foodProvider.name.replace("-", " ")
+
                 if (it.foodProvider.info.isBlank() && it.foodProvider.additionalInfo.isBlank())
                     binding.infoFoodProviderOpening.container.visibility = View.GONE
                 else
