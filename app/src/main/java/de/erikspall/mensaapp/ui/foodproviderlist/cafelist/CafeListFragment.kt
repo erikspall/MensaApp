@@ -106,16 +106,16 @@ class CafeListFragment : Fragment() {
                 binding.swipeRefresh.isRefreshing = false
         }
 
-        viewModel.cafeterias.observe(viewLifecycleOwner) { cafeterias ->
-            if (cafeterias.isEmpty()) {
+        viewModel.cafeterias.observe(viewLifecycleOwner) { cafes ->
+            if (cafes.isEmpty()) {
                 viewModel.onEvent(FoodProviderListEvent.GetLatestInfo)
                 viewModel.onEvent(FoodProviderListEvent.NewUiState(UiState.LOADING))
             } else {
                 viewModel.onEvent(FoodProviderListEvent.NewUiState(UiState.NORMAL))
 
             }
-            Log.d("CanteenListFragment", "Canteens: $cafeterias")
-            cafeterias.let {
+            Log.d("CafeListFragment", "Cafes: $cafes")
+            cafes.let {
                 (binding.recyclerViewCafe.adapter as FoodProviderCardAdapter).submitList(it.filter { foodProvider ->
                     foodProvider.location.name == requireContext().getString(viewModel.state.location.getValue())
                 })

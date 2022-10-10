@@ -100,7 +100,8 @@ class FoodProviderDetailFragment : Fragment() {
 
 
         // TODO: move this and logic to viewmodel
-        var showingCafeteria = false
+        val showingCafeteria = (safeArgsTemp1.foodProviderType == 2) ||
+                (safeArgsTemp2.foodProviderType == 2)
 
         //TODO: Hard to read
         foodProviderUseCases.getInfoOfFoodProvider(fid = foodProviderId.toLong())
@@ -112,9 +113,6 @@ class FoodProviderDetailFragment : Fragment() {
                         forceLottie = true
                     )
                 } else {
-                    if (it.foodProvider.type == "Cafeteria")
-                        showingCafeteria = true
-
                     // Workaround so text wraps nicely
                     binding.textFoodProviderName.text = it.foodProvider.name.replace("-", " ")
 
@@ -150,7 +148,12 @@ class FoodProviderDetailFragment : Fragment() {
                     MaterialSizes.BOTTOM_NAV_HEIGHT
         )
 
-        setupObservers()
+        viewModel.onEvent(
+            DetailEvent.Init(
+                fid = foodProviderId.toLong(),
+                showingCafeteria = showingCafeteria
+            )
+        )
 
         // var notFirstTime = false
         viewModel.state.menus.observe(viewLifecycleOwner) { menus ->
@@ -165,14 +168,9 @@ class FoodProviderDetailFragment : Fragment() {
             // }
         }
 
-        viewModel.onEvent(
-            DetailEvent.Init(
-                fid = foodProviderId.toLong(),
-                showingCafeteria = showingCafeteria
-            )
-        )
 
 
+        setupObservers()
 
         return root
     }
@@ -199,6 +197,7 @@ class FoodProviderDetailFragment : Fragment() {
                         showMessage(
                             R.raw.cafeteria,
                             "",
+                            animationSpeed = 0.5f,
                             forceLottie = true
                         )
                     }

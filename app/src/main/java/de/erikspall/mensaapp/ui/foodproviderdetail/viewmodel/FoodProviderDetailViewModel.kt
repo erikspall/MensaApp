@@ -29,8 +29,7 @@ class FoodProviderDetailViewModel @Inject constructor(
                 if (event.showingCafeteria) {
                     state.showingCafeteria = true
                     state.uiState.value = UiState.NO_INFO
-                }
-                else if (state.fid == -1L) {
+                } else if (state.fid == -1L) {
                     state.fid = event.fid
                     state.warningsEnabled =
                         preferencesUseCases.getBoolean(R.string.setting_warnings_enabled, false)
