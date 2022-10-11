@@ -107,9 +107,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_width="match_parent"
-                app:infoImage="@{@drawable/ic_info}"
+                app:infoImage="@{@drawable/ic_time}"
                 android:id="@+id/info_food_provider_opening"
                 app:layout_constraintTop_toBottomOf="@id/text_food_provider_name"
+                />
+            <include layout="@layout/item_info"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_width="match_parent"
+                app:infoImage="@{@drawable/ic_info}"
+                android:id="@+id/info_food_provider_description"
+                app:layout_constraintTop_toBottomOf="@id/info_food_provider_opening"
                 />
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_menus"
@@ -119,7 +127,7 @@
                 android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:nestedScrollingEnabled="false"
-                app:layout_constraintTop_toBottomOf="@id/info_food_provider_opening"
+                app:layout_constraintTop_toBottomOf="@id/info_food_provider_description"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:visibility="invisible">
             </androidx.recyclerview.widget.RecyclerView>
@@ -128,7 +136,7 @@
                 android:id="@+id/lottie_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/info_food_provider_opening"
+                app:layout_constraintTop_toBottomOf="@id/info_food_provider_description"
                 android:visibility="visible">
 
                 <androidx.appcompat.widget.LinearLayoutCompat

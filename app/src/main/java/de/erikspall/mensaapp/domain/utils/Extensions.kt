@@ -22,7 +22,12 @@ import kotlinx.coroutines.flow.toList
 object Extensions {
     @ColorInt
     fun Context.getDynamicColorIfAvailable(@AttrRes color: Int): Int {
-        val dynamicColors = DynamicColors.wrapContextIfAvailable(this, R.style.Theme_MensaApp)
+
+        val dynamicColors = if (!DynamicColors.isDynamicColorAvailable())
+            DynamicColors.wrapContextIfAvailable(this, R.style.Theme_MensaApp)
+        else
+            DynamicColors.wrapContextIfAvailable(this, com.google.android.material.R.style.ThemeOverlay_Material3_DynamicColors_DayNight)
+
         val attrsToResolve = IntArray(1)
         attrsToResolve[0] = color
         val typedArray = dynamicColors.obtainStyledAttributes(attrsToResolve)

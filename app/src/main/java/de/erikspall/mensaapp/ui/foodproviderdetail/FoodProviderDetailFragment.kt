@@ -16,6 +16,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.color.DynamicColors
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,10 +31,12 @@ import de.erikspall.mensaapp.data.sources.remote.api.model.MenuApiModel
 import de.erikspall.mensaapp.databinding.FragmentFoodProviderDetailBinding
 import de.erikspall.mensaapp.domain.const.MaterialSizes
 import de.erikspall.mensaapp.domain.usecases.foodprovider.FoodProviderUseCases
+import de.erikspall.mensaapp.domain.utils.Extensions.getDynamicColorIfAvailable
 import de.erikspall.mensaapp.domain.utils.Extensions.observeOnce
 //import de.erikspall.mensaapp.domain.model.interfaces.FoodProvider
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
+import de.erikspall.mensaapp.domain.utils.TextViewExtensions.setResizableText
 import de.erikspall.mensaapp.ui.foodproviderdetail.adapter.MenuAdapter
 import de.erikspall.mensaapp.ui.foodproviderlist.canteenlist.CanteenListFragmentArgs
 import de.erikspall.mensaapp.ui.foodproviderdetail.event.DetailEvent
@@ -124,6 +128,12 @@ class FoodProviderDetailFragment : Fragment() {
                                 if (it.foodProvider.info.isNotBlank()) "\n\n" else "" +
                                         it.foodProvider.additionalInfo.replace(", ", "\n\n")
                                             .replace(") ", ")\n\n")
+
+                    if (it.foodProvider.description.isBlank())
+                        binding.infoFoodProviderDescription.container.visibility = View.GONE
+                    else
+                        binding.infoFoodProviderDescription.value.setResizableText(it.foodProvider.description, 1, true, requireContext().getDynamicColorIfAvailable(R.attr.colorPrimary))
+
                     binding.imageFoodProvider.setImageResource(it.foodProvider.icon)
                 }
             }
