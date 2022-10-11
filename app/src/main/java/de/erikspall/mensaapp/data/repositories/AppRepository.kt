@@ -233,7 +233,9 @@ class AppRepository(
                     additionalInfo = apiFoodProvider.additionalInfo,
                     type = type,
                     isFavorite = false,
-                    icon = getIconId(name, type, apiFoodProvider.location, foodProviderImageMap)
+                    icon = getIconId(name, type, apiFoodProvider.location, foodProviderImageMap),
+                    address = apiFoodProvider.address,
+                    description = apiFoodProvider.description
                 )
             )
         }

@@ -9,5 +9,7 @@ data class FoodProviderApiModel(
     val linkToFoodPlan: String,
     val id: Long,
     val info: String,
+    val address: String,
+    val description: String
     //val menus: List<MenuApiModel>
 )

@@ -20,7 +20,14 @@ data class FoodProvider (
 
     @DrawableRes
     @ColumnInfo(name = "icon_res")
-    val icon: Int
+    val icon: Int,
+
+    @ColumnInfo(name = "address")
+    val address: String,
+
+    @ColumnInfo(name = "description")
+    val description: String
+
     //@ColumnInfo(name = "opening_info") val openingInfo: String
 ) {
     override fun equals(other: Any?): Boolean {
