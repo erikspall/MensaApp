@@ -16,34 +16,22 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.color.DynamicColors
-import com.google.android.material.color.MaterialColors
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.data.sources.local.database.entities.FoodProviderType
-import de.erikspall.mensaapp.data.sources.local.database.entities.Menu
-import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Role
-import de.erikspall.mensaapp.data.sources.remote.api.model.FoodProviderApiModel
-import de.erikspall.mensaapp.data.sources.remote.api.model.MenuApiModel
-//import de.erikspall.mensaapp.data.sources.local.dummy.DummyDataSource
 import de.erikspall.mensaapp.databinding.FragmentFoodProviderDetailBinding
 import de.erikspall.mensaapp.domain.const.MaterialSizes
 import de.erikspall.mensaapp.domain.usecases.foodprovider.FoodProviderUseCases
-import de.erikspall.mensaapp.domain.utils.Extensions.getDynamicColorIfAvailable
-import de.erikspall.mensaapp.domain.utils.Extensions.observeOnce
-//import de.erikspall.mensaapp.domain.model.interfaces.FoodProvider
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
-import de.erikspall.mensaapp.domain.utils.TextViewExtensions.setResizableText
+import de.erikspall.mensaapp.domain.utils.MaterialTextViewExtension.setTextWithLineConstraint
 import de.erikspall.mensaapp.ui.foodproviderdetail.adapter.MenuAdapter
 import de.erikspall.mensaapp.ui.foodproviderlist.canteenlist.CanteenListFragmentArgs
 import de.erikspall.mensaapp.ui.foodproviderdetail.event.DetailEvent
 import de.erikspall.mensaapp.ui.foodproviderdetail.viewmodel.FoodProviderDetailViewModel
 import de.erikspall.mensaapp.ui.foodproviderlist.cafelist.CafeListFragmentArgs
 import de.erikspall.mensaapp.ui.state.UiState
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -122,17 +110,34 @@ class FoodProviderDetailFragment : Fragment() {
 
                     if (it.foodProvider.info.isBlank() && it.foodProvider.additionalInfo.isBlank())
                         binding.infoFoodProviderOpening.container.visibility = View.GONE
-                    else
-                        binding.infoFoodProviderOpening.infoText = it.foodProvider.info
-                            .replace(", ", "\n\n").replace(") ", ")\n\n") +
-                                if (it.foodProvider.info.isNotBlank()) "\n\n" else "" +
-                                        it.foodProvider.additionalInfo.replace(", ", "\n\n")
-                                            .replace(") ", ")\n\n")
+                    else {
+                        val infoString = it.foodProvider.info
+                            .replace(", ", "\n\n")
+                            .replace(") ", ")\n\n")
 
+                        val additionalInfoString = it.foodProvider.additionalInfo
+                            .replace(", ", "\n\n")
+                            .replace(") ", ")\n\n")
+
+                        val combinedString = if (infoString.isBlank()) {
+                            additionalInfoString
+                        } else if (additionalInfoString.isBlank()) {
+                            infoString
+                        } else {
+                            infoString + "\n\n" + additionalInfoString
+                        }
+                        binding.infoFoodProviderOpening.textView.setTextWithLineConstraint(
+                            combinedString,
+                            1
+                        )
+                    }
                     if (it.foodProvider.description.isBlank())
                         binding.infoFoodProviderDescription.container.visibility = View.GONE
                     else
-                        binding.infoFoodProviderDescription.value.setResizableText(it.foodProvider.description, 1, true, requireContext().getDynamicColorIfAvailable(R.attr.colorPrimary))
+                        binding.infoFoodProviderDescription.textView.setTextWithLineConstraint(
+                            it.foodProvider.description,
+                            1
+                        )
 
                     binding.imageFoodProvider.setImageResource(it.foodProvider.icon)
                 }
