@@ -282,11 +282,12 @@ class FoodProviderDetailFragment : Fragment() {
 
     private fun makeLottieVisible(visible: Boolean) {
         if (visible) {
-            binding.lottieContainer.animate().alpha(1f).apply {
+            //binding.dividerInfoMenu.visibility = View.VISIBLE
+            binding.lottieLinear.animate().alpha(1f).apply {
                 duration = 300
                 interpolator = AccelerateInterpolator()
                 withEndAction {
-                    binding.lottieContainer.visibility = View.VISIBLE
+                    binding.lottieLinear.visibility = View.VISIBLE
                 }
             }
             binding.recyclerViewMenus.animate().alpha(0f).apply {
@@ -304,11 +305,12 @@ class FoodProviderDetailFragment : Fragment() {
                 }
             }
         } else {
-            binding.lottieContainer.animate().alpha(0f).apply {
+            //binding.dividerInfoMenu.visibility = View.INVISIBLE
+            binding.lottieLinear.animate().alpha(0f).apply {
                 duration = 300
                 interpolator = AccelerateInterpolator()
                 withEndAction {
-                    binding.lottieContainer.visibility = View.INVISIBLE
+                    binding.lottieLinear.visibility = View.INVISIBLE
                 }
             }
             binding.recyclerViewMenus.animate().alpha(1f).apply {

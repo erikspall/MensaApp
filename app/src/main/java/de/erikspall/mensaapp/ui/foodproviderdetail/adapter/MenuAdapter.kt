@@ -20,6 +20,7 @@ import androidx.transition.TransitionManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.divider.MaterialDivider
 import com.google.android.material.textview.MaterialTextView
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.sources.local.database.entities.Menu
@@ -51,6 +52,7 @@ class MenuAdapter(
         val textDayOfWeek: MaterialTextView = view!!.findViewById(R.id.text_day_of_week)
         val textDate: MaterialTextView = view!!.findViewById(R.id.text_menu_date)
         val layoutMenus: LinearLayout = view!!.findViewById(R.id.linear_layout_menus)
+        val divider: MaterialDivider = view!!.findViewById(R.id.divider)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuViewHolder {
@@ -65,7 +67,7 @@ class MenuAdapter(
         holder.textDayOfWeek.text = getItem(position).date.dayOfWeek.getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault())
         holder.textDate.text =
             ", der ${getItem(position).date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))}"
-
+        if (position == 0) holder.divider.visibility = View.INVISIBLE
         // For each menu a coroutine populates the viewholder
         lifecycleScope.launch {
             for (meal in getItem(position).meals) {
