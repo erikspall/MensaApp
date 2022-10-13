@@ -20,25 +20,18 @@ import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.data.sources.local.database.entities.FoodProviderType
-import de.erikspall.mensaapp.data.sources.local.database.entities.Menu
-import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Role
-import de.erikspall.mensaapp.data.sources.remote.api.model.FoodProviderApiModel
-import de.erikspall.mensaapp.data.sources.remote.api.model.MenuApiModel
-//import de.erikspall.mensaapp.data.sources.local.dummy.DummyDataSource
 import de.erikspall.mensaapp.databinding.FragmentFoodProviderDetailBinding
 import de.erikspall.mensaapp.domain.const.MaterialSizes
 import de.erikspall.mensaapp.domain.usecases.foodprovider.FoodProviderUseCases
-import de.erikspall.mensaapp.domain.utils.Extensions.observeOnce
-//import de.erikspall.mensaapp.domain.model.interfaces.FoodProvider
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
-import de.erikspall.mensaapp.ui.adapter.MenuAdapter
-import de.erikspall.mensaapp.ui.canteenlist.CanteenListFragmentArgs
+import de.erikspall.mensaapp.domain.utils.MaterialTextViewExtension.setTextWithLineConstraint
+import de.erikspall.mensaapp.ui.foodproviderdetail.adapter.MenuAdapter
+import de.erikspall.mensaapp.ui.foodproviderlist.canteenlist.CanteenListFragmentArgs
 import de.erikspall.mensaapp.ui.foodproviderdetail.event.DetailEvent
 import de.erikspall.mensaapp.ui.foodproviderdetail.viewmodel.FoodProviderDetailViewModel
+import de.erikspall.mensaapp.ui.foodproviderlist.cafelist.CafeListFragmentArgs
 import de.erikspall.mensaapp.ui.state.UiState
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -89,30 +82,65 @@ class FoodProviderDetailFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
-        val safeArgs: CanteenListFragmentArgs by navArgs()
-        val foodProviderId = safeArgs.canteenId
+        // If CanteenListArgs contains -1, this means we navigatet from cafeteria list
+        val safeArgsTemp1: CanteenListFragmentArgs by navArgs()
+        val safeArgsTemp2: CafeListFragmentArgs by navArgs()
+        val foodProviderId = if (safeArgsTemp1.foodProviderType == -1)
+            safeArgsTemp2.foodProviderId
+        else
+            safeArgsTemp1.foodProviderId
+
 
         // TODO: move this and logic to viewmodel
-        var showingCafeteria = false
+        val showingCafeteria = (safeArgsTemp1.foodProviderType == 2) ||
+                (safeArgsTemp2.foodProviderType == 2)
 
         //TODO: Hard to read
         foodProviderUseCases.getInfoOfFoodProvider(fid = foodProviderId.toLong())
             .asLiveData().observe(viewLifecycleOwner) {
-                if (it.foodProvider.type == "Cafeteria")
-                    showingCafeteria = true
+                if (it == null) {
+                    showMessage(
+                        R.raw.error,
+                        "Ohje! etwas ist schief gelaufen :(",
+                        forceLottie = true
+                    )
+                } else {
+                    // Workaround so text wraps nicely
+                    binding.textFoodProviderName.text = it.foodProvider.name.replace("-", " ")
 
-                // Workaround so text wraps nicely
-                binding.textFoodProviderName.text = it.foodProvider.name.replace("-", " ")
+                    if (it.foodProvider.info.isBlank() && it.foodProvider.additionalInfo.isBlank())
+                        binding.infoFoodProviderOpening.container.visibility = View.GONE
+                    else {
+                        val infoString = it.foodProvider.info
+                            .replace(", ", "\n\n")
+                            .replace(") ", ")\n\n")
 
-                if (it.foodProvider.info.isBlank() && it.foodProvider.additionalInfo.isBlank())
-                    binding.infoFoodProviderOpening.container.visibility = View.GONE
-                else
-                    binding.infoFoodProviderOpening.infoText = it.foodProvider.info
-                        .replace(", ", "\n\n").replace(") ", ")\n\n") +
-                            if (it.foodProvider.info.isNotBlank()) "\n\n" else "" +
-                                    it.foodProvider.additionalInfo.replace(", ", "\n\n")
-                                        .replace(") ", ")\n\n")
-                binding.imageFoodProvider.setImageResource(it.foodProvider.icon)
+                        val additionalInfoString = it.foodProvider.additionalInfo
+                            .replace(", ", "\n\n")
+                            .replace(") ", ")\n\n")
+
+                        val combinedString = if (infoString.isBlank()) {
+                            additionalInfoString
+                        } else if (additionalInfoString.isBlank()) {
+                            infoString
+                        } else {
+                            infoString + "\n\n" + additionalInfoString
+                        }
+                        binding.infoFoodProviderOpening.textView.setTextWithLineConstraint(
+                            combinedString,
+                            1
+                        )
+                    }
+                    if (it.foodProvider.description.isBlank())
+                        binding.infoFoodProviderDescription.container.visibility = View.GONE
+                    else
+                        binding.infoFoodProviderDescription.textView.setTextWithLineConstraint(
+                            it.foodProvider.description,
+                            1
+                        )
+
+                    binding.imageFoodProvider.setImageResource(it.foodProvider.icon)
+                }
             }
         // binding.textFoodProviderName.text = DummyDataSource.canteens[foodProviderId].getName()
 
@@ -135,7 +163,12 @@ class FoodProviderDetailFragment : Fragment() {
                     MaterialSizes.BOTTOM_NAV_HEIGHT
         )
 
-        setupObservers()
+        viewModel.onEvent(
+            DetailEvent.Init(
+                fid = foodProviderId.toLong(),
+                showingCafeteria = showingCafeteria
+            )
+        )
 
         // var notFirstTime = false
         viewModel.state.menus.observe(viewLifecycleOwner) { menus ->
@@ -150,14 +183,9 @@ class FoodProviderDetailFragment : Fragment() {
             // }
         }
 
-        viewModel.onEvent(
-            DetailEvent.Init(
-                fid = foodProviderId.toLong(),
-                showingCafeteria = showingCafeteria
-            )
-        )
 
 
+        setupObservers()
 
         return root
     }
@@ -184,6 +212,7 @@ class FoodProviderDetailFragment : Fragment() {
                         showMessage(
                             R.raw.cafeteria,
                             "",
+                            animationSpeed = 0.5f,
                             forceLottie = true
                         )
                     }
@@ -253,11 +282,12 @@ class FoodProviderDetailFragment : Fragment() {
 
     private fun makeLottieVisible(visible: Boolean) {
         if (visible) {
-            binding.lottieContainer.animate().alpha(1f).apply {
+            //binding.dividerInfoMenu.visibility = View.VISIBLE
+            binding.lottieLinear.animate().alpha(1f).apply {
                 duration = 300
                 interpolator = AccelerateInterpolator()
                 withEndAction {
-                    binding.lottieContainer.visibility = View.VISIBLE
+                    binding.lottieLinear.visibility = View.VISIBLE
                 }
             }
             binding.recyclerViewMenus.animate().alpha(0f).apply {
@@ -275,11 +305,12 @@ class FoodProviderDetailFragment : Fragment() {
                 }
             }
         } else {
-            binding.lottieContainer.animate().alpha(0f).apply {
+            //binding.dividerInfoMenu.visibility = View.INVISIBLE
+            binding.lottieLinear.animate().alpha(0f).apply {
                 duration = 300
                 interpolator = AccelerateInterpolator()
                 withEndAction {
-                    binding.lottieContainer.visibility = View.INVISIBLE
+                    binding.lottieLinear.visibility = View.INVISIBLE
                 }
             }
             binding.recyclerViewMenus.animate().alpha(1f).apply {

@@ -34,7 +34,7 @@
 
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/value"
+            android:id="@+id/text_view"
             android:layout_marginTop="3dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="52dp"
@@ -47,7 +47,7 @@
             android:text="@{infoText}"
             android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
             tools:layout_editor_absoluteX="16dp"
-            tools:text="vom 30.07. bis 03.10. geschlossen,\n\nBrötchenverkauf von 8.30 - 14.00 Uhr über die Mensatheke" />
+            tools:text="Ich sollte immer 1 Zeile haben" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

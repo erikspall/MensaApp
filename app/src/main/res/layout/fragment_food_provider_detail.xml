@@ -107,10 +107,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_width="match_parent"
-                app:infoImage="@{@drawable/ic_info}"
+                app:infoImage="@{@drawable/ic_time}"
                 android:id="@+id/info_food_provider_opening"
                 app:layout_constraintTop_toBottomOf="@id/text_food_provider_name"
                 />
+            <include layout="@layout/item_info"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_width="match_parent"
+                app:infoImage="@{@drawable/ic_info}"
+                android:id="@+id/info_food_provider_description"
+                app:layout_constraintTop_toBottomOf="@id/info_food_provider_opening"
+                />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_menus"
                 android:layout_width="match_parent"
@@ -119,26 +128,37 @@
                 android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:nestedScrollingEnabled="false"
-                app:layout_constraintTop_toBottomOf="@id/info_food_provider_opening"
+                app:layout_constraintTop_toBottomOf="@id/info_food_provider_description"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:visibility="invisible">
             </androidx.recyclerview.widget.RecyclerView>
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_marginTop="50dp"
                 android:id="@+id/lottie_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/info_food_provider_opening"
+                app:layout_constraintTop_toBottomOf="@id/info_food_provider_description"
+                android:layout_marginTop="16dp"
                 android:visibility="visible">
-
+                <com.google.android.material.divider.MaterialDivider
+                    android:id="@+id/divider_info_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="19dp"
+                    android:layout_marginEnd="19dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
                 <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/lottie_linear"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:layout_marginTop="50dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toBottomOf="@id/divider_info_menu">
 
                     <com.airbnb.lottie.LottieAnimationView
                         android:id="@+id/lottieAnimationView"

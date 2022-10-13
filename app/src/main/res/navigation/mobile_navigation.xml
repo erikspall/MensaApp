@@ -7,37 +7,62 @@
 
     <fragment
         android:id="@+id/mensa_list_dest"
-        android:name="de.erikspall.mensaapp.ui.canteenlist.CanteenListFragment"
+        android:name="de.erikspall.mensaapp.ui.foodproviderlist.canteenlist.CanteenListFragment"
         android:label="CanteenListFragment"
         tools:layout="@layout/fragment_canteen_list">
         <argument
-            android:name="canteenId"
-            app:argType="integer"
-            android:defaultValue="0"/>
+            android:name="foodProviderId"
+            android:defaultValue="0"
+            app:argType="integer" />
+        <argument
+            android:name="foodProviderType"
+            android:defaultValue="-1"
+            app:argType="integer" />
         <action
             android:id="@+id/action_open_details"
             app:destination="@id/food_provider_detail_dest">
             <argument
-                android:name="canteenId"
-                app:argType="integer"
-                android:defaultValue="0"/>
+                android:name="foodProviderId"
+                android:defaultValue="0"
+                app:argType="integer" />
+            <argument
+                android:name="foodProviderType"
+                android:defaultValue="-1"
+                app:argType="integer" />
         </action>
     </fragment>
 
     <fragment
         android:id="@+id/cafe_list_dest"
-        android:name="de.erikspall.mensaapp.ui.cafelist.CafeListFragment"
+        android:name="de.erikspall.mensaapp.ui.foodproviderlist.cafelist.CafeListFragment"
         android:label="fragment_cafelist"
-        tools:layout="@layout/fragment_cafeteria_list" >
+        tools:layout="@layout/fragment_cafeteria_list">
+        <argument
+            android:name="foodProviderId"
+            android:defaultValue="0"
+            app:argType="integer" />
+        <argument
+            android:name="foodProviderType"
+            android:defaultValue="-1"
+            app:argType="integer" />
         <action
-            android:id="@+id/action_cafe_list_dest_to_foodProviderDetailFragment"
-            app:destination="@id/food_provider_detail_dest" />
+            android:id="@+id/action_open_details"
+            app:destination="@id/food_provider_detail_dest">
+            <argument
+                android:name="foodProviderId"
+                android:defaultValue="0"
+                app:argType="integer" />
+            <argument
+                android:name="foodProviderType"
+                android:defaultValue="2"
+                app:argType="integer" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/settings_dest"
         android:name="de.erikspall.mensaapp.ui.settings.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" >
+        tools:layout="@layout/fragment_settings">
         <action
             android:id="@+id/action_settings_dest_to_allergenicFragment"
             app:destination="@id/allergenicFragment" />
