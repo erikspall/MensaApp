@@ -2,7 +2,6 @@ package de.erikspall.mensaapp.data.repositories
 
 import de.erikspall.mensaapp.data.sources.local.database.daos.AllergenicDao
 import de.erikspall.mensaapp.data.sources.local.database.entities.Allergenic
-import de.erikspall.mensaapp.data.sources.local.database.entities.Location
 import kotlinx.coroutines.flow.Flow
 
 class AllergenicRepository(

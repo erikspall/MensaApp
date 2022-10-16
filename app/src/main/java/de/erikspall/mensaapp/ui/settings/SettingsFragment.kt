@@ -18,8 +18,8 @@ import com.google.android.material.transition.MaterialSharedAxis.Axis
 import dagger.hilt.android.AndroidEntryPoint
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.repositories.AppRepository
-import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Location
-import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Role
+import de.erikspall.mensaapp.domain.enums.Location
+import de.erikspall.mensaapp.domain.enums.Role
 import de.erikspall.mensaapp.databinding.FragmentSettingsBinding
 import de.erikspall.mensaapp.domain.utils.Dialogs
 import de.erikspall.mensaapp.ui.settings.event.SettingsEvent

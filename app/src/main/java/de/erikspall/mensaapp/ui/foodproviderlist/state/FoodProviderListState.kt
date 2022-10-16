@@ -1,7 +1,7 @@
 package de.erikspall.mensaapp.ui.foodproviderlist.state
 
 import androidx.lifecycle.MutableLiveData
-import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Location
+import de.erikspall.mensaapp.domain.enums.Location
 import de.erikspall.mensaapp.ui.state.UiState
 
 class FoodProviderListState {

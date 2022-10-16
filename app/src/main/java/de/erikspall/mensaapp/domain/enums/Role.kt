@@ -1,4 +1,4 @@
-package de.erikspall.mensaapp.data.sources.local.database.entities.enums
+package de.erikspall.mensaapp.domain.enums
 
 import androidx.annotation.StringRes
 import de.erikspall.mensaapp.R

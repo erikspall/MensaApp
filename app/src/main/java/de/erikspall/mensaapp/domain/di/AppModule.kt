@@ -25,29 +25,11 @@ object AppModule {
         return AppDatabase.getDatabase(app)
     }
 
-    @Provides
-    @Singleton
-    fun provideFoodProviderRepository(db: AppDatabase): FoodProviderRepository {
-        return FoodProviderRepository(db.foodProviderDao())
-    }
 
-    @Provides
-    @Singleton
-    fun provideLocationRepository(db: AppDatabase): LocationRepository {
-        return LocationRepository(db.locationDao())
-    }
 
-    @Provides
-    @Singleton
-    fun provideOpeningHoursRepository(db: AppDatabase): OpeningHoursRepository {
-        return OpeningHoursRepository(db.openingHoursDao())
-    }
 
-    @Provides
-    @Singleton
-    fun provideWeekdayRepository(db: AppDatabase): WeekdayRepository {
-        return WeekdayRepository(db.weekdayDao())
-    }
+
+
 
     @Provides
     @Singleton
@@ -61,11 +43,7 @@ object AppModule {
         return IngredientRepository(db.ingredientsDao())
     }
 
-    @Provides
-    @Singleton
-    fun provideFoodProviderTypeRepository(db: AppDatabase): FoodProviderTypeRepository {
-        return FoodProviderTypeRepository(db.foodProviderTypeDao())
-    }
+
 
     @Provides
     @Singleton
@@ -76,22 +54,12 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAppRepository(
-        foodProviderRepository: FoodProviderRepository,
-        locationRepository: LocationRepository,
-        openingHoursRepository: OpeningHoursRepository,
-        weekdayRepository: WeekdayRepository,
-        foodProviderTypeRepository: FoodProviderTypeRepository,
         allergenicRepository: AllergenicRepository,
         ingredientRepository: IngredientRepository,
         apiDataSource: RemoteApiDataSource,
         @DefaultDispatcher defaultDispatcher: CoroutineDispatcher
     ): AppRepository {
         return AppRepository(
-            foodProviderRepository,
-            locationRepository,
-            openingHoursRepository,
-            weekdayRepository,
-            foodProviderTypeRepository,
             allergenicRepository,
             ingredientRepository,
             apiDataSource,

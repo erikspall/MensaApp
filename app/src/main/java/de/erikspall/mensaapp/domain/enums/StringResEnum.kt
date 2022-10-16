@@ -1,4 +1,4 @@
-package de.erikspall.mensaapp.data.sources.local.database.entities.enums
+package de.erikspall.mensaapp.domain.enums
 
 import androidx.annotation.StringRes
 import de.erikspall.mensaapp.R
@@ -23,7 +23,9 @@ interface StringResEnum {
                 R.string.location_bamberg -> Location.BAMBERG
                 R.string.location_schweinfurt -> Location.SCHWEINFURT
                 R.string.location_wuerzburg -> Location.WUERZBURG
-                else -> {Location.INVALID}
+                else -> {
+                    Location.INVALID
+                }
             }
         }
     }

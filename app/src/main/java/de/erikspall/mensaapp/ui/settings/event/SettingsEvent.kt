@@ -1,8 +1,8 @@
 package de.erikspall.mensaapp.ui.settings.event
 
-import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Location
-import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Role
-import de.erikspall.mensaapp.data.sources.local.database.entities.enums.StringResEnum
+import de.erikspall.mensaapp.domain.enums.Location
+import de.erikspall.mensaapp.domain.enums.Role
+import de.erikspall.mensaapp.domain.enums.StringResEnum
 
 sealed class SettingsEvent {
     object OnInit: SettingsEvent()

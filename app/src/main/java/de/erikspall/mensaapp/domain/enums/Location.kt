@@ -1,4 +1,4 @@
-package de.erikspall.mensaapp.data.sources.local.database.entities.enums
+package de.erikspall.mensaapp.domain.enums
 
 import androidx.annotation.StringRes
 import de.erikspall.mensaapp.R
@@ -18,12 +18,12 @@ enum class Location(@StringRes private val stringRes: Int): StringResEnum {
     companion object {
         fun from(str: String): Location {
             return when (str) {
-                "Aschaffenburg" -> Location.ASCHAFFENBURG
-                "Bamberg" -> Location.BAMBERG
-                "Schweinfurt" -> Location.SCHWEINFURT
-                "Würzburg" -> Location.WUERZBURG
+                "Aschaffenburg" -> ASCHAFFENBURG
+                "Bamberg" -> BAMBERG
+                "Schweinfurt" -> SCHWEINFURT
+                "Würzburg" -> WUERZBURG
                 else -> {
-                    Location.INVALID
+                    INVALID
                 }
             }
         }

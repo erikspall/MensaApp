@@ -2,7 +2,6 @@ package de.erikspall.mensaapp.data.sources.local.database.daos
 
 import androidx.room.*
 import de.erikspall.mensaapp.data.sources.local.database.entities.Ingredient
-import de.erikspall.mensaapp.data.sources.local.database.entities.Location
 import kotlinx.coroutines.flow.Flow
 
 @Dao

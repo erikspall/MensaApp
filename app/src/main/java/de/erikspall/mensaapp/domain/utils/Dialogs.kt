@@ -11,7 +11,7 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.radiobutton.MaterialRadioButton
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.data.sources.local.database.entities.enums.StringResEnum
+import de.erikspall.mensaapp.domain.enums.StringResEnum
 import kotlin.streams.toList
 
 object Dialogs {

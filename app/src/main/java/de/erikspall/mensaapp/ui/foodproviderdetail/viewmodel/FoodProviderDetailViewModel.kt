@@ -5,19 +5,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Role
-import de.erikspall.mensaapp.data.sources.local.database.entities.enums.StringResEnum
-import de.erikspall.mensaapp.domain.usecases.foodprovider.FoodProviderUseCases
+import de.erikspall.mensaapp.data.errorhandling.OptionalResult
+import de.erikspall.mensaapp.data.errorhandling.OptionalResultMsg
+import de.erikspall.mensaapp.domain.enums.Role
+import de.erikspall.mensaapp.domain.enums.StringResEnum
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
 import de.erikspall.mensaapp.ui.foodproviderdetail.event.DetailEvent
 import de.erikspall.mensaapp.ui.foodproviderdetail.viewmodel.state.FoodProviderDetailState
 import de.erikspall.mensaapp.ui.state.UiState
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class FoodProviderDetailViewModel @Inject constructor(
-    private val foodProviderUseCases: FoodProviderUseCases,
     private val preferencesUseCases: SharedPreferenceUseCases
 ) : ViewModel() {
     val state = FoodProviderDetailState()
@@ -48,12 +49,7 @@ class FoodProviderDetailViewModel @Inject constructor(
             is DetailEvent.RefreshMenus -> {
                 if (!state.showingCafeteria) // Obsolete, always false here ?
                     viewModelScope.launch {
-                        val result = foodProviderUseCases.getMenus(state.fid).apply {
-                            if (this.isPresent)
-                                state.menus.postValue(this.get())
-                            else
-                                state.menus.postValue(emptyList())
-                        }
+                        val result = OptionalResult.ofMsg<String>("Not yet implemented")
                         if (result.isEmpty) {
                             // Set UI state
                             Log.d(
