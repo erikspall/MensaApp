@@ -4,10 +4,7 @@ import de.erikspall.mensaapp.data.sources.local.database.daos.FoodProviderDao
 import de.erikspall.mensaapp.data.sources.local.database.entities.FoodProvider
 import de.erikspall.mensaapp.data.sources.local.database.relationships.FoodProviderWithInfo
 import de.erikspall.mensaapp.data.sources.local.database.relationships.FoodProviderWithoutMenus
-import de.erikspall.mensaapp.data.sources.remote.RemoteApiDataSource
-import de.erikspall.mensaapp.data.sources.remote.api.model.FoodProviderApiModel
 import kotlinx.coroutines.flow.Flow
-import java.util.Optional
 
 class FoodProviderRepository(
     private val foodProviderDao: FoodProviderDao

@@ -1,8 +1,7 @@
-package de.erikspall.mensaapp.data.sources.remote
+package de.erikspall.mensaapp.data.sources.remote.api
 
 import android.util.Log
 import de.erikspall.mensaapp.data.errorhandling.OptionalResult
-import de.erikspall.mensaapp.data.sources.remote.api.MensaApi
 import de.erikspall.mensaapp.data.sources.remote.api.model.FoodProviderApiModel
 import de.erikspall.mensaapp.data.sources.remote.api.model.MenuApiModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -10,7 +9,6 @@ import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
-import java.util.Optional
 import kotlin.Exception
 
 class RemoteApiDataSource(

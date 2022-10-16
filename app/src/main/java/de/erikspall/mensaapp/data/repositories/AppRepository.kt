@@ -6,21 +6,14 @@ import de.erikspall.mensaapp.data.errorhandling.OptionalResult
 import de.erikspall.mensaapp.data.sources.local.database.entities.*
 import de.erikspall.mensaapp.data.sources.local.database.relationships.FoodProviderWithInfo
 import de.erikspall.mensaapp.data.sources.local.database.relationships.FoodProviderWithoutMenus
-import de.erikspall.mensaapp.data.sources.remote.RemoteApiDataSource
+import de.erikspall.mensaapp.data.sources.remote.api.RemoteApiDataSource
 import de.erikspall.mensaapp.data.sources.remote.api.model.FoodProviderApiModel
 import de.erikspall.mensaapp.data.sources.remote.api.model.MealApiModel
 import de.erikspall.mensaapp.data.sources.remote.api.model.MenuApiModel
 import de.erikspall.mensaapp.data.sources.remote.api.model.OpeningInfoApiModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.merge
 import java.time.LocalDate
-import java.util.Objects
-import java.util.Optional
-import kotlin.jvm.optionals.getOrDefault
-import kotlin.jvm.optionals.getOrElse
-import kotlin.streams.toList
 
 class AppRepository(
     private val foodProviderRepository: FoodProviderRepository,

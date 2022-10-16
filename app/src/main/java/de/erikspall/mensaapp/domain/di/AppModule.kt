@@ -11,8 +11,7 @@ import dagger.hilt.components.SingletonComponent
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.repositories.*
 import de.erikspall.mensaapp.data.sources.local.database.AppDatabase
-import de.erikspall.mensaapp.data.sources.local.database.daos.WeekdayDao
-import de.erikspall.mensaapp.data.sources.remote.RemoteApiDataSource
+import de.erikspall.mensaapp.data.sources.remote.api.RemoteApiDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
