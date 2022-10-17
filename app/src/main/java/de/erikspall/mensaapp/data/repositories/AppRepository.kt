@@ -33,8 +33,6 @@ class AppRepository(
     val allIngredients: Flow<List<Ingredient>> =
         ingredientRepository.getAll()
 
-    // This is a test if commits work in the new organization
-
     suspend fun getFoodProvidersFromFirestore(category: String): OptionalResult<List<FoodProvider>> {
         try {
             val foodProviderList = mutableListOf<FoodProvider>()
