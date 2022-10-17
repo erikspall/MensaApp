@@ -1,8 +1,8 @@
 package de.erikspall.mensaapp.domain.model
 
-import android.hardware.SensorAdditionalInfo
+import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
 import com.google.firebase.firestore.IgnoreExtraProperties
-import java.util.Locale
 
 @IgnoreExtraProperties
 data class FoodProvider(
@@ -11,7 +11,10 @@ data class FoodProvider(
     var category: String? = null,
     var type: String? = null,
     var address: String? = null,
-    var photo: String? = null,
+
+    @DrawableRes
+    var photo: Int = 0,
+
     var info: String? = null,
     var additionalInfo: String? = null
     //var description: Map<Locale, String> = mutableMapOf()

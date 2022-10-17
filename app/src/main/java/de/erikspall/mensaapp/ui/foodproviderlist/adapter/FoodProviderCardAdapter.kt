@@ -3,6 +3,7 @@ package de.erikspall.mensaapp.ui.foodproviderlist.adapter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -28,10 +29,14 @@ class FoodProviderCardAdapter(
             // To get strings etc.
             val resources = binding.root.resources
 
-            Glide.with(binding.imageFoodProvider.context)
-                .load(foodProvider.photo)
-                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                .into(binding.imageFoodProvider)
+
+
+            binding.imageFoodProvider.setImageResource(foodProvider.photo)
+
+            //Glide.with(binding.imageFoodProvider.context)
+             //   .load(foodProvider.photo)
+             //   .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+             //   .into(binding.imageFoodProvider)
 
             binding.textFoodProviderName.text = foodProvider.name
             binding.textFoodProviderOpeningInfo.text = "To be implemented"

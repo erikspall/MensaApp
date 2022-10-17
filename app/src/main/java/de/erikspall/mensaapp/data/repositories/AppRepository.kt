@@ -44,6 +44,7 @@ class AppRepository(
                 .await()
             for (document in foodProviders) {
                 document.toObject<FoodProvider>().let {
+                    it.photo = getImageOfFoodProvider(it.name, it.type, it.location)
                     foodProviderList.add(it)
                 }
             }
@@ -118,5 +119,49 @@ class AppRepository(
             .replace("ü", "ue")
             .replace("ß", "ss")
             .replace(" ", "_")
+    }
+
+    @DrawableRes
+    private fun getImageOfFoodProvider(
+        name: String?,
+        type: String?,
+        location: String?
+    ): Int {
+
+
+        val formattedName =
+            "${(type ?: "").formatToResString()}_${(name ?: "").formatToResString()}_${(location ?: "").formatToResString()}"
+        return drawableMap.getOrDefault(
+            formattedName,
+            R.drawable.mensateria_campus_hubland_nord_wuerzburg
+        )
+    }
+
+    companion object {
+        val drawableMap = mapOf(
+            "burse_am_studentenhaus_wuerzburg" to R.drawable.burse_am_studentenhaus_wuerzburg,
+            "interimsmensa_sprachenzentrum_wuerzburg" to R.drawable.interimsmensa_sprachenzentrum_wuerzburg,
+            "mensa_am_studentenhaus_wuerzburg" to R.drawable.mensa_am_studentenhaus_wuerzburg,
+            "mensa_austrasse_bamberg" to R.drawable.mensa_austrasse_bamberg,
+            "mensa_feldkirchenstrasse_bamberg" to R.drawable.mensa_feldkirchenstrasse_bamberg,
+            "mensa_fhws_campus_schweinfurt" to R.drawable.mensa_fhws_campus_schweinfurt,
+            "mensa_hochschulcampus_aschaffenburg" to R.drawable.mensa_hochschulcampus_aschaffenburg,
+            "mensa_josef_schneider_strasse_wuerzburg" to R.drawable.mensa_josef_schneider_strasse_wuerzburg,
+            "mensa_roentgenring_wuerzburg" to R.drawable.mensa_roentgenring_wuerzburg,
+            "mensateria_campus_hubland_nord_wuerzburg" to R.drawable.mensateria_campus_hubland_nord_wuerzburg,
+            "cafeteria_alte_universitaet_wuerzburg" to R.drawable.cafeteria_alte_universitaet_wuerzburg,
+            "cafeteria_alte_weberei_bamberg" to R.drawable.cafeteria_alte_weberei_bamberg,
+            "cafeteria_fhws_muenzstrasse_wuerzburg" to R.drawable.cafeteria_fhws_muenzstrasse_wuerzburg,
+            "cafeteria_fhws_roentgenring_wuerzburg" to R.drawable.cafeteria_fhws_roentgenring_wuerzburg,
+            "cafeteria_fhws_sanderheinrichsleitenweg_wuerzburg" to R.drawable.cafeteria_fhws_sanderheinrichsleitenweg_wuerzburg,
+            "cafeteria_ledward_campus_schweinfurt" to R.drawable.cafeteria_ledward_campus_schweinfurt,
+            "cafeteria_markusplatz_bamberg" to R.drawable.cafeteria_markusplatz_bamberg_day,
+            "cafeteria_neue_universitaet_wuerzburg" to R.drawable.cafeteria_neue_universitaet_wuerzburg,
+            "cafeteria_philo_wuerzburg" to R.drawable.cafeteria_philo_wuerzburg,
+            "cafeteria_am_studentenhaus_wuerzburg" to R.drawable.mensa_am_studentenhaus_wuerzburg,
+            "cafeteria_hochschulcampus_aschaffenburg" to R.drawable.mensa_hochschulcampus_aschaffenburg,
+            "cafeteria_feldkirchenstrasse_bamberg" to R.drawable.mensa_feldkirchenstrasse_bamberg,
+            "cafeteria_fhws_campus_schweinfurt" to R.drawable.mensa_fhws_campus_schweinfurt
+        )
     }
 }

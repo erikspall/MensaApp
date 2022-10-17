@@ -101,44 +101,6 @@ class CanteenListFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.state.receivedData.observe(viewLifecycleOwner) {
-            viewModel.canteens.observeOnce(viewLifecycleOwner) { optionalCanteens ->
-
-                binding.swipeRefresh.isRefreshing = false
-
-                if (optionalCanteens != null) {
-                    if (optionalCanteens.isPresent) {
-                        val canteens = optionalCanteens.get()
-
-                        viewModel.onEvent(FoodProviderListEvent.SetUiState(UiState.NORMAL))
-
-                        Log.d(
-                            "$TAG:livedata-canteens",
-                            "New livedata received! ${canteens.size} items"
-                        )
-                        canteens.let {
-                            (binding.recyclerViewCanteen.adapter as FoodProviderCardAdapter).submitList(
-                                it.filter { foodProvider ->
-                                    foodProvider.location == requireContext().getString(viewModel.state.location.getValue())
-                                }
-                            )
-                        }
-
-                    } else {
-                        Log.e("$TAG:livedata-canteens", optionalCanteens.getMessage())
-
-                    }
-                } else {
-                    viewModel.onEvent(FoodProviderListEvent.SetUiState(UiState.ERROR))
-                }
-            }
-        }
-
-        viewModel.state.isRefreshing.observe(viewLifecycleOwner) { isRefreshing ->
-            if (!isRefreshing)
-                binding.swipeRefresh.isRefreshing = false
-        }
-
         viewModel.state.uiState.observe(viewLifecycleOwner) { uiState ->
             when (uiState) {
                 UiState.NORMAL -> {
@@ -177,6 +139,52 @@ class CanteenListFragment : Fragment() {
                 }
             }
         }
+
+        viewModel.state.receivedData.observe(viewLifecycleOwner) {
+            viewModel.canteens.observeOnce(viewLifecycleOwner) { optionalCanteens ->
+
+                binding.swipeRefresh.isRefreshing = false
+
+                if (optionalCanteens != null) {
+                    if (optionalCanteens.isPresent) {
+                        val canteens = optionalCanteens.get()
+
+                        Log.d(
+                            "$TAG:livedata-canteens",
+                            "New livedata received! ${canteens.size} items"
+                        )
+                        if (canteens.isNotEmpty()) {
+                            viewModel.onEvent(FoodProviderListEvent.SetUiState(UiState.NORMAL))
+                            canteens.let {
+
+                                (binding.recyclerViewCanteen.adapter as FoodProviderCardAdapter).submitList(
+                                    it.filter { foodProvider ->
+                                        foodProvider.location == requireContext().getString(
+                                            viewModel.state.location.getValue()
+                                        )
+                                    }
+                                )
+                            }
+                        } else {
+                            showMessage(R.raw.error, "Irgendetwas ist schiefgelaufen :(\nBesteht eine Internetverbindung?")
+                        }
+
+                    } else {
+                        Log.e("$TAG:livedata-canteens", optionalCanteens.getMessage())
+                        viewModel.onEvent(FoodProviderListEvent.SetUiState(UiState.ERROR))
+                    }
+                } else {
+                    viewModel.onEvent(FoodProviderListEvent.SetUiState(UiState.ERROR))
+                }
+            }
+        }
+
+        viewModel.state.isRefreshing.observe(viewLifecycleOwner) { isRefreshing ->
+            if (!isRefreshing)
+                binding.swipeRefresh.isRefreshing = false
+        }
+
+
     }
 
     private fun showMessage(@RawRes animation: Int, errorMsg: String, animationSpeed: Float = 1f) {
