@@ -11,16 +11,13 @@ import de.erikspall.mensaapp.domain.model.FoodProvider
 import kotlinx.coroutines.Dispatchers
 
 data class GetFoodProviders(
-    private val context: Context,
     private val appRepository: AppRepository
 ) {
     operator fun invoke(
-        location: Location,
         category: Category
     ): LiveData<OptionalResult<List<FoodProvider>>> = liveData(Dispatchers.IO) {
         emit(
             appRepository.getFoodProvidersFromFirestore(
-                context.getString(location.getValue()),
                 category.getValue()
             )
         )

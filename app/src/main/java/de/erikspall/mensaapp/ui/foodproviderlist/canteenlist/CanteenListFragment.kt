@@ -26,6 +26,7 @@ import de.erikspall.mensaapp.domain.const.MaterialSizes
 import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.domain.enums.Location
 import de.erikspall.mensaapp.domain.model.FoodProvider
+import de.erikspall.mensaapp.domain.utils.Extensions.observeOnce
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
 import de.erikspall.mensaapp.domain.utils.queries.QueryUtils
@@ -40,8 +41,6 @@ class CanteenListFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: CanteenListViewModel by viewModels()
-
-    private val adapter = FoodProviderCardAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,10 +58,8 @@ class CanteenListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
-
     }
 
 
@@ -92,35 +89,51 @@ class CanteenListFragment : Fragment() {
         setupListeners()
         setupObservers()
 
+        viewModel.onEvent(FoodProviderListEvent.Init)
+
         return root
     }
 
     private fun setupListeners() {
         binding.swipeRefresh.setOnRefreshListener {
-            Toast.makeText(
-                requireContext(),
-                "Items: ${binding.recyclerViewCanteen.adapter!!.itemCount}\n" +
-                        "Visibility: ${binding.recyclerViewCanteen.visibility}",
-                Toast.LENGTH_LONG)
-                .show()
-            binding.swipeRefresh.isRefreshing = false
+            viewModel.onEvent(FoodProviderListEvent.GetLatest)
         }
     }
 
     private fun setupObservers() {
-        viewModel.canteens.observe(viewLifecycleOwner) { optionalCanteens ->
-            if (optionalCanteens.isPresent) {
-                val canteens = optionalCanteens.get()
-                Log.d("$TAG:livedata-canteens", "New livedata received! ${canteens.size} items")
-                canteens.let {
-                    (binding.recyclerViewCanteen.adapter as FoodProviderCardAdapter).submitList(it)
-                }
+        viewModel.state.receivedData.observe(viewLifecycleOwner) {
+            viewModel.canteens.observeOnce(viewLifecycleOwner) { optionalCanteens ->
 
-            } else {
-                Log.e("$TAG:livedata-canteens", optionalCanteens.getMessage())
+                binding.swipeRefresh.isRefreshing = false
+
+                if (optionalCanteens != null) {
+                    if (optionalCanteens.isPresent) {
+                        val canteens = optionalCanteens.get()
+
+                        viewModel.onEvent(FoodProviderListEvent.SetUiState(UiState.NORMAL))
+
+                        Log.d(
+                            "$TAG:livedata-canteens",
+                            "New livedata received! ${canteens.size} items"
+                        )
+                        canteens.let {
+                            (binding.recyclerViewCanteen.adapter as FoodProviderCardAdapter).submitList(
+                                it.filter { foodProvider ->
+                                    foodProvider.location == requireContext().getString(viewModel.state.location.getValue())
+                                }
+                            )
+                        }
+
+                    } else {
+                        Log.e("$TAG:livedata-canteens", optionalCanteens.getMessage())
+
+                    }
+                } else {
+                    viewModel.onEvent(FoodProviderListEvent.SetUiState(UiState.ERROR))
+                }
             }
         }
-        /*
+
         viewModel.state.isRefreshing.observe(viewLifecycleOwner) { isRefreshing ->
             if (!isRefreshing)
                 binding.swipeRefresh.isRefreshing = false
@@ -163,7 +176,7 @@ class CanteenListFragment : Fragment() {
 
                 }
             }
-        }*/
+        }
     }
 
     private fun showMessage(@RawRes animation: Int, errorMsg: String, animationSpeed: Float = 1f) {

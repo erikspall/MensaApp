@@ -34,11 +34,10 @@ class AppRepository(
         ingredientRepository.getAll()
 
 
-    suspend fun getFoodProvidersFromFirestore(location: String, category: String): OptionalResult<List<FoodProvider>> {
+    suspend fun getFoodProvidersFromFirestore(category: String): OptionalResult<List<FoodProvider>> {
         try {
             val foodProviderList = mutableListOf<FoodProvider>()
             val foodProviders = foodProvidersRef
-                .whereEqualTo(FoodProvider.FIELD_LOCATION, location)
                 .whereEqualTo(FoodProvider.FIELD_CATEGORY, category)
                 .orderBy(FoodProvider.FIELD_NAME, Query.Direction.ASCENDING)
                 .get()

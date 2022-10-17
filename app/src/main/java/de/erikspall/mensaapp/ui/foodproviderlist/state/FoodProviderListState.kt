@@ -9,6 +9,7 @@ import de.erikspall.mensaapp.ui.state.UiState
 
 data class FoodProviderListState (
     var location: Location = Location.WUERZBURG,
-   // val uiState: MutableLiveData<UiState> = MutableLiveData(UiState.NORMAL),
-    //val isRefreshing: MutableLiveData<Boolean> = MutableLiveData(false),
+    val uiState: MutableLiveData<UiState> = MutableLiveData(UiState.NORMAL),
+    val isRefreshing: MutableLiveData<Boolean> = MutableLiveData(false),
+    val receivedData: MutableLiveData<Boolean> = MutableLiveData(false)
 )

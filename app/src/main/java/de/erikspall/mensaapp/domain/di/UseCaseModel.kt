@@ -20,11 +20,10 @@ object UseCaseModel {
     @Provides
     @Singleton
     fun provideFoodProviderUseCases(
-        @ApplicationContext appContext: Context,
         appRepository: AppRepository
     ): FoodProviderUseCases {
         return FoodProviderUseCases(
-            get = GetFoodProviders(appContext, appRepository)
+            get = GetFoodProviders(appRepository)
         )
     }
 
