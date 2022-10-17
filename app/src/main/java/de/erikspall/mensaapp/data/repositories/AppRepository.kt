@@ -42,6 +42,8 @@ class AppRepository(
                 .orderBy(FoodProvider.FIELD_NAME, Query.Direction.ASCENDING)
                 .get()
                 .await()
+
+
             for (document in foodProviders) {
                 document.toObject<FoodProvider>().let {
                     it.photo = getImageOfFoodProvider(it.name, it.type, it.location)
