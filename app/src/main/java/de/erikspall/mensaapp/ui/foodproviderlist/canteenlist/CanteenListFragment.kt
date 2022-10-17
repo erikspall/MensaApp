@@ -35,15 +35,13 @@ import de.erikspall.mensaapp.ui.state.UiState
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class CanteenListFragment : Fragment(), FoodProviderCardAdapter.OnFoodProviderSelectedListener {
+class CanteenListFragment : Fragment() {
     private var _binding: FragmentCanteenListBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: CanteenListViewModel by viewModels()
 
-    lateinit var firestore: FirebaseFirestore
-    private var query: Query? = null
-    private var adapter: FoodProviderCardAdapter? = null
+    private val adapter = FoodProviderCardAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,28 +59,6 @@ class CanteenListFragment : Fragment(), FoodProviderCardAdapter.OnFoodProviderSe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        firestore = Firebase.firestore
-
-        query = firestore.collection("foodProviders")
-            .whereEqualTo(FoodProvider.FIELD_LOCATION, requireContext().getString(Location.WUERZBURG.getValue()))
-            .whereEqualTo(FoodProvider.FIELD_CATEGORY, Category.CANTEEN.getValue())
-
-
-        query?.let {
-            adapter = object : FoodProviderCardAdapter(it, this@CanteenListFragment) {
-                override fun onDataChanged() {
-                    makeLottieVisible(false)
-                    Log.d("$TAG:query", "DataChanged")
-                    super.onDataChanged()
-                }
-
-                override fun onError(e: FirebaseFirestoreException) {
-                    // TODO
-                    super.onError(e)
-                }
-            }
-            binding.recyclerViewCanteen.adapter = adapter
-        }
 
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
@@ -109,23 +85,42 @@ class CanteenListFragment : Fragment(), FoodProviderCardAdapter.OnFoodProviderSe
             binding.swipeRefresh.progressViewEndOffset - 24
         )
 
+        val adapter = FoodProviderCardAdapter()
+
+        binding.recyclerViewCanteen.adapter = adapter
+
         setupListeners()
         setupObservers()
-
-        viewModel.onEvent(FoodProviderListEvent.CheckIfNewLocationSet)
 
         return root
     }
 
     private fun setupListeners() {
         binding.swipeRefresh.setOnRefreshListener {
-            viewLifecycleOwner.lifecycleScope.launch {
-               // viewModel.onEvent(FoodProviderListEvent.GetLatestInfo)
-            }
+            Toast.makeText(
+                requireContext(),
+                "Items: ${binding.recyclerViewCanteen.adapter!!.itemCount}\n" +
+                        "Visibility: ${binding.recyclerViewCanteen.visibility}",
+                Toast.LENGTH_LONG)
+                .show()
+            binding.swipeRefresh.isRefreshing = false
         }
     }
 
     private fun setupObservers() {
+        viewModel.canteens.observe(viewLifecycleOwner) { optionalCanteens ->
+            if (optionalCanteens.isPresent) {
+                val canteens = optionalCanteens.get()
+                Log.d("$TAG:livedata-canteens", "New livedata received! ${canteens.size} items")
+                canteens.let {
+                    (binding.recyclerViewCanteen.adapter as FoodProviderCardAdapter).submitList(it)
+                }
+
+            } else {
+                Log.e("$TAG:livedata-canteens", optionalCanteens.getMessage())
+            }
+        }
+        /*
         viewModel.state.isRefreshing.observe(viewLifecycleOwner) { isRefreshing ->
             if (!isRefreshing)
                 binding.swipeRefresh.isRefreshing = false
@@ -168,7 +163,7 @@ class CanteenListFragment : Fragment(), FoodProviderCardAdapter.OnFoodProviderSe
 
                 }
             }
-        }
+        }*/
     }
 
     private fun showMessage(@RawRes animation: Int, errorMsg: String, animationSpeed: Float = 1f) {
@@ -198,23 +193,15 @@ class CanteenListFragment : Fragment(), FoodProviderCardAdapter.OnFoodProviderSe
 
     override fun onStart() {
         super.onStart()
-
-        // Start listening for Firestore updates
-        adapter?.startListening()
     }
 
     override fun onStop() {
         super.onStop()
-        adapter?.stopListening()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onFoodProviderSelected(foodProvider: DocumentSnapshot) {
-        Log.e("$TAG:onFoodProviderSelected", "Not yet implemented")
     }
 
     companion object {

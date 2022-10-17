@@ -8,12 +8,25 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import de.erikspall.mensaapp.data.repositories.AppRepository
+import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
+import de.erikspall.mensaapp.domain.usecases.foodproviders.GetFoodProviders
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.*
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object UseCaseModel {
+
+    @Provides
+    @Singleton
+    fun provideFoodProviderUseCases(
+        @ApplicationContext appContext: Context,
+        appRepository: AppRepository
+    ): FoodProviderUseCases {
+        return FoodProviderUseCases(
+            get = GetFoodProviders(appContext, appRepository)
+        )
+    }
 
 
     @Provides

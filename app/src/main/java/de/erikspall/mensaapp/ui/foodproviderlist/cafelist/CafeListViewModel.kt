@@ -22,7 +22,7 @@ class CafeListViewModel @Inject constructor(
     val state = FoodProviderListState()
 
     fun onEvent(event: FoodProviderListEvent) {
-        when (event) {
+        /*when (event) {
             is FoodProviderListEvent.CheckIfNewLocationSet -> {
                 val newLocationValue = sharedPreferences.getValueRes(
                     R.string.shared_pref_location,
@@ -47,6 +47,6 @@ class CafeListViewModel @Inject constructor(
                     }
                 }
             }
-        }
+        }*/
     }
 }

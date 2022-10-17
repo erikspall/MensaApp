@@ -87,7 +87,7 @@ class CafeListFragment : Fragment() {
         setupListeners()
         setupObservers()
 
-        viewModel.onEvent(FoodProviderListEvent.CheckIfNewLocationSet)
+       // viewModel.onEvent(FoodProviderListEvent.CheckIfNewLocationSet)
 
         return root
     }
@@ -95,13 +95,13 @@ class CafeListFragment : Fragment() {
     private fun setupListeners() {
         binding.swipeRefresh.setOnRefreshListener {
             viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.onEvent(FoodProviderListEvent.GetLatestInfo)
+               // viewModel.onEvent(FoodProviderListEvent.GetLatestInfo)
             }
         }
     }
 
     private fun setupObservers() {
-        viewModel.state.isRefreshing.observe(viewLifecycleOwner) { isRefreshing ->
+        /*viewModel.state.isRefreshing.observe(viewLifecycleOwner) { isRefreshing ->
             if (!isRefreshing)
                 binding.swipeRefresh.isRefreshing = false
         }
@@ -144,7 +144,7 @@ class CafeListFragment : Fragment() {
 
                 }
             }
-        }
+        }*/
     }
 
     private fun showMessage(@RawRes animation: Int, errorMsg: String, animationSpeed: Float = 1f) {

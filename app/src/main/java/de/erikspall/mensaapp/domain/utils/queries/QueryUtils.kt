@@ -7,8 +7,8 @@ import com.google.firebase.ktx.Firebase
 import de.erikspall.mensaapp.domain.model.FoodProvider
 
 object QueryUtils {
-    fun queryFoodProvidersByLocationAndCategory(firestore: FirebaseFirestore, location: String, category: String): Query {
-        return firestore.collection("foodProviders")
+    fun queryFoodProvidersByLocationAndCategory(location: String, category: String): Query {
+        return Firebase.firestore.collection("foodProviders")
             .whereEqualTo(FoodProvider.FIELD_LOCATION, location)
             .whereEqualTo(FoodProvider.FIELD_CATEGORY, category)
     }

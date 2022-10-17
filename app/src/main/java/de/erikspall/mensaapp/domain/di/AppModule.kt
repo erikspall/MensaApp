@@ -3,6 +3,8 @@ package de.erikspall.mensaapp.domain.di
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,6 +14,7 @@ import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.repositories.*
 import de.erikspall.mensaapp.data.sources.local.database.AppDatabase
 import de.erikspall.mensaapp.data.sources.remote.api.RemoteApiDataSource
+import de.erikspall.mensaapp.domain.const.Firestore.FOODPROVIDERS_COLLECTION
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
@@ -26,7 +29,9 @@ object AppModule {
     }
 
 
-
+    @Provides
+    @Singleton
+    fun provideFirebaseFirestore() = FirebaseFirestore.getInstance()
 
 
 
@@ -56,16 +61,18 @@ object AppModule {
     fun provideAppRepository(
         allergenicRepository: AllergenicRepository,
         ingredientRepository: IngredientRepository,
-        apiDataSource: RemoteApiDataSource,
-        @DefaultDispatcher defaultDispatcher: CoroutineDispatcher
+        foodProvidersReference: CollectionReference
     ): AppRepository {
         return AppRepository(
             allergenicRepository,
             ingredientRepository,
-            apiDataSource,
-            CoroutineScope(defaultDispatcher)
+            foodProvidersReference
         )
     }
+
+    @Provides
+    @Singleton
+    fun provideFoodProvidersCollectionReference(rootRef: FirebaseFirestore): CollectionReference = rootRef.collection(FOODPROVIDERS_COLLECTION)
 
     @Provides
     @Singleton
