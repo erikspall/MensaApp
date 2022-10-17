@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.toObject
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.errorhandling.OptionalResult
@@ -16,10 +17,14 @@ import de.erikspall.mensaapp.data.sources.remote.api.model.OpeningInfoApiModel
 import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.domain.enums.Location
 import de.erikspall.mensaapp.domain.model.FoodProvider
+import de.erikspall.mensaapp.domain.model.OpeningHour
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
+import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.*
 
 class AppRepository(
     private val allergenicRepository: AllergenicRepository,
@@ -46,6 +51,7 @@ class AppRepository(
             for (document in foodProviders) {
                 document.toObject<FoodProvider>().let {
                     it.photo = getImageOfFoodProvider(it.name, it.type, it.location)
+                    it.openingHours = getOpeningHoursAsListFromDocument(document)
                     foodProviderList.add(it)
                 }
             }
@@ -53,6 +59,31 @@ class AppRepository(
         } catch (e: FirebaseFirestoreException) {
             return OptionalResult.ofMsg(e.message ?: "An error occurred")
         }
+    }
+
+    private fun getOpeningHoursAsListFromDocument(document: QueryDocumentSnapshot): List<OpeningHour> {
+        val result = mutableListOf<OpeningHour>()
+        for (day in DayOfWeek.values()) {
+            val hourArray = document.get("hours_${day.getDisplayName(TextStyle.SHORT_STANDALONE, Locale.ENGLISH).lowercase()}") as List<Any?>?
+
+            if (hourArray != null) {
+                /*
+                    0: openingAt
+                    1: closingAt
+                    2: getAMealTill
+                    3: isOpen
+                 */
+                val constructedOpeningHour = OpeningHour(
+                    opensAt = (hourArray[0] ?: "") as String,
+                    closesAt = (hourArray[1] ?: "") as String,
+                    getFoodTill = (hourArray[2] ?: "") as String,
+                    isOpen = (hourArray[3] ?: false) as Boolean,
+                    dayOfWeek = day
+                )
+                result.add(constructedOpeningHour)
+            }
+        }
+        return result
     }
 
 

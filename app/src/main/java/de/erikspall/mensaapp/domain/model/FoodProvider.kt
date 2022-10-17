@@ -16,7 +16,9 @@ data class FoodProvider(
     var photo: Int = 0,
 
     var info: String? = null,
-    var additionalInfo: String? = null
+    var additionalInfo: String? = null,
+
+    var openingHours: List<OpeningHour> = emptyList()
     //var description: Map<Locale, String> = mutableMapOf()
 ) {
 

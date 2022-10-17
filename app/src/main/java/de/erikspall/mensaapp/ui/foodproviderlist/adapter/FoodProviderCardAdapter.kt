@@ -39,7 +39,7 @@ class FoodProviderCardAdapter(
              //   .into(binding.imageFoodProvider)
 
             binding.textFoodProviderName.text = foodProvider.name
-            binding.textFoodProviderOpeningInfo.text = "To be implemented"
+            binding.textFoodProviderOpeningInfo.text = foodProvider.openingHours.size.toString()
             binding.chipFoodProviderType.text = foodProvider.type
 
             binding.root.setOnClickListener {
