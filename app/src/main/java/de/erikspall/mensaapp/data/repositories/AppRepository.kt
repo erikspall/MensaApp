@@ -9,27 +9,24 @@ import com.google.firebase.firestore.ktx.toObject
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.errorhandling.OptionalResult
 import de.erikspall.mensaapp.data.sources.local.database.entities.*
-import de.erikspall.mensaapp.data.sources.remote.api.RemoteApiDataSource
-import de.erikspall.mensaapp.data.sources.remote.api.model.FoodProviderApiModel
-import de.erikspall.mensaapp.data.sources.remote.api.model.MealApiModel
-import de.erikspall.mensaapp.data.sources.remote.api.model.MenuApiModel
-import de.erikspall.mensaapp.data.sources.remote.api.model.OpeningInfoApiModel
-import de.erikspall.mensaapp.domain.enums.Category
-import de.erikspall.mensaapp.domain.enums.Location
 import de.erikspall.mensaapp.domain.model.FoodProvider
 import de.erikspall.mensaapp.domain.model.OpeningHour
+import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
+import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
 import java.time.DayOfWeek
-import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.TextStyle
 import java.util.*
 
 class AppRepository(
     private val allergenicRepository: AllergenicRepository,
     private val ingredientRepository: IngredientRepository,
-    private val foodProvidersRef: CollectionReference
+    private val foodProvidersRef: CollectionReference,
+    private val openingHourUseCases: OpeningHourUseCases
 ) {
 
     val allAllergenic: Flow<List<Allergenic>> =
@@ -51,7 +48,12 @@ class AppRepository(
             for (document in foodProviders) {
                 document.toObject<FoodProvider>().let {
                     it.photo = getImageOfFoodProvider(it.name, it.type, it.location)
-                    it.openingHours = getOpeningHoursAsListFromDocument(document)
+                    it.openingHours = getOpeningHoursFromDocument(document)
+                    it.openingHoursString = openingHourUseCases.formatToString(
+                        it.openingHours,
+                        LocalDateTime.now(),
+                        Locale.getDefault()
+                    )
                     foodProviderList.add(it)
                 }
             }
@@ -61,8 +63,8 @@ class AppRepository(
         }
     }
 
-    private fun getOpeningHoursAsListFromDocument(document: QueryDocumentSnapshot): List<OpeningHour> {
-        val result = mutableListOf<OpeningHour>()
+    private fun getOpeningHoursFromDocument(document: QueryDocumentSnapshot): Map<DayOfWeek, Map<String, LocalTime>> {
+        val result = mutableMapOf<DayOfWeek,  Map<String, LocalTime>>()
         for (day in DayOfWeek.values()) {
             val hourArray = document.get("hours_${day.getDisplayName(TextStyle.SHORT_STANDALONE, Locale.ENGLISH).lowercase()}") as List<Any?>?
 
@@ -80,7 +82,25 @@ class AppRepository(
                     isOpen = (hourArray[3] ?: false) as Boolean,
                     dayOfWeek = day
                 )
-                result.add(constructedOpeningHour)
+
+                if (!constructedOpeningHour.isOpen) {
+                    result[constructedOpeningHour.dayOfWeek] = emptyMap()
+                } else {
+                    result[constructedOpeningHour.dayOfWeek] = mapOf<String, LocalTime>(
+                        OpeningHour.FIELD_OPENS_AT to LocalTime.of(
+                            constructedOpeningHour.opensAt.substringBefore(".").toInt(),
+                            constructedOpeningHour.opensAt.substringAfter(".").toInt()
+                        ),
+                        OpeningHour.FIELD_GET_FOOD_TILL to LocalTime.of(
+                            constructedOpeningHour.getFoodTill.substringBefore(".").toInt(),
+                            constructedOpeningHour.getFoodTill.substringAfter(".").toInt()
+                        ),
+                        OpeningHour.FIELD_CLOSES_AT to LocalTime.of(
+                            constructedOpeningHour.closesAt.substringBefore(".").toInt(),
+                            constructedOpeningHour.closesAt.substringAfter(".").toInt()
+                        )
+                    )
+                }
             }
         }
         return result

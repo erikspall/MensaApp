@@ -10,6 +10,8 @@ import dagger.hilt.components.SingletonComponent
 import de.erikspall.mensaapp.data.repositories.AppRepository
 import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
 import de.erikspall.mensaapp.domain.usecases.foodproviders.GetFoodProviders
+import de.erikspall.mensaapp.domain.usecases.openinghours.FormatToString
+import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.*
 import javax.inject.Singleton
 
@@ -27,6 +29,15 @@ object UseCaseModel {
         )
     }
 
+    @Provides
+    @Singleton
+    fun provideOpeningHourUseCases(
+
+    ): OpeningHourUseCases {
+        return OpeningHourUseCases(
+            formatToString = FormatToString()
+        )
+    }
 
     @Provides
     @Singleton

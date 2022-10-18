@@ -3,15 +3,9 @@ package de.erikspall.mensaapp.ui.foodproviderlist.adapter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.ktx.toObject
 import de.erikspall.mensaapp.databinding.ItemFoodProviderBinding
 import de.erikspall.mensaapp.domain.model.FoodProvider
 
@@ -21,7 +15,7 @@ class FoodProviderCardAdapter(
 ) {
 
     inner class FoodProviderViewHolder(
-        private val binding: ItemFoodProviderBinding
+        val binding: ItemFoodProviderBinding
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(
             foodProvider: FoodProvider
@@ -39,7 +33,7 @@ class FoodProviderCardAdapter(
              //   .into(binding.imageFoodProvider)
 
             binding.textFoodProviderName.text = foodProvider.name
-            binding.textFoodProviderOpeningInfo.text = foodProvider.openingHours.size.toString()
+            binding.textFoodProviderOpeningInfo.text = foodProvider.openingHoursString
             binding.chipFoodProviderType.text = foodProvider.type
 
             binding.root.setOnClickListener {

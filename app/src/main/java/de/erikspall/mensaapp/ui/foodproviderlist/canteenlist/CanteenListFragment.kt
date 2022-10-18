@@ -1,5 +1,9 @@
 package de.erikspall.mensaapp.ui.foodproviderlist.canteenlist
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,32 +12,23 @@ import android.view.View.*
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RawRes
+import androidx.core.view.children
 import androidx.core.view.doOnPreDraw
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.transition.MaterialElevationScale
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.databinding.FragmentCanteenListBinding
 import de.erikspall.mensaapp.domain.const.MaterialSizes
-import de.erikspall.mensaapp.domain.enums.Category
-import de.erikspall.mensaapp.domain.enums.Location
-import de.erikspall.mensaapp.domain.model.FoodProvider
 import de.erikspall.mensaapp.domain.utils.Extensions.observeOnce
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
-import de.erikspall.mensaapp.domain.utils.queries.QueryUtils
 import de.erikspall.mensaapp.ui.foodproviderlist.adapter.FoodProviderCardAdapter
 import de.erikspall.mensaapp.ui.foodproviderlist.event.FoodProviderListEvent
 import de.erikspall.mensaapp.ui.state.UiState
-import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class CanteenListFragment : Fragment() {
@@ -41,6 +36,8 @@ class CanteenListFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: CanteenListViewModel by viewModels()
+
+    lateinit var timeTickReceiver: BroadcastReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -156,7 +153,6 @@ class CanteenListFragment : Fragment() {
                         if (canteens.isNotEmpty()) {
                             viewModel.onEvent(FoodProviderListEvent.SetUiState(UiState.NORMAL))
                             canteens.let {
-
                                 (binding.recyclerViewCanteen.adapter as FoodProviderCardAdapter).submitList(
                                     it.filter { foodProvider ->
                                         foodProvider.location == requireContext().getString(
@@ -214,6 +210,24 @@ class CanteenListFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+         timeTickReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                Log.d("$TAG:broadcast-receiver", "Tick!")
+                // Update content of recyclerview if present
+                viewModel.onEvent(FoodProviderListEvent.UpdateOpeningHours)
+            }
+        }
+        requireActivity().registerReceiver(timeTickReceiver, IntentFilter(Intent.ACTION_TIME_TICK))
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        requireActivity().unregisterReceiver(timeTickReceiver)
     }
 
     override fun onStop() {

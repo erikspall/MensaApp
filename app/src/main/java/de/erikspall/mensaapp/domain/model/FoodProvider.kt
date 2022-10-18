@@ -3,6 +3,8 @@ package de.erikspall.mensaapp.domain.model
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import com.google.firebase.firestore.IgnoreExtraProperties
+import java.time.DayOfWeek
+import java.time.LocalTime
 
 @IgnoreExtraProperties
 data class FoodProvider(
@@ -18,7 +20,8 @@ data class FoodProvider(
     var info: String? = null,
     var additionalInfo: String? = null,
 
-    var openingHours: List<OpeningHour> = emptyList()
+    var openingHours: Map<DayOfWeek,  Map<String, LocalTime>> = mutableMapOf(),
+    var openingHoursString: String = ""
     //var description: Map<Locale, String> = mutableMapOf()
 ) {
 
@@ -38,6 +41,7 @@ data class FoodProvider(
 
         other as FoodProvider
 
+        if (openingHoursString != other.openingHoursString) return false
         if (name != other.name) return false
         if (location != other.location) return false
         if (category != other.category) return false
@@ -52,6 +56,7 @@ data class FoodProvider(
 
     override fun hashCode(): Int {
         var result = name?.hashCode() ?: 0
+        result = 31 * result + (openingHoursString.hashCode())
         result = 31 * result + (location?.hashCode() ?: 0)
         result = 31 * result + (category?.hashCode() ?: 0)
         result = 31 * result + (type?.hashCode() ?: 0)

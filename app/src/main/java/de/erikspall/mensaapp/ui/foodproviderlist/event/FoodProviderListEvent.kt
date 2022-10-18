@@ -9,4 +9,5 @@ sealed class FoodProviderListEvent {
     object Init: FoodProviderListEvent()
     data class SetUiState(val uiState: UiState): FoodProviderListEvent()
     object GetLatest: FoodProviderListEvent()
+    object UpdateOpeningHours : FoodProviderListEvent()
 }

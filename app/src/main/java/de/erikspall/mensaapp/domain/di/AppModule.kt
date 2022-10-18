@@ -15,6 +15,8 @@ import de.erikspall.mensaapp.data.repositories.*
 import de.erikspall.mensaapp.data.sources.local.database.AppDatabase
 import de.erikspall.mensaapp.data.sources.remote.api.RemoteApiDataSource
 import de.erikspall.mensaapp.domain.const.Firestore.FOODPROVIDERS_COLLECTION
+import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
+import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
@@ -61,12 +63,14 @@ object AppModule {
     fun provideAppRepository(
         allergenicRepository: AllergenicRepository,
         ingredientRepository: IngredientRepository,
-        foodProvidersReference: CollectionReference
+        foodProvidersReference: CollectionReference,
+        openingHourUseCases: OpeningHourUseCases
     ): AppRepository {
         return AppRepository(
             allergenicRepository,
             ingredientRepository,
-            foodProvidersReference
+            foodProvidersReference,
+            openingHourUseCases = openingHourUseCases
         )
     }
 
