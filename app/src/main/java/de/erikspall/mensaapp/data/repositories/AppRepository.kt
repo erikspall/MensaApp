@@ -1,19 +1,14 @@
 package de.erikspall.mensaapp.data.repositories
 
 import androidx.annotation.DrawableRes
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QueryDocumentSnapshot
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.errorhandling.OptionalResult
 import de.erikspall.mensaapp.data.sources.local.database.entities.*
 import de.erikspall.mensaapp.domain.model.FoodProvider
 import de.erikspall.mensaapp.domain.model.OpeningHour
-import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
 import java.time.DayOfWeek
@@ -29,21 +24,29 @@ class AppRepository(
     private val openingHourUseCases: OpeningHourUseCases
 ) {
 
-    val allAllergenic: Flow<List<Allergenic>> =
+    val allAllergenicEntity: Flow<List<AllergenicEntity>> =
         allergenicRepository.getAll()
 
-    val allIngredients: Flow<List<Ingredient>> =
+    val allIngredients: Flow<List<IngredientEntity>> =
         ingredientRepository.getAll()
 
-    suspend fun getFoodProvidersFromFirestore(category: String): OptionalResult<List<FoodProvider>> {
+    suspend fun getFoodProvidersFromFirestore(category: String, source: Source): OptionalResult<List<FoodProvider>> {
         try {
             val foodProviderList = mutableListOf<FoodProvider>()
-            val foodProviders = foodProvidersRef
+
+            var foodProviders: QuerySnapshot = foodProvidersRef
                 .whereEqualTo(FoodProvider.FIELD_CATEGORY, category)
                 .orderBy(FoodProvider.FIELD_NAME, Query.Direction.ASCENDING)
-                .get()
+                .get(source)
                 .await()
 
+            if (foodProviders.isEmpty && source != Source.SERVER) {
+                foodProviders = foodProvidersRef
+                    .whereEqualTo(FoodProvider.FIELD_CATEGORY, category)
+                    .orderBy(FoodProvider.FIELD_NAME, Query.Direction.ASCENDING)
+                    .get(Source.SERVER)
+                    .await()
+            }
 
             for (document in foodProviders) {
                 document.toObject<FoodProvider>().let {
@@ -115,37 +118,37 @@ class AppRepository(
         ingredientRepository.updateLike(name, userDoesNotLike)
     }
 
-    private suspend fun getOrInsertIngredient(name: String): MealComponent {
+    private suspend fun getOrInsertIngredient(name: String): MealComponentEntity {
         return if (ingredientRepository.exists(name)) {
             ingredientRepository.get(name)!!
         } else {
-            val ingredient = Ingredient(
+            val ingredientEntity = IngredientEntity(
                 name = name,
                 icon = R.drawable.ic_mensa // TODO: extract icon
             )
-            if (ingredient.getName()
+            if (ingredientEntity.getName()
                     .isNotBlank()
             ) // TODO: find a better way if meal cannot be parsed
                 ingredientRepository.insert(
-                    ingredient
+                    ingredientEntity
                 )
-            ingredient
+            ingredientEntity
         }
     }
 
-    private suspend fun getOrInsertAllergenic(name: String): MealComponent {
+    private suspend fun getOrInsertAllergenic(name: String): MealComponentEntity {
         return if (allergenicRepository.exists(name)) {
             allergenicRepository.get(name)!!
         } else {
-            val allergenic = Allergenic(
+            val allergenicEntity = AllergenicEntity(
                 name = name,
                 icon = R.drawable.ic_mensa // TODO: extract icon
             )
-            if (allergenic.getName().isNotBlank())
+            if (allergenicEntity.getName().isNotBlank())
                 allergenicRepository.insert(
-                    allergenic
+                    allergenicEntity
                 )
-            allergenic
+            allergenicEntity
         }
     }
 

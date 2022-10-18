@@ -9,8 +9,8 @@ import de.erikspall.mensaapp.data.sources.local.database.entities.*
 
 @Database(
     entities = [
-        Allergenic::class,
-        Ingredient::class
+        AllergenicEntity::class,
+        IngredientEntity::class
     ],
     version = 1, exportSchema = false
 )

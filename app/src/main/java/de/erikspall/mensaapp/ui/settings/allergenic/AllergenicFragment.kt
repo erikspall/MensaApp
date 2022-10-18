@@ -13,7 +13,6 @@ import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.databinding.FragmentSettingsAllergenicBinding
-import de.erikspall.mensaapp.domain.const.MaterialSizes
 import de.erikspall.mensaapp.domain.utils.Extensions.observeOnce
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
@@ -104,7 +103,7 @@ class AllergenicFragment : Fragment() {
                 )
             }
         }
-        viewModel.state.allergenic.observeOnce(viewLifecycleOwner) { allergenic ->
+        viewModel.state.allergenicEntity.observeOnce(viewLifecycleOwner) { allergenic ->
             binding.filterGroupAllergenic.chipGroupFilterGroup.removeAllViews()
             allergenic.forEach { allergenic ->
                 binding.filterGroupAllergenic.chipGroupFilterGroup.addView(

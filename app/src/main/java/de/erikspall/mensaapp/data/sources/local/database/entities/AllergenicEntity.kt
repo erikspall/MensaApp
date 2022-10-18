@@ -3,11 +3,10 @@ package de.erikspall.mensaapp.data.sources.local.database.entities
 import androidx.annotation.DrawableRes
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "ingredient")
-data class Ingredient(
+@Entity(tableName = "allergenic")
+data class AllergenicEntity(
         @PrimaryKey
         private val name: String,
 
@@ -16,7 +15,7 @@ data class Ingredient(
         val icon: Int,
 
         private val userDoesNotLike: Boolean = false
-): MealComponent {
+): MealComponentEntity {
         override fun getName(): String {
                 return name
         }
@@ -25,4 +24,5 @@ data class Ingredient(
         override fun getUserDoesNotLike(): Boolean {
                 return userDoesNotLike
         }
+
 }

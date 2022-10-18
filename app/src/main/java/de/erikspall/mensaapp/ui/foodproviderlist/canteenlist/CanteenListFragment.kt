@@ -12,9 +12,7 @@ import android.view.View.*
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RawRes
-import androidx.core.view.children
 import androidx.core.view.doOnPreDraw
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.transition.MaterialElevationScale
@@ -214,6 +212,7 @@ class CanteenListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        // TODO: does not update when resumed after fragment paused and minute passes
          timeTickReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 Log.d("$TAG:broadcast-receiver", "Tick!")

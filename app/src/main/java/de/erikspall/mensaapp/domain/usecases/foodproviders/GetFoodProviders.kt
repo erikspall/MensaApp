@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
+import com.google.firebase.firestore.Source
 import de.erikspall.mensaapp.data.errorhandling.OptionalResult
 import de.erikspall.mensaapp.data.repositories.AppRepository
 import de.erikspall.mensaapp.domain.enums.Category
@@ -15,11 +16,13 @@ data class GetFoodProviders(
     private val appRepository: AppRepository
 ) {
     operator fun invoke(
-        category: Category
+        category: Category,
+        source: Source = Source.CACHE
     ): LiveData<OptionalResult<List<FoodProvider>>> = liveData(Dispatchers.IO) {
         emit(
             appRepository.getFoodProvidersFromFirestore(
-                category.getValue()
+                category.getValue(),
+                source
             )
         )
     }
