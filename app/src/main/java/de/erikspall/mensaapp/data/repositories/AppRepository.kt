@@ -12,6 +12,7 @@ import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
 import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.TextStyle
@@ -30,25 +31,26 @@ class AppRepository(
     val allIngredients: Flow<List<IngredientEntity>> =
         ingredientRepository.getAll()
 
-    suspend fun getFoodProvidersFromFirestore(category: String, source: Source): OptionalResult<List<FoodProvider>> {
+    // var foodProviders: OptionalResult<List<FoodProvider>> = OptionalResult.ofMsg("not ready")
+
+    suspend fun getFoodProvidersFromFirestore(
+        source: Source,
+        query: Query
+    ): OptionalResult<List<FoodProvider>> {
         try {
             val foodProviderList = mutableListOf<FoodProvider>()
 
-            var foodProviders: QuerySnapshot = foodProvidersRef
-                .whereEqualTo(FoodProvider.FIELD_CATEGORY, category)
-                .orderBy(FoodProvider.FIELD_NAME, Query.Direction.ASCENDING)
+            var foodProviderSnapshot: QuerySnapshot = query
                 .get(source)
                 .await()
 
-            if (foodProviders.isEmpty && source != Source.SERVER) {
-                foodProviders = foodProvidersRef
-                    .whereEqualTo(FoodProvider.FIELD_CATEGORY, category)
-                    .orderBy(FoodProvider.FIELD_NAME, Query.Direction.ASCENDING)
+            if (foodProviderSnapshot.isEmpty && source != Source.SERVER) {
+                foodProviderSnapshot = query
                     .get(Source.SERVER)
                     .await()
             }
 
-            for (document in foodProviders) {
+            for (document in foodProviderSnapshot) {
                 document.toObject<FoodProvider>().let {
                     it.photo = getImageOfFoodProvider(it.name, it.type, it.location)
                     it.openingHours = getOpeningHoursFromDocument(document)
@@ -60,50 +62,64 @@ class AppRepository(
                     foodProviderList.add(it)
                 }
             }
+            //foodProviders =
             return OptionalResult.of(foodProviderList)
         } catch (e: FirebaseFirestoreException) {
             return OptionalResult.ofMsg(e.message ?: "An error occurred")
         }
     }
 
-    private fun getOpeningHoursFromDocument(document: QueryDocumentSnapshot): Map<DayOfWeek, Map<String, LocalTime>> {
-        val result = mutableMapOf<DayOfWeek,  Map<String, LocalTime>>()
+    suspend fun getMenusOfFoodProvider(foodProviderName: String, date: LocalDate) {
+
+    }
+
+    private fun getOpeningHoursFromDocument(document: QueryDocumentSnapshot): Map<DayOfWeek, List<Map<String, LocalTime>>> {
+        val result = mutableMapOf<DayOfWeek, List<Map<String, LocalTime>>>()
         for (day in DayOfWeek.values()) {
-            val hourArray = document.get("hours_${day.getDisplayName(TextStyle.SHORT_STANDALONE, Locale.ENGLISH).lowercase()}") as List<Any?>?
+            val hourArray = document.get(
+                "hours_${
+                    day.getDisplayName(TextStyle.SHORT_STANDALONE, Locale.ENGLISH).lowercase()
+                }"
+            ) as List<Any?>?
+
+            val list = mutableListOf<Map<String, LocalTime>>()
 
             if (hourArray != null) {
                 /*
-                    0: openingAt
-                    1: closingAt
-                    2: getAMealTill
-                    3: isOpen
-                 */
-                val constructedOpeningHour = OpeningHour(
-                    opensAt = (hourArray[0] ?: "") as String,
-                    closesAt = (hourArray[1] ?: "") as String,
-                    getFoodTill = (hourArray[2] ?: "") as String,
-                    isOpen = (hourArray[3] ?: false) as Boolean,
-                    dayOfWeek = day
-                )
-
-                if (!constructedOpeningHour.isOpen) {
-                    result[constructedOpeningHour.dayOfWeek] = emptyMap()
-                } else {
-                    result[constructedOpeningHour.dayOfWeek] = mapOf<String, LocalTime>(
-                        OpeningHour.FIELD_OPENS_AT to LocalTime.of(
-                            constructedOpeningHour.opensAt.substringBefore(".").toInt(),
-                            constructedOpeningHour.opensAt.substringAfter(".").toInt()
-                        ),
-                        OpeningHour.FIELD_GET_FOOD_TILL to LocalTime.of(
-                            constructedOpeningHour.getFoodTill.substringBefore(".").toInt(),
-                            constructedOpeningHour.getFoodTill.substringAfter(".").toInt()
-                        ),
-                        OpeningHour.FIELD_CLOSES_AT to LocalTime.of(
-                            constructedOpeningHour.closesAt.substringBefore(".").toInt(),
-                            constructedOpeningHour.closesAt.substringAfter(".").toInt()
-                        )
+                            0: openingAt
+                            1: closingAt
+                            2: getAMealTill
+                            3: isOpen
+                */
+                for (i in hourArray.indices step 4) {
+                    val constructedOpeningHour = OpeningHour(
+                        opensAt = (hourArray[i] ?: "") as String,
+                        closesAt = (hourArray[i+1] ?: "") as String,
+                        getFoodTill = (hourArray[i+2] ?: "") as String,
+                        isOpen = (hourArray[i+3] ?: false) as Boolean,
+                        dayOfWeek = day
                     )
+                    val tempMap = if (!constructedOpeningHour.isOpen) {
+                        emptyMap()
+                    }else {
+                        mapOf<String, LocalTime>(
+                            OpeningHour.FIELD_OPENS_AT to LocalTime.of(
+                                constructedOpeningHour.opensAt.substringBefore(".").toInt(),
+                                constructedOpeningHour.opensAt.substringAfter(".").toInt()
+                            ),
+                            OpeningHour.FIELD_GET_FOOD_TILL to LocalTime.of(
+                                constructedOpeningHour.getFoodTill.substringBefore(".").toInt(),
+                                constructedOpeningHour.getFoodTill.substringAfter(".").toInt()
+                            ),
+                            OpeningHour.FIELD_CLOSES_AT to LocalTime.of(
+                                constructedOpeningHour.closesAt.substringBefore(".").toInt(),
+                                constructedOpeningHour.closesAt.substringAfter(".").toInt()
+                            )
+                        )
+                    }
+                    list.add(tempMap)
                 }
+                result[day] = list
             }
         }
         return result

@@ -2,6 +2,7 @@ package de.erikspall.mensaapp.ui.foodproviderlist.canteenlist
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.google.firebase.firestore.Source
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.errorhandling.OptionalResult
@@ -33,7 +34,7 @@ class CanteenListViewModel @Inject constructor(
 
     val state = FoodProviderListState()
 
-    var canteens = foodProviderUseCases.get(
+    var canteens = foodProviderUseCases.getAll(
         Category.CANTEEN
     )
 
@@ -54,8 +55,11 @@ class CanteenListViewModel @Inject constructor(
                 state.uiState.postValue(event.uiState)
             }
             is FoodProviderListEvent.GetLatest -> {
-                canteens = foodProviderUseCases.get(
-                    Category.CANTEEN
+                // TODO: only allow server fetch every x mins/hours/days?
+
+                canteens = foodProviderUseCases.getAll(
+                    Category.CANTEEN,
+                    Source.SERVER
                 )
                 // Notify Fragment that it should update its list
                 state.receivedData.postValue(!state.receivedData.value!!)

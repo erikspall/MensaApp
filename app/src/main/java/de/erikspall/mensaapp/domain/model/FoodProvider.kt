@@ -8,19 +8,20 @@ import java.time.LocalTime
 
 @IgnoreExtraProperties
 data class FoodProvider(
-    var name: String? = null,
-    var location: String? = null,
-    var category: String? = null,
-    var type: String? = null,
-    var address: String? = null,
+    var id: Int? = 0,
+    var name: String = "",
+    var location: String = "",
+    var category: String = "",
+    var type: String = "",
+    var address: String = "",
 
     @DrawableRes
     var photo: Int = 0,
 
-    var info: String? = null,
-    var additionalInfo: String? = null,
+    var info: String = "",
+    var additionalInfo: String = "",
 
-    var openingHours: Map<DayOfWeek,  Map<String, LocalTime>> = mutableMapOf(),
+    var openingHours: Map<DayOfWeek,  List<Map<String, LocalTime>>> = mutableMapOf(),
     var openingHoursString: String = ""
     //var description: Map<Locale, String> = mutableMapOf()
 ) {
@@ -28,6 +29,7 @@ data class FoodProvider(
 
 
     companion object {
+        const val FIELD_ID = "id"
         const val FIELD_LOCATION = "location"
         const val FIELD_CATEGORY = "category"
         const val FIELD_TYPE = "type"
@@ -55,15 +57,15 @@ data class FoodProvider(
     }
 
     override fun hashCode(): Int {
-        var result = name?.hashCode() ?: 0
+        var result = name.hashCode() ?: 0
         result = 31 * result + (openingHoursString.hashCode())
-        result = 31 * result + (location?.hashCode() ?: 0)
-        result = 31 * result + (category?.hashCode() ?: 0)
-        result = 31 * result + (type?.hashCode() ?: 0)
-        result = 31 * result + (address?.hashCode() ?: 0)
-        result = 31 * result + (photo?.hashCode() ?: 0)
-        result = 31 * result + (info?.hashCode() ?: 0)
-        result = 31 * result + (additionalInfo?.hashCode() ?: 0)
+        result = 31 * result + (location.hashCode() ?: 0)
+        result = 31 * result + (category.hashCode() ?: 0)
+        result = 31 * result + (type.hashCode() ?: 0)
+        result = 31 * result + (address.hashCode() ?: 0)
+        result = 31 * result + (photo.hashCode() ?: 0)
+        result = 31 * result + (info.hashCode() ?: 0)
+        result = 31 * result + (additionalInfo.hashCode() ?: 0)
         return result
     }
 }

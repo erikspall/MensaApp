@@ -15,15 +15,19 @@ import androidx.annotation.RawRes
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialElevationScale
 import dagger.hilt.android.AndroidEntryPoint
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.databinding.FragmentCanteenListBinding
 import de.erikspall.mensaapp.domain.const.MaterialSizes
+import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.domain.utils.Extensions.observeOnce
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
 import de.erikspall.mensaapp.ui.foodproviderlist.adapter.FoodProviderCardAdapter
+import de.erikspall.mensaapp.ui.foodproviderlist.cafelist.CafeListFragmentDirections
+import de.erikspall.mensaapp.ui.foodproviderlist.cafelist.CafeListViewModel
 import de.erikspall.mensaapp.ui.foodproviderlist.event.FoodProviderListEvent
 import de.erikspall.mensaapp.ui.state.UiState
 
@@ -77,7 +81,14 @@ class CanteenListFragment : Fragment() {
             binding.swipeRefresh.progressViewEndOffset - 24
         )
 
-        val adapter = FoodProviderCardAdapter()
+        val adapter = FoodProviderCardAdapter { foodProviderId, category ->
+            val directions = if (category == Category.CAFETERIA)
+                CafeListFragmentDirections.actionOpenDetails(foodProviderId, category.ordinal)
+            else
+                CanteenListFragmentDirections.actionOpenDetails(foodProviderId, category.ordinal)
+
+            findNavController().navigate(directions)
+        }
 
         binding.recyclerViewCanteen.adapter = adapter
 
@@ -160,7 +171,10 @@ class CanteenListFragment : Fragment() {
                                 )
                             }
                         } else {
-                            showMessage(R.raw.error, "Irgendetwas ist schiefgelaufen :(\nBesteht eine Internetverbindung?")
+                            showMessage(
+                                R.raw.error,
+                                "Irgendetwas ist schiefgelaufen :(\nBesteht eine Internetverbindung?"
+                            )
                         }
 
                     } else {
@@ -213,7 +227,7 @@ class CanteenListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         // TODO: does not update when resumed after fragment paused and minute passes
-         timeTickReceiver = object : BroadcastReceiver() {
+        timeTickReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 Log.d("$TAG:broadcast-receiver", "Tick!")
                 // Update content of recyclerview if present

@@ -10,6 +10,7 @@ import de.erikspall.mensaapp.data.repositories.AppRepository
 import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.domain.enums.Location
 import de.erikspall.mensaapp.domain.model.FoodProvider
+import de.erikspall.mensaapp.domain.utils.queries.QueryUtils
 import kotlinx.coroutines.Dispatchers
 
 data class GetFoodProviders(
@@ -21,8 +22,8 @@ data class GetFoodProviders(
     ): LiveData<OptionalResult<List<FoodProvider>>> = liveData(Dispatchers.IO) {
         emit(
             appRepository.getFoodProvidersFromFirestore(
-                category.getValue(),
-                source
+                source,
+                QueryUtils.queryFoodProvidersByCategory(category)
             )
         )
     }

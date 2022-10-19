@@ -7,8 +7,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.errorhandling.OptionalResult
 import de.erikspall.mensaapp.data.errorhandling.OptionalResultMsg
+import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.domain.enums.Role
 import de.erikspall.mensaapp.domain.enums.StringResEnum
+import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
 import de.erikspall.mensaapp.ui.foodproviderdetail.event.DetailEvent
 import de.erikspall.mensaapp.ui.foodproviderdetail.viewmodel.state.FoodProviderDetailState
@@ -19,7 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FoodProviderDetailViewModel @Inject constructor(
-    private val preferencesUseCases: SharedPreferenceUseCases
+    private val preferencesUseCases: SharedPreferenceUseCases,
+    private val foodProviderUseCases: FoodProviderUseCases
 ) : ViewModel() {
     val state = FoodProviderDetailState()
     //val menus = foodProviderUseCases.getMenus()
@@ -28,10 +31,19 @@ class FoodProviderDetailViewModel @Inject constructor(
         when (event) {
             is DetailEvent.Init -> {
                 if (event.showingCafeteria) {
-                    state.showingCafeteria = true
+                    state.category = Category.CAFETERIA
                     state.uiState.value = UiState.NO_INFO
-                } else if (state.fid == -1L) {
-                    state.fid = event.fid
+                } else if (state.foodProvider.value == null) {
+                    viewModelScope.launch {
+                        foodProviderUseCases.get(
+                            event.foodProviderId
+                        ).apply {
+                            if (this.isPresent) {
+                                state.foodProvider.postValue(this.get())
+                            }
+                        }
+                    }
+
                     state.warningsEnabled =
                         preferencesUseCases.getBoolean(R.string.setting_warnings_enabled, false)
 
@@ -47,7 +59,7 @@ class FoodProviderDetailViewModel @Inject constructor(
                 }
             }
             is DetailEvent.RefreshMenus -> {
-                if (!state.showingCafeteria) // Obsolete, always false here ?
+                if (state.category != Category.CAFETERIA) // Obsolete, always false here ?
                     viewModelScope.launch {
                         val result = OptionalResult.ofMsg<String>("Not yet implemented")
                         if (result.isEmpty) {

@@ -36,8 +36,6 @@ object AppModule {
     fun provideFirebaseFirestore() = FirebaseFirestore.getInstance()
 
 
-
-
     @Provides
     @Singleton
     fun provideAllergenicRepository(db: AppDatabase): AllergenicRepository {
@@ -49,7 +47,6 @@ object AppModule {
     fun provideIngredientRepository(db: AppDatabase): IngredientRepository {
         return IngredientRepository(db.ingredientsDao())
     }
-
 
 
     @Provides
@@ -76,13 +73,17 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideFoodProvidersCollectionReference(rootRef: FirebaseFirestore): CollectionReference = rootRef.collection(FOODPROVIDERS_COLLECTION)
+    fun provideFoodProvidersCollectionReference(rootRef: FirebaseFirestore): CollectionReference =
+        rootRef.collection(FOODPROVIDERS_COLLECTION)
 
     @Provides
     @Singleton
     fun provideSharedPreferences(
         @ApplicationContext appContext: Context
-    ) : SharedPreferences {
-        return appContext.getSharedPreferences(appContext.getString(R.string.shared_pref_name), Context.MODE_PRIVATE)
+    ): SharedPreferences {
+        return appContext.getSharedPreferences(
+            appContext.getString(R.string.shared_pref_name),
+            Context.MODE_PRIVATE
+        )
     }
 }
