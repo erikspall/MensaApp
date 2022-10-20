@@ -1,25 +1,27 @@
-package de.erikspall.mensaapp.ui.settings.allergenic.viewmodel
+package de.erikspall.mensaapp.ui.settings.mealcomponents.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.erikspall.mensaapp.R
+import de.erikspall.mensaapp.domain.usecases.mealcomponents.MealComponentUseCases
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
-import de.erikspall.mensaapp.ui.settings.allergenic.event.AllergenicEvent
-import de.erikspall.mensaapp.ui.settings.allergenic.viewmodel.state.AllergenicState
+import de.erikspall.mensaapp.ui.settings.mealcomponents.event.AllergenicEvent
+import de.erikspall.mensaapp.ui.settings.mealcomponents.viewmodel.state.MealComponentState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AllergenicViewModel @Inject constructor(
+class MealComponentViewModel @Inject constructor(
         @ApplicationContext private val context: Context,
-        private val sharedPreferences: SharedPreferenceUseCases
+        private val sharedPreferences: SharedPreferenceUseCases,
+        private val mealComponentUseCases: MealComponentUseCases
 ) : ViewModel() {
-    val state = AllergenicState(
+    val state = MealComponentState(
             warningsActivated = MutableLiveData(sharedPreferences.getBoolean(R.string.setting_warnings_enabled, false)),
-          /*  allergenic = LiveData<List<Allergenic>>(),
-            ingredients = mealComponentsUseCases.getIngredients().asLiveData()*/
+            allergens = mealComponentUseCases.getAllergens().asLiveData(),
+            ingredients = mealComponentUseCases.getIngredients().asLiveData()
     )
     fun onEvent(event: AllergenicEvent) {
         when (event) {
@@ -29,12 +31,12 @@ class AllergenicViewModel @Inject constructor(
             }
             is AllergenicEvent.OnAllergenicChecked -> {
                 viewModelScope.launch {
-                    //mealComponentsUseCases.setAllergenicLikeStatus(event.name, event.checked)
+                    mealComponentUseCases.setAllergenLikeStatus(event.name, event.checked)
                 }
             }
             is AllergenicEvent.OnIngredientChecked -> {
                 viewModelScope.launch {
-                    //mealComponentsUseCases.setIngredientLikeStatus(event.name, event.checked)
+                    mealComponentUseCases.setIngredientLikeStatus(event.name, event.checked)
                 }
             }
         }

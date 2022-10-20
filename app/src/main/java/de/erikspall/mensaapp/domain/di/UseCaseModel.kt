@@ -8,9 +8,12 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import de.erikspall.mensaapp.data.repositories.AppRepository
+import de.erikspall.mensaapp.domain.model.Meal
 import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
 import de.erikspall.mensaapp.domain.usecases.foodproviders.GetFoodProvider
 import de.erikspall.mensaapp.domain.usecases.foodproviders.GetFoodProviders
+import de.erikspall.mensaapp.domain.usecases.foodproviders.GetMenusOfFoodProviderFromDate
+import de.erikspall.mensaapp.domain.usecases.mealcomponents.*
 import de.erikspall.mensaapp.domain.usecases.openinghours.FormatToString
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.*
@@ -27,7 +30,8 @@ object UseCaseModel {
     ): FoodProviderUseCases {
         return FoodProviderUseCases(
             getAll = GetFoodProviders(appRepository),
-            get = GetFoodProvider(appRepository)
+            get = GetFoodProvider(appRepository),
+            getMenusOfFoodProviderFromDate = GetMenusOfFoodProviderFromDate(appRepository)
         )
     }
 
@@ -54,6 +58,19 @@ object UseCaseModel {
             getValueRes = GetValueRes(appContext, sharedPref),
             setBoolean = SetBoolean(appContext, sharedPref),
             getBoolean = GetBoolean(appContext, sharedPref)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideMealComponentUseCases(
+        appRepository: AppRepository
+    ): MealComponentUseCases {
+        return MealComponentUseCases(
+            setIngredientLikeStatus = SetIngredientLikeStatus(appRepository),
+            setAllergenLikeStatus = SetAllergenLikeStatus(appRepository),
+            getAllergens = GetAllergens(appRepository),
+            getIngredients = GetIngredients(appRepository)
         )
     }
 }

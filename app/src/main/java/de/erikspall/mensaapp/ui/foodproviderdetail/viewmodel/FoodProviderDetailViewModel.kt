@@ -3,6 +3,7 @@ package de.erikspall.mensaapp.ui.foodproviderdetail.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.Source
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.errorhandling.OptionalResult
@@ -16,6 +17,7 @@ import de.erikspall.mensaapp.ui.foodproviderdetail.event.DetailEvent
 import de.erikspall.mensaapp.ui.foodproviderdetail.viewmodel.state.FoodProviderDetailState
 import de.erikspall.mensaapp.ui.state.UiState
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.util.*
 import javax.inject.Inject
 
@@ -34,14 +36,19 @@ class FoodProviderDetailViewModel @Inject constructor(
                     state.category = Category.CAFETERIA
                     state.uiState.value = UiState.NO_INFO
                 } else if (state.foodProvider.value == null) {
+                    state.foodProviderId = event.foodProviderId
+
                     viewModelScope.launch {
+                        Log.d("$TAG:setters", "Retrieving info of FoodProvider ${event.foodProviderId}")
                         foodProviderUseCases.get(
                             event.foodProviderId
                         ).apply {
                             if (this.isPresent) {
-                                state.foodProvider.postValue(this.get())
+                                Log.d("$TAG:setters", "Setting FoodProvider ...")
+                                state.foodProvider.value = (this.get())
                             }
                         }
+
                     }
 
                     state.warningsEnabled =
@@ -55,13 +62,31 @@ class FoodProviderDetailViewModel @Inject constructor(
                                 defaultValue = Role.STUDENT.getValue()
                             )
                         )
+                    // TODO block and then do that
+                    Log.d("$TAG:setters", "Refreshing menus ...")
                     onEvent(DetailEvent.RefreshMenus)
+
                 }
             }
             is DetailEvent.RefreshMenus -> {
                 if (state.category != Category.CAFETERIA) // Obsolete, always false here ?
                     viewModelScope.launch {
-                        val result = OptionalResult.ofMsg<String>("Not yet implemented")
+                        Log.d("$TAG:setters", "Retrieving menus of foodprovider ${state.foodProviderId}")
+                        val result = foodProviderUseCases.getMenusOfFoodProviderFromDate(
+                            foodProviderId = state.foodProviderId,
+                            date = LocalDate.now(),
+                            source = Source.SERVER
+                        ).apply {
+
+                            if (this.isPresent) {
+                                Log.d("$TAG:setters", "Setting ${this.get().size} menus")
+                                state.menus.postValue(this.get())
+                            } else {
+                                Log.d("$TAG:setters", "No menus found!")
+                                state.menus.postValue(emptyList())
+                            }
+
+                        }
                         if (result.isEmpty) {
                             // Set UI state
                             Log.d(
@@ -71,12 +96,15 @@ class FoodProviderDetailViewModel @Inject constructor(
                             when (result.getMessage()) {
                                 "server unreachable" -> state.uiState.postValue(UiState.NO_INTERNET)
                                 "server not responding" -> state.uiState.postValue(UiState.NO_CONNECTION)
-                                "no meals" -> state.uiState.postValue(UiState.NO_INFO)
+                                "no menus" -> state.uiState.postValue(UiState.NO_INFO)
                                 else -> state.uiState.postValue(UiState.ERROR)
                             }
                         }
                     }
             }
         }
+    }
+    companion object {
+        const val TAG = "DetailViewModel"
     }
 }

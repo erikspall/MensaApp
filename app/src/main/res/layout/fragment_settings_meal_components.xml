@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:transitionGroup="true"
-        tools:context="de.erikspall.mensaapp.ui.settings.allergenic.AllergenicFragment">
+        tools:context="de.erikspall.mensaapp.ui.settings.mealcomponents.MealComponentFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/settings_allergenic_appbar_layout"

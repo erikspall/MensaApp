@@ -1,6 +1,7 @@
 package de.erikspall.mensaapp.ui.foodproviderdetail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
@@ -23,6 +25,7 @@ import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
 import de.erikspall.mensaapp.domain.utils.MaterialTextViewExtension.setTextWithLineConstraint
+import de.erikspall.mensaapp.ui.foodproviderdetail.adapter.MenuAdapter
 import de.erikspall.mensaapp.ui.foodproviderlist.canteenlist.CanteenListFragmentArgs
 import de.erikspall.mensaapp.ui.foodproviderdetail.event.DetailEvent
 import de.erikspall.mensaapp.ui.foodproviderdetail.viewmodel.FoodProviderDetailViewModel
@@ -89,7 +92,7 @@ class FoodProviderDetailFragment : Fragment() {
 
 
         // binding.textFoodProviderName.text = DummyDataSource.canteens[foodProviderId].getName()
-/*
+
         val adapter = MenuAdapter(
             requireContext(),
             binding.menusHolder,
@@ -102,7 +105,7 @@ class FoodProviderDetailFragment : Fragment() {
             }
         )
 
-        binding.recyclerViewMenus.adapter = adapter*/
+        binding.recyclerViewMenus.adapter = adapter
 
         binding.recyclerViewMenus.pushContentUpBy(
             HeightExtractor.getNavigationBarHeight(requireContext()) +
@@ -116,6 +119,18 @@ class FoodProviderDetailFragment : Fragment() {
             )
         )
 
+        // var notFirstTime = false
+        viewModel.state.menus.observe(viewLifecycleOwner) { menus ->
+            Log.d("$TAG:menus", "received ${menus.size} menus")
+            adapter.warningsEnabled = viewModel.state.warningsEnabled
+            adapter.role = viewModel.state.role
+            //if (menus.isEmpty() && notFirstTime)
+            //    showMessage(R.raw.no_menus, "Keine Gerichte gefunden :(", forceLottie = true)
+            // else {
+            // notFirstTime = true
+            menus.let { adapter.submitList(it) }
+            // }
+        }
 
 
         setupObservers()
@@ -325,5 +340,9 @@ class FoodProviderDetailFragment : Fragment() {
         // )
 
         //binding.iconButton.layoutParams = params
+    }
+
+    companion object {
+        const val TAG = "DetailFragment"
     }
 }

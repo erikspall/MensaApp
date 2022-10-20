@@ -1,20 +1,24 @@
 package de.erikspall.mensaapp.data.repositories
 
+import android.util.Log
 import androidx.annotation.DrawableRes
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.errorhandling.OptionalResult
 import de.erikspall.mensaapp.data.sources.local.database.entities.*
+import de.erikspall.mensaapp.domain.enums.Role
 import de.erikspall.mensaapp.domain.model.FoodProvider
+import de.erikspall.mensaapp.domain.model.Meal
+import de.erikspall.mensaapp.domain.model.Menu
 import de.erikspall.mensaapp.domain.model.OpeningHour
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
+import de.erikspall.mensaapp.domain.utils.Extensions.toDate
+import de.erikspall.mensaapp.domain.utils.queries.QueryUtils
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
+import java.time.*
 import java.time.format.TextStyle
 import java.util.*
 
@@ -25,7 +29,7 @@ class AppRepository(
     private val openingHourUseCases: OpeningHourUseCases
 ) {
 
-    val allAllergenicEntity: Flow<List<AllergenicEntity>> =
+    val allAllergens: Flow<List<AllergenEntity>> =
         allergenicRepository.getAll()
 
     val allIngredients: Flow<List<IngredientEntity>> =
@@ -44,9 +48,10 @@ class AppRepository(
                 .get(source)
                 .await()
 
-            if (foodProviderSnapshot.isEmpty && source != Source.SERVER) {
+            if (foodProviderSnapshot.isEmpty) {
+                val backupSource = if (source == Source.SERVER) Source.CACHE else Source.SERVER
                 foodProviderSnapshot = query
-                    .get(Source.SERVER)
+                    .get(backupSource)
                     .await()
             }
 
@@ -69,8 +74,95 @@ class AppRepository(
         }
     }
 
-    suspend fun getMenusOfFoodProvider(foodProviderName: String, date: LocalDate) {
+    suspend fun getMenusOfFoodProvider(
+        source: Source,
+        foodProviderId: Int,
+        date: LocalDate
+    ): OptionalResult<List<Menu>> {
+        try {
+            val query = QueryUtils.queryMealsOfFoodProviderStartingFromDate(foodProviderId, date.toDate())
 
+            var mealsSnapshot: QuerySnapshot = query
+                .get(source)
+                .await()
+
+            if (mealsSnapshot.isEmpty) {
+                val backupSource = if (source == Source.SERVER) Source.CACHE else Source.SERVER
+                mealsSnapshot = query
+                    .get(backupSource)
+                    .await()
+            }
+            Log.d("$TAG:menus", "returning ${mealsSnapshot.documents.size} meals")
+
+            val meals = parseMenusFromSnapshot(mealsSnapshot)
+
+            return if (meals.isNotEmpty())
+                OptionalResult.of(meals)
+            else
+                OptionalResult.ofMsg("no menus")
+        } catch (e: Exception) {
+            return OptionalResult.ofMsg(e.message ?: "An error occurred")
+        }
+
+    }
+
+    private suspend fun parseMenusFromSnapshot(snapshot: QuerySnapshot): List<Menu> {
+        val menuMap = mutableMapOf<LocalDate, MutableList<Meal>>()
+        for (document in snapshot) {
+            val date = (document.get(Meal.FIELD_DATE) as Timestamp).toDate().let {
+                it.toInstant().atZone(ZoneId.systemDefault())
+                    .toLocalDate()
+            }
+
+            val meals = (
+                    if (menuMap[date] != null)
+                        menuMap[date]
+                    else
+                        mutableListOf()
+                    )!!
+
+            meals.add(
+                Meal(
+                    name = document.get(Meal.FIELD_NAME) as String,
+                    allergens = getOrInsertAllAllergens(document.get(Meal.FIELD_ALLERGENS) as String),
+                    ingredients = getOrInsertAllIngredients(document.get(Meal.FIELD_INGREDIENTS) as String),
+                    prices = mapOf(
+                        Role.EMPLOYEE to document.get(Meal.FIELD_PRICE_EMPLOYEE) as String,
+                        Role.GUEST to document.get(Meal.FIELD_PRICE_GUEST) as String,
+                        Role.STUDENT to document.get(Meal.FIELD_PRICE_STUDENT) as String
+                    )
+                )
+            )
+
+            menuMap[date] = meals
+        }
+
+        val menus = mutableListOf<Menu>()
+
+        for (date in menuMap.keys) {
+            menus.add(Menu(
+                date = date,
+                meals = menuMap[date]?.toList() ?: emptyList()
+            ))
+        }
+
+        return menus
+    }
+
+    private suspend fun getOrInsertAllIngredients(rawIngredients: String): List<IngredientEntity> {
+        val ingredients = mutableListOf<IngredientEntity>()
+        for (rawIngredient in rawIngredients.split(",")) {
+            ingredients.add(getOrInsertIngredient(rawIngredient) as IngredientEntity)
+        }
+        return ingredients
+    }
+
+    private suspend fun getOrInsertAllAllergens(rawAllergens: String): List<AllergenEntity> {
+        val allergens = mutableListOf<AllergenEntity>()
+        for (rawAllergen in rawAllergens.split(",")) {
+            allergens.add(getOrInsertAllergenic(rawAllergen) as AllergenEntity)
+        }
+        return allergens
     }
 
     private fun getOpeningHoursFromDocument(document: QueryDocumentSnapshot): Map<DayOfWeek, List<Map<String, LocalTime>>> {
@@ -94,14 +186,14 @@ class AppRepository(
                 for (i in hourArray.indices step 4) {
                     val constructedOpeningHour = OpeningHour(
                         opensAt = (hourArray[i] ?: "") as String,
-                        closesAt = (hourArray[i+1] ?: "") as String,
-                        getFoodTill = (hourArray[i+2] ?: "") as String,
-                        isOpen = (hourArray[i+3] ?: false) as Boolean,
+                        closesAt = (hourArray[i + 1] ?: "") as String,
+                        getFoodTill = (hourArray[i + 2] ?: "") as String,
+                        isOpen = (hourArray[i + 3] ?: false) as Boolean,
                         dayOfWeek = day
                     )
                     val tempMap = if (!constructedOpeningHour.isOpen) {
                         emptyMap()
-                    }else {
+                    } else {
                         mapOf<String, LocalTime>(
                             OpeningHour.FIELD_OPENS_AT to LocalTime.of(
                                 constructedOpeningHour.opensAt.substringBefore(".").toInt(),
@@ -156,15 +248,15 @@ class AppRepository(
         return if (allergenicRepository.exists(name)) {
             allergenicRepository.get(name)!!
         } else {
-            val allergenicEntity = AllergenicEntity(
+            val allergenEntity = AllergenEntity(
                 name = name,
                 icon = R.drawable.ic_mensa // TODO: extract icon
             )
-            if (allergenicEntity.getName().isNotBlank())
+            if (allergenEntity.getName().isNotBlank())
                 allergenicRepository.insert(
-                    allergenicEntity
+                    allergenEntity
                 )
-            allergenicEntity
+            allergenEntity
         }
     }
 
@@ -234,5 +326,7 @@ class AppRepository(
             "cafeteria_feldkirchenstrasse_bamberg" to R.drawable.mensa_feldkirchenstrasse_bamberg,
             "cafeteria_fhws_campus_schweinfurt" to R.drawable.mensa_fhws_campus_schweinfurt
         )
+
+        const val TAG = "AppRepo"
     }
 }

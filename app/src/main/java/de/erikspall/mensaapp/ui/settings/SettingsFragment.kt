@@ -138,7 +138,7 @@ class SettingsFragment : Fragment() {
             reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false).apply {
                 duration = 500L
             }
-            val directions = SettingsFragmentDirections.actionSettingsDestToAllergenicFragment()
+            val directions = SettingsFragmentDirections.actionSettingsDestToMealComponentFragment()
             findNavController().navigate(directions)
         }
     }

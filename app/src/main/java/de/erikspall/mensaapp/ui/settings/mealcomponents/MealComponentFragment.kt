@@ -1,4 +1,4 @@
-package de.erikspall.mensaapp.ui.settings.allergenic
+package de.erikspall.mensaapp.ui.settings.mealcomponents
 
 import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
@@ -12,22 +12,22 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.databinding.FragmentSettingsAllergenicBinding
+import de.erikspall.mensaapp.databinding.FragmentSettingsMealComponentsBinding
 import de.erikspall.mensaapp.domain.utils.Extensions.observeOnce
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
-import de.erikspall.mensaapp.ui.settings.allergenic.event.AllergenicEvent
-import de.erikspall.mensaapp.ui.settings.allergenic.viewmodel.AllergenicViewModel
+import de.erikspall.mensaapp.ui.settings.mealcomponents.event.AllergenicEvent
+import de.erikspall.mensaapp.ui.settings.mealcomponents.viewmodel.MealComponentViewModel
 
 @AndroidEntryPoint
-class AllergenicFragment : Fragment() {
-    private var _binding: FragmentSettingsAllergenicBinding? = null
+class MealComponentFragment : Fragment() {
+    private var _binding: FragmentSettingsMealComponentsBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private val viewModel: AllergenicViewModel by viewModels()
+    private val viewModel: MealComponentViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +53,7 @@ class AllergenicFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSettingsAllergenicBinding.inflate(inflater, container, false)
+        _binding = FragmentSettingsMealComponentsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         binding.containerFilterGroups.pushContentUpBy(
@@ -103,19 +103,19 @@ class AllergenicFragment : Fragment() {
                 )
             }
         }
-        viewModel.state.allergenicEntity.observeOnce(viewLifecycleOwner) { allergenic ->
+        viewModel.state.allergens.observeOnce(viewLifecycleOwner) { allergens ->
             binding.filterGroupAllergenic.chipGroupFilterGroup.removeAllViews()
-            allergenic.forEach { allergenic ->
+            allergens.forEach { allergen ->
                 binding.filterGroupAllergenic.chipGroupFilterGroup.addView(
                     (layoutInflater.inflate(
                         R.layout.layout_filter_chip,
                         binding.filterGroupIngredients.chipGroupFilterGroup,
                         false
                     ) as Chip).apply {
-                        text = allergenic.getName()
+                        text = allergen.getName()
                         setEnsureMinTouchTargetSize(false)
                         isCheckable = true
-                        isChecked = allergenic.getUserDoesNotLike()
+                        isChecked = allergen.getUserDoesNotLike()
                         setOnCheckedChangeListener { chip, isChecked ->
                             viewModel.onEvent(AllergenicEvent.OnAllergenicChecked(chip.text.toString(), isChecked))
                         }

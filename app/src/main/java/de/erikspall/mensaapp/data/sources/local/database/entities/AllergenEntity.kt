@@ -6,7 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "allergenic")
-data class AllergenicEntity(
+data class AllergenEntity(
         @PrimaryKey
         private val name: String,
 

@@ -1,4 +1,4 @@
-package de.erikspall.mensaapp.ui.settings.allergenic.event
+package de.erikspall.mensaapp.ui.settings.mealcomponents.event
 
 sealed class AllergenicEvent {
     data class OnWarningsChanged(val warningsActivated: Boolean): AllergenicEvent()
