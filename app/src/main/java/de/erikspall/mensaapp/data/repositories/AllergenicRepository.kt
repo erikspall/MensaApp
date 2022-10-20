@@ -1,5 +1,6 @@
 package de.erikspall.mensaapp.data.repositories
 
+import androidx.lifecycle.LiveData
 import de.erikspall.mensaapp.data.sources.local.database.daos.AllergenicDao
 import de.erikspall.mensaapp.data.sources.local.database.entities.AllergenEntity
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +28,7 @@ class AllergenicRepository(
         allergenicDao.updateLike(name, userDoesNotLike)
     }
 
-    fun getAll(): Flow<List<AllergenEntity>> {
+    fun getAll(): LiveData<List<AllergenEntity>> {
         return allergenicDao.getAll()
     }
 

@@ -1,5 +1,6 @@
 package de.erikspall.mensaapp.data.repositories
 
+import androidx.lifecycle.LiveData
 import de.erikspall.mensaapp.data.sources.local.database.daos.IngredientDao
 import de.erikspall.mensaapp.data.sources.local.database.entities.IngredientEntity
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +28,7 @@ class IngredientRepository(
         ingredientDao.updateLike(name, userDoesNotLike)
     }
 
-    fun getAll(): Flow<List<IngredientEntity>> {
+    fun getAll(): LiveData<List<IngredientEntity>> {
         return ingredientDao.getAll()
     }
 

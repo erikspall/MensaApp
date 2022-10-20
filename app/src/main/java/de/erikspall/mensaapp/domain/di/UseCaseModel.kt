@@ -70,7 +70,8 @@ object UseCaseModel {
             setIngredientLikeStatus = SetIngredientLikeStatus(appRepository),
             setAllergenLikeStatus = SetAllergenLikeStatus(appRepository),
             getAllergens = GetAllergens(appRepository),
-            getIngredients = GetIngredients(appRepository)
+            getIngredients = GetIngredients(appRepository),
+            fetchLatest = FetchLatest(appRepository)
         )
     }
 }

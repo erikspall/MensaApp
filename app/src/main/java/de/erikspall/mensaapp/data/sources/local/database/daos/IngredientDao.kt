@@ -1,5 +1,6 @@
 package de.erikspall.mensaapp.data.sources.local.database.daos
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import de.erikspall.mensaapp.data.sources.local.database.entities.IngredientEntity
 import kotlinx.coroutines.flow.Flow
@@ -29,6 +30,6 @@ interface IngredientDao {
     suspend fun get(name: String): IngredientEntity?
 
     @Query("SELECT * FROM ingredient")
-    fun getAll(): Flow<List<IngredientEntity>>
+    fun getAll(): LiveData<List<IngredientEntity>>
 
 }

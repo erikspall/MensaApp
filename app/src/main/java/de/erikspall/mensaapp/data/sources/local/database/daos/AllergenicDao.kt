@@ -1,5 +1,6 @@
 package de.erikspall.mensaapp.data.sources.local.database.daos
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import de.erikspall.mensaapp.data.sources.local.database.entities.AllergenEntity
 import kotlinx.coroutines.flow.Flow
@@ -28,5 +29,5 @@ interface AllergenicDao {
     suspend fun get(name: String): AllergenEntity?
 
     @Query("SELECT * FROM allergenic")
-    fun getAll(): Flow<List<AllergenEntity>>
+    fun getAll(): LiveData<List<AllergenEntity>>
 }
