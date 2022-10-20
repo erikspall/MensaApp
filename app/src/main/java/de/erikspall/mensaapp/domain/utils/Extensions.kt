@@ -1,11 +1,6 @@
 package de.erikspall.mensaapp.domain.utils
 
 import android.content.Context
-import android.graphics.Color
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.util.TypedValue
 import android.view.View
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
@@ -13,15 +8,15 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.color.DynamicColors
-import com.google.android.material.color.MaterialColors
-import com.google.android.material.textview.MaterialTextView
 import de.erikspall.mensaapp.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.toList
+import java.time.LocalDate
+import java.time.ZoneId
+import java.util.*
 
 object Extensions {
     @ColorInt
@@ -65,6 +60,10 @@ object Extensions {
     }
 
     suspend fun <T> Flow<List<T>>.flattenToList() = flatMapConcat { it.asFlow() }.toList()
+
+    fun LocalDate.toDate(): Date {
+        return Date.from(this.atStartOfDay(ZoneId.systemDefault()).toInstant())
+    }
 
     /*fun MaterialTextView.setTextWithLineConstraint(
         text: String, maxLines: Int, truncated: Boolean = true

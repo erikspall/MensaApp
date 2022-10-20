@@ -71,12 +71,12 @@ class CafeListFragment : Fragment() {
                     MaterialSizes.BOTTOM_NAV_HEIGHT
         )
 
-        val adapter = FoodProviderCardAdapter(
+       /* val adapter = FoodProviderCardAdapter(
             requireContext(),
             findNavController()
         )
 
-        binding.recyclerViewCafe.adapter = adapter
+        binding.recyclerViewCafe.adapter = adapter*/
 
         binding.swipeRefresh.setProgressViewOffset(
             false,
@@ -87,7 +87,7 @@ class CafeListFragment : Fragment() {
         setupListeners()
         setupObservers()
 
-        viewModel.onEvent(FoodProviderListEvent.CheckIfNewLocationSet)
+       // viewModel.onEvent(FoodProviderListEvent.CheckIfNewLocationSet)
 
         return root
     }
@@ -95,32 +95,17 @@ class CafeListFragment : Fragment() {
     private fun setupListeners() {
         binding.swipeRefresh.setOnRefreshListener {
             viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.onEvent(FoodProviderListEvent.GetLatestInfo)
+               // viewModel.onEvent(FoodProviderListEvent.GetLatestInfo)
             }
         }
     }
 
     private fun setupObservers() {
-        viewModel.state.isRefreshing.observe(viewLifecycleOwner) { isRefreshing ->
+        /*viewModel.state.isRefreshing.observe(viewLifecycleOwner) { isRefreshing ->
             if (!isRefreshing)
                 binding.swipeRefresh.isRefreshing = false
         }
 
-        viewModel.cafeterias.observe(viewLifecycleOwner) { cafes ->
-            if (cafes.isEmpty()) {
-                viewModel.onEvent(FoodProviderListEvent.GetLatestInfo)
-                viewModel.onEvent(FoodProviderListEvent.NewUiState(UiState.LOADING))
-            } else {
-                viewModel.onEvent(FoodProviderListEvent.NewUiState(UiState.NORMAL))
-
-            }
-            Log.d("CafeListFragment", "Cafes: $cafes")
-            cafes.let {
-                (binding.recyclerViewCafe.adapter as FoodProviderCardAdapter).submitList(it.filter { foodProvider ->
-                    foodProvider.location.name == requireContext().getString(viewModel.state.location.getValue())
-                })
-            }
-        }
 
         viewModel.state.uiState.observe(viewLifecycleOwner) { uiState ->
             when (uiState) {
@@ -159,7 +144,7 @@ class CafeListFragment : Fragment() {
 
                 }
             }
-        }
+        }*/
     }
 
     private fun showMessage(@RawRes animation: Int, errorMsg: String, animationSpeed: Float = 1f) {

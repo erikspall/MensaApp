@@ -2,6 +2,7 @@ package de.erikspall.mensaapp.ui.foodproviderdetail.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +12,6 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -23,18 +23,14 @@ import com.google.android.material.chip.ChipGroup
 import com.google.android.material.divider.MaterialDivider
 import com.google.android.material.textview.MaterialTextView
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.data.sources.local.database.entities.Menu
-import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Role
+import de.erikspall.mensaapp.domain.enums.Role
+import de.erikspall.mensaapp.domain.model.Menu
 import de.erikspall.mensaapp.domain.utils.Extensions.getDynamicColorIfAvailable
 import kotlinx.coroutines.*
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.time.format.TextStyle
 import java.util.*
-import java.util.stream.Collectors
-
-//import de.erikspall.mensaapp.domain.model.enums.Role
-//import de.erikspall.mensaapp.domain.model.interfaces.Menu
 
 class MenuAdapter(
     private val context: Context,
@@ -100,7 +96,7 @@ class MenuAdapter(
                 }
 
                 textMealName.text = meal.name
-                textMealPrice.text = meal.getPrice(role)
+                textMealPrice.text = meal.prices[role]
 
                 chipMealCategory.text = meal.ingredients.joinToString { ingredient ->
                     if (ingredient.getUserDoesNotLike() && warningsEnabled) {
@@ -109,6 +105,8 @@ class MenuAdapter(
                     ingredient.getName()
                 }
 
+                // TODO: Hide mealCategory if none set
+
                 meal.allergens.forEach { allergenic ->
                     Chip(context).apply {
                         text = allergenic.getName()
@@ -116,6 +114,9 @@ class MenuAdapter(
                         isClickable = false
                         if (allergenic.getUserDoesNotLike() && warningsEnabled) {
                             chipIcon = ContextCompat.getDrawable(context, R.drawable.ic_info)
+                            val colorError = context.getDynamicColorIfAvailable(R.attr.colorError)
+                            chipIconTint = ColorStateList.valueOf(colorError)
+                            setTextColor(colorError)
                             warningIcon.visibility = View.VISIBLE
                         }
                         chipGroupAllergenic.addView(this)

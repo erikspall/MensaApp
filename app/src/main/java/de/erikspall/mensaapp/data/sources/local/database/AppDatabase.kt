@@ -9,22 +9,12 @@ import de.erikspall.mensaapp.data.sources.local.database.entities.*
 
 @Database(
     entities = [
-        FoodProvider::class,
-        Location::class,
-        OpeningHours::class,
-        Weekday::class,
-        FoodProviderType::class,
-        Allergenic::class,
-        Ingredient::class
+        AllergenEntity::class,
+        IngredientEntity::class
     ],
     version = 1, exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun foodProviderDao(): FoodProviderDao
-    abstract fun locationDao(): LocationDao
-    abstract fun openingHoursDao(): OpeningHoursDao
-    abstract fun weekdayDao(): WeekdayDao
-    abstract fun foodProviderTypeDao(): FoodProviderTypeDao
     abstract fun allergenicDao(): AllergenicDao
     abstract fun ingredientsDao(): IngredientDao
 

@@ -8,25 +8,40 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import de.erikspall.mensaapp.data.repositories.AppRepository
-import de.erikspall.mensaapp.domain.usecases.foodprovider.*
+import de.erikspall.mensaapp.domain.model.Meal
+import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
+import de.erikspall.mensaapp.domain.usecases.foodproviders.GetFoodProvider
+import de.erikspall.mensaapp.domain.usecases.foodproviders.GetFoodProviders
+import de.erikspall.mensaapp.domain.usecases.foodproviders.GetMenusOfFoodProviderFromDate
 import de.erikspall.mensaapp.domain.usecases.mealcomponents.*
+import de.erikspall.mensaapp.domain.usecases.openinghours.FormatToString
+import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.*
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object UseCaseModel {
+
     @Provides
     @Singleton
-    fun provideFoodProvideUseCases(
-        repository: AppRepository
+    fun provideFoodProviderUseCases(
+        appRepository: AppRepository
     ): FoodProviderUseCases {
         return FoodProviderUseCases(
-            getFoodProviders = GetFoodProviders(repository),
-            getOpeningHoursAsString = GetOpeningHoursAsString(),
-            getInfoOfFoodProvider = GetInfoOfFoodProvider(repository),
-            getMenus = GetMenus(repository),
-            fetchLatest = FetchLatest(repository)
+            getAll = GetFoodProviders(appRepository),
+            get = GetFoodProvider(appRepository),
+            getMenusOfFoodProviderFromDate = GetMenusOfFoodProviderFromDate(appRepository)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideOpeningHourUseCases(
+
+    ): OpeningHourUseCases {
+        return OpeningHourUseCases(
+            formatToString = FormatToString()
         )
     }
 
@@ -48,14 +63,14 @@ object UseCaseModel {
 
     @Provides
     @Singleton
-    fun provideMealComponentsUseCases(
-        repository: AppRepository
-    ): MealComponentsUseCases {
-        return MealComponentsUseCases(
-            getAllergenic = GetAllergenic(repository),
-            getIngredients = GetIngredients(repository),
-            setAllergenicLikeStatus = SetAllergenicLikeStatus(repository),
-            setIngredientLikeStatus = SetIngredientLikeStatus(repository)
+    fun provideMealComponentUseCases(
+        appRepository: AppRepository
+    ): MealComponentUseCases {
+        return MealComponentUseCases(
+            setIngredientLikeStatus = SetIngredientLikeStatus(appRepository),
+            setAllergenLikeStatus = SetAllergenLikeStatus(appRepository),
+            getAllergens = GetAllergens(appRepository),
+            getIngredients = GetIngredients(appRepository)
         )
     }
 }

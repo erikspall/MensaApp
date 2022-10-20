@@ -1,26 +1,25 @@
 package de.erikspall.mensaapp.data.repositories
 
 import de.erikspall.mensaapp.data.sources.local.database.daos.AllergenicDao
-import de.erikspall.mensaapp.data.sources.local.database.entities.Allergenic
-import de.erikspall.mensaapp.data.sources.local.database.entities.Location
+import de.erikspall.mensaapp.data.sources.local.database.entities.AllergenEntity
 import kotlinx.coroutines.flow.Flow
 
 class AllergenicRepository(
         private val allergenicDao: AllergenicDao
 ) {
-    suspend fun insert(vararg allergenic: Allergenic) {
-        allergenicDao.insertAll(*allergenic)
+    suspend fun insert(vararg allergenEntity: AllergenEntity) {
+        allergenicDao.insertAll(*allergenEntity)
     }
 
-    suspend fun insert(allergenic: Allergenic) {
-        allergenicDao.insert(allergenic)
+    suspend fun insert(allergenEntity: AllergenEntity) {
+        allergenicDao.insert(allergenEntity)
     }
 
     suspend fun exists(name: String): Boolean {
         return allergenicDao.exists(name)
     }
 
-    suspend fun get(name: String): Allergenic? {
+    suspend fun get(name: String): AllergenEntity? {
         return allergenicDao.get(name)
     }
 
@@ -28,15 +27,15 @@ class AllergenicRepository(
         allergenicDao.updateLike(name, userDoesNotLike)
     }
 
-    fun getAll(): Flow<List<Allergenic>> {
+    fun getAll(): Flow<List<AllergenEntity>> {
         return allergenicDao.getAll()
     }
 
-    suspend fun delete(allergenic: Allergenic) {
-        allergenicDao.delete(allergenic)
+    suspend fun delete(allergenEntity: AllergenEntity) {
+        allergenicDao.delete(allergenEntity)
     }
 
-    suspend fun update(vararg allergenic: Allergenic) {
-        allergenicDao.updateAllergenic(*allergenic)
+    suspend fun update(vararg allergenEntity: AllergenEntity) {
+        allergenicDao.updateAllergenic(*allergenEntity)
     }
 }

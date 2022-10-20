@@ -1,103 +1,75 @@
 package de.erikspall.mensaapp.ui.foodproviderlist.adapter
 
-import android.annotation.SuppressLint
-import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.navigation.NavAction
-import androidx.navigation.NavController
-import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.card.MaterialCardView
-import com.google.android.material.chip.Chip
-import com.google.android.material.textview.MaterialTextView
-import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.data.sources.local.database.relationships.FoodProviderWithoutMenus
-import de.erikspall.mensaapp.domain.usecases.foodprovider.GetOpeningHoursAsString
+import de.erikspall.mensaapp.databinding.ItemFoodProviderBinding
+import de.erikspall.mensaapp.domain.enums.Category
+import de.erikspall.mensaapp.domain.model.FoodProvider
 import de.erikspall.mensaapp.ui.foodproviderlist.cafelist.CafeListFragmentDirections
-//import de.erikspall.mensaapp.data.sources.local.dummy.DummyDataSource
 import de.erikspall.mensaapp.ui.foodproviderlist.canteenlist.CanteenListFragmentDirections
 
 class FoodProviderCardAdapter(
-    private val context: Context?,
-    private val navController: NavController
-) : ListAdapter<FoodProviderWithoutMenus, FoodProviderCardAdapter.FoodProviderViewHolder>(
+    private val onFoodProviderClick: (Int, Category) -> Unit
+) : ListAdapter<FoodProvider, FoodProviderCardAdapter.FoodProviderViewHolder>(
     FOOD_PROVIDER_COMPARATOR
 ) {
-   // private val dummyList = DummyDataSource.canteens
 
-    class FoodProviderViewHolder(view: View?): RecyclerView.ViewHolder(view!!) {
-        val foodProviderImage: ImageView = view!!.findViewById(R.id.image_food_provider)
-        val foodProviderTypeChip: Chip = view!!.findViewById(R.id.chip_food_provider_type)
-        val foodProviderOpeningInfoText: MaterialTextView = view!!.findViewById(R.id.text_food_provider_opening_info)
-        val foodProviderNameText: MaterialTextView = view!!.findViewById(R.id.text_food_provider_name)
-        val imageViewTime: ImageView = view!!.findViewById(R.id.image_view_time)
-        val container: MaterialCardView = view!!.findViewById(R.id.container_food_provider)
-        val containerFoodProviderImage: MaterialCardView = view!!.findViewById(R.id.container_food_provider_image)
-    }
+    inner class FoodProviderViewHolder(
+        val binding: ItemFoodProviderBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(
+            foodProvider: FoodProvider
+        ) {
+            // To get strings etc.
+            val resources = binding.root.resources
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoodProviderViewHolder {
-        val adapterLayout = LayoutInflater.from(parent.context).inflate(R.layout.item_food_provider, parent, false)
-        return FoodProviderViewHolder(adapterLayout)
-    }
 
-    @SuppressLint("SetTextI18n") // TODO: Change later
-    override fun onBindViewHolder(holder: FoodProviderViewHolder, position: Int) {
-       // holder.container.transitionName = holder.container.transitionName + position // make it unique
 
-        val item = getItem(position)
+            binding.imageFoodProvider.setImageResource(foodProvider.photo)
 
-        holder.foodProviderImage.setImageResource(item.foodProvider.icon)
-        holder.foodProviderNameText.text = item.foodProvider.name
-        holder.foodProviderTypeChip.text = item.foodProvider.type
-        holder.foodProviderOpeningInfoText.text = GetOpeningHoursAsString().invoke(item.openingHours) // TODO : BAD
-        /*if (item.openingHours.get(0).opened) {
-            holder.foodProviderOpeningInfoText.text = "Noch 2h geöffnet"
-        } else {
-            val drawableWrap = DrawableCompat.wrap(AppCompatResources.getDrawable(context!!, R.drawable.ic_time)!!).mutate();
-            val errorColor = context.getDynamicColorIfAvailable(R.attr.colorError)
-            holder.imageViewTime.setColorFilter(errorColor)
+            //Glide.with(binding.imageFoodProvider.context)
+            //   .load(foodProvider.photo)
+            //   .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+            //   .into(binding.imageFoodProvider)
 
-            holder.foodProviderOpeningInfoText.text = "Geschlossen!"
-            holder.foodProviderOpeningInfoText.setTextColor(errorColor)
+            binding.textFoodProviderName.text = foodProvider.name
+            binding.textFoodProviderOpeningInfo.text = foodProvider.openingHoursString
+            binding.chipFoodProviderType.text = foodProvider.type
 
-        }*/
-        holder.container.setOnClickListener {
-            //val foodProviderCardDetailName = context!!.getString(R.string.food_provider_card_detail_transition_name)
-
-            //val extras = FragmentNavigatorExtras(holder.container to "container_big")
-            val directions = if (item.foodProvider.type == "Cafeteria")
-                CafeListFragmentDirections.actionOpenDetails(item.foodProvider.fid.toInt(), 2)
-            else
-                CanteenListFragmentDirections.actionOpenDetails(item.foodProvider.fid.toInt(), 1)
-            navController.navigate(directions)
+            binding.root.setOnClickListener {
+                onFoodProviderClick(foodProvider.id ?: -1, Category.from(foodProvider.category ?: ""))
+            }
         }
     }
 
-    /*override fun getItemCount(): Int {
-        return itemCount
-    }*/
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoodProviderViewHolder {
+        return FoodProviderViewHolder(
+            ItemFoodProviderBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false
+            )
+        )
+    }
+
+    override fun onBindViewHolder(holder: FoodProviderViewHolder, position: Int) {
+        val foodProvider = getItem(position)
+        holder.bind(foodProvider)
+    }
+
 
     companion object {
-        private val FOOD_PROVIDER_COMPARATOR = object : DiffUtil.ItemCallback<FoodProviderWithoutMenus>() {
-            override fun areItemsTheSame(
-                oldItem: FoodProviderWithoutMenus,
-                newItem: FoodProviderWithoutMenus
-            ): Boolean {
-                return oldItem.foodProvider.fid == newItem.foodProvider.fid
+        const val TAG = "FoodProviderCardAdapter"
+
+        private val FOOD_PROVIDER_COMPARATOR = object : DiffUtil.ItemCallback<FoodProvider>() {
+            override fun areItemsTheSame(oldItem: FoodProvider, newItem: FoodProvider): Boolean {
+                return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(
-                oldItem: FoodProviderWithoutMenus,
-                newItem: FoodProviderWithoutMenus
-            ): Boolean {
-                return oldItem.foodProvider == newItem.foodProvider &&
-                        oldItem.location == newItem.location &&
-                        oldItem.openingHours == newItem.openingHours
+            override fun areContentsTheSame(oldItem: FoodProvider, newItem: FoodProvider): Boolean {
+                return oldItem == newItem
             }
         }
     }

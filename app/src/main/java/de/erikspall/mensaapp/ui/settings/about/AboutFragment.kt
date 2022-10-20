@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import de.erikspall.mensaapp.databinding.FragmentSettingsAboutBinding
-import de.erikspall.mensaapp.databinding.FragmentSettingsAllergenicBinding
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
 

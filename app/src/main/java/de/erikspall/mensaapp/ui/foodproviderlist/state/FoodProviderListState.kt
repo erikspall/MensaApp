@@ -1,11 +1,15 @@
 package de.erikspall.mensaapp.ui.foodproviderlist.state
 
 import androidx.lifecycle.MutableLiveData
-import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Location
+import com.google.firebase.firestore.Query
+import de.erikspall.mensaapp.domain.enums.Location
+import de.erikspall.mensaapp.domain.utils.queries.QueryUtils
+import de.erikspall.mensaapp.ui.foodproviderlist.adapter.FoodProviderCardAdapter
 import de.erikspall.mensaapp.ui.state.UiState
 
-class FoodProviderListState {
-    var location: Location = Location.WUERZBURG
-    val uiState: MutableLiveData<UiState> = MutableLiveData(UiState.NORMAL)
-    val isRefreshing: MutableLiveData<Boolean> = MutableLiveData(false)
-}
+data class FoodProviderListState (
+    var location: Location = Location.WUERZBURG,
+    val uiState: MutableLiveData<UiState> = MutableLiveData(UiState.NORMAL),
+    val isRefreshing: MutableLiveData<Boolean> = MutableLiveData(false),
+    val receivedData: MutableLiveData<Boolean> = MutableLiveData(false)
+)

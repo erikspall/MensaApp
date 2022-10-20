@@ -15,7 +15,7 @@
             android:defaultValue="0"
             app:argType="integer" />
         <argument
-            android:name="foodProviderType"
+            android:name="foodProviderCategory"
             android:defaultValue="-1"
             app:argType="integer" />
         <action
@@ -26,7 +26,7 @@
                 android:defaultValue="0"
                 app:argType="integer" />
             <argument
-                android:name="foodProviderType"
+                android:name="foodProviderCategory"
                 android:defaultValue="-1"
                 app:argType="integer" />
         </action>
@@ -42,7 +42,7 @@
             android:defaultValue="0"
             app:argType="integer" />
         <argument
-            android:name="foodProviderType"
+            android:name="foodProviderCategory"
             android:defaultValue="-1"
             app:argType="integer" />
         <action
@@ -53,7 +53,7 @@
                 android:defaultValue="0"
                 app:argType="integer" />
             <argument
-                android:name="foodProviderType"
+                android:name="foodProviderCategory"
                 android:defaultValue="2"
                 app:argType="integer" />
         </action>
@@ -64,8 +64,8 @@
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings">
         <action
-            android:id="@+id/action_settings_dest_to_allergenicFragment"
-            app:destination="@id/allergenicFragment" />
+            android:id="@+id/action_settings_dest_to_mealComponentFragment"
+            app:destination="@id/mealComponentFragment" />
         <action
             android:id="@+id/action_settings_dest_to_aboutFragment"
             app:destination="@id/aboutFragment" />
@@ -76,10 +76,10 @@
         android:label="fragment_mensadetail"
         tools:layout="@layout/fragment_food_provider_detail" />
     <fragment
-        android:id="@+id/allergenicFragment"
-        android:name="de.erikspall.mensaapp.ui.settings.allergenic.AllergenicFragment"
-        android:label="fragment_settings_allergenic"
-        tools:layout="@layout/fragment_settings_allergenic" />
+        android:id="@+id/mealComponentFragment"
+        android:name="de.erikspall.mensaapp.ui.settings.mealcomponents.MealComponentFragment"
+        android:label="fragment_settings_meal_component_fragment"
+        tools:layout="@layout/fragment_settings_meal_components" />
     <fragment
         android:id="@+id/aboutFragment"
         android:name="de.erikspall.mensaapp.ui.settings.about.AboutFragment"

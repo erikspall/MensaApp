@@ -13,7 +13,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.MaterialElevationScale
@@ -22,7 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.databinding.FragmentFoodProviderDetailBinding
 import de.erikspall.mensaapp.domain.const.MaterialSizes
-import de.erikspall.mensaapp.domain.usecases.foodprovider.FoodProviderUseCases
+import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
 import de.erikspall.mensaapp.domain.utils.MaterialTextViewExtension.setTextWithLineConstraint
@@ -32,14 +31,10 @@ import de.erikspall.mensaapp.ui.foodproviderdetail.event.DetailEvent
 import de.erikspall.mensaapp.ui.foodproviderdetail.viewmodel.FoodProviderDetailViewModel
 import de.erikspall.mensaapp.ui.foodproviderlist.cafelist.CafeListFragmentArgs
 import de.erikspall.mensaapp.ui.state.UiState
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class FoodProviderDetailFragment : Fragment() {
     private var _binding: FragmentFoodProviderDetailBinding? = null
-
-    @Inject
-    lateinit var foodProviderUseCases: FoodProviderUseCases
 
     private val viewModel: FoodProviderDetailViewModel by viewModels()
 
@@ -82,66 +77,20 @@ class FoodProviderDetailFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
-        // If CanteenListArgs contains -1, this means we navigatet from cafeteria list
+        // If CanteenListArgs contains -1, this means we navigated from cafeteria list
         val safeArgsTemp1: CanteenListFragmentArgs by navArgs()
         val safeArgsTemp2: CafeListFragmentArgs by navArgs()
-        val foodProviderId = if (safeArgsTemp1.foodProviderType == -1)
+        val foodProviderId = if (safeArgsTemp1.foodProviderCategory == -1)
             safeArgsTemp2.foodProviderId
         else
             safeArgsTemp1.foodProviderId
 
 
         // TODO: move this and logic to viewmodel
-        val showingCafeteria = (safeArgsTemp1.foodProviderType == 2) ||
-                (safeArgsTemp2.foodProviderType == 2)
+        val showingCafeteria = (safeArgsTemp1.foodProviderCategory == Category.CAFETERIA.ordinal) // ||
+               // (safeArgsTemp2.foodProviderType == 2)
 
-        //TODO: Hard to read
-        foodProviderUseCases.getInfoOfFoodProvider(fid = foodProviderId.toLong())
-            .asLiveData().observe(viewLifecycleOwner) {
-                if (it == null) {
-                    showMessage(
-                        R.raw.error,
-                        "Ohje! etwas ist schief gelaufen :(",
-                        forceLottie = true
-                    )
-                } else {
-                    // Workaround so text wraps nicely
-                    binding.textFoodProviderName.text = it.foodProvider.name.replace("-", " ")
 
-                    if (it.foodProvider.info.isBlank() && it.foodProvider.additionalInfo.isBlank())
-                        binding.infoFoodProviderOpening.container.visibility = View.GONE
-                    else {
-                        val infoString = it.foodProvider.info
-                            .replace(", ", "\n\n")
-                            .replace(") ", ")\n\n")
-
-                        val additionalInfoString = it.foodProvider.additionalInfo
-                            .replace(", ", "\n\n")
-                            .replace(") ", ")\n\n")
-
-                        val combinedString = if (infoString.isBlank()) {
-                            additionalInfoString
-                        } else if (additionalInfoString.isBlank()) {
-                            infoString
-                        } else {
-                            infoString + "\n\n" + additionalInfoString
-                        }
-                        binding.infoFoodProviderOpening.textView.setTextWithLineConstraint(
-                            combinedString,
-                            1
-                        )
-                    }
-                    if (it.foodProvider.description.isBlank())
-                        binding.infoFoodProviderDescription.container.visibility = View.GONE
-                    else
-                        binding.infoFoodProviderDescription.textView.setTextWithLineConstraint(
-                            it.foodProvider.description,
-                            1
-                        )
-
-                    binding.imageFoodProvider.setImageResource(it.foodProvider.icon)
-                }
-            }
         // binding.textFoodProviderName.text = DummyDataSource.canteens[foodProviderId].getName()
 
         val adapter = MenuAdapter(
@@ -165,14 +114,14 @@ class FoodProviderDetailFragment : Fragment() {
 
         viewModel.onEvent(
             DetailEvent.Init(
-                fid = foodProviderId.toLong(),
+                foodProviderId = foodProviderId,
                 showingCafeteria = showingCafeteria
             )
         )
 
         // var notFirstTime = false
         viewModel.state.menus.observe(viewLifecycleOwner) { menus ->
-            // TODO: Show lotti if non found
+            Log.d("$TAG:menus", "received ${menus.size} menus")
             adapter.warningsEnabled = viewModel.state.warningsEnabled
             adapter.role = viewModel.state.role
             //if (menus.isEmpty() && notFirstTime)
@@ -182,7 +131,6 @@ class FoodProviderDetailFragment : Fragment() {
             menus.let { adapter.submitList(it) }
             // }
         }
-
 
 
         setupObservers()
@@ -201,8 +149,49 @@ class FoodProviderDetailFragment : Fragment() {
     }
 
     private fun setupObservers() {
+        viewModel.state.foodProvider.observe(viewLifecycleOwner) { foodProvider ->
+            if (foodProvider != null) {
+                // Workaround so text wraps nicely
+                binding.textFoodProviderName.text = foodProvider.name.replace("-", " ")
+
+                if (foodProvider.info.isBlank() && foodProvider.additionalInfo.isBlank())
+                    binding.infoFoodProviderOpening.container.visibility = View.GONE
+                else {
+                    val infoString = foodProvider.info
+                        .replace(", ", "\n\n")
+                        .replace(") ", ")\n\n")
+
+                    val additionalInfoString = foodProvider.additionalInfo
+                        .replace(", ", "\n\n")
+                        .replace(") ", ")\n\n")
+
+                    val combinedString = if (infoString.isBlank()) {
+                        additionalInfoString
+                    } else if (additionalInfoString.isBlank()) {
+                        infoString
+                    } else {
+                        infoString + "\n\n" + additionalInfoString
+                    }
+                    binding.infoFoodProviderOpening.textView.setTextWithLineConstraint(
+                        combinedString,
+                        1
+                    )
+                }
+                /*
+                if (foodProvider.description.isBlank())
+                    binding.infoFoodProviderDescription.container.visibility = View.GONE
+                else
+                    binding.infoFoodProviderDescription.textView.setTextWithLineConstraint(
+                        it.foodProvider.description,
+                        1
+                    )
+                */
+                binding.imageFoodProvider.setImageResource(foodProvider.photo)
+            }
+        }
+
         viewModel.state.uiState.observe(viewLifecycleOwner) { newUiState ->
-            if (viewModel.state.showingCafeteria) { // Always show cafeteria lottie if cafeteria
+            if (viewModel.state.category == Category.CAFETERIA) { // Always show cafeteria lottie if cafeteria
                 when (newUiState) {
                     UiState.NORMAL -> {
                         // How did you end up here?
@@ -351,5 +340,9 @@ class FoodProviderDetailFragment : Fragment() {
         // )
 
         //binding.iconButton.layoutParams = params
+    }
+
+    companion object {
+        const val TAG = "DetailFragment"
     }
 }

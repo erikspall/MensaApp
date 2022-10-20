@@ -1,26 +1,25 @@
 package de.erikspall.mensaapp.data.repositories
 
 import de.erikspall.mensaapp.data.sources.local.database.daos.IngredientDao
-import de.erikspall.mensaapp.data.sources.local.database.entities.Allergenic
-import de.erikspall.mensaapp.data.sources.local.database.entities.Ingredient
+import de.erikspall.mensaapp.data.sources.local.database.entities.IngredientEntity
 import kotlinx.coroutines.flow.Flow
 
 class IngredientRepository(
         private val ingredientDao: IngredientDao
 ) {
-    suspend fun insert(vararg ingredients: Ingredient) {
-        ingredientDao.insertAll(*ingredients)
+    suspend fun insert(vararg ingredientEntities: IngredientEntity) {
+        ingredientDao.insertAll(*ingredientEntities)
     }
 
-    suspend fun insert(ingredient: Ingredient) {
-        ingredientDao.insert(ingredient)
+    suspend fun insert(ingredientEntity: IngredientEntity) {
+        ingredientDao.insert(ingredientEntity)
     }
 
     suspend fun exists(name: String): Boolean {
         return ingredientDao.exists(name)
     }
 
-    suspend fun get(name: String): Ingredient? {
+    suspend fun get(name: String): IngredientEntity? {
         return ingredientDao.get(name)
     }
 
@@ -28,15 +27,15 @@ class IngredientRepository(
         ingredientDao.updateLike(name, userDoesNotLike)
     }
 
-    fun getAll(): Flow<List<Ingredient>> {
+    fun getAll(): Flow<List<IngredientEntity>> {
         return ingredientDao.getAll()
     }
 
-    suspend fun delete(ingredient: Ingredient) {
-        ingredientDao.delete(ingredient)
+    suspend fun delete(ingredientEntity: IngredientEntity) {
+        ingredientDao.delete(ingredientEntity)
     }
 
-    suspend fun update(vararg ingredients: Ingredient) {
-        ingredientDao.updateIngredients(*ingredients)
+    suspend fun update(vararg ingredientEntities: IngredientEntity) {
+        ingredientDao.updateIngredients(*ingredientEntities)
     }
 }

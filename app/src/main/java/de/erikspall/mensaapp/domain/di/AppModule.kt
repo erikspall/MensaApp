@@ -3,6 +3,8 @@ package de.erikspall.mensaapp.domain.di
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,8 +13,10 @@ import dagger.hilt.components.SingletonComponent
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.repositories.*
 import de.erikspall.mensaapp.data.sources.local.database.AppDatabase
-import de.erikspall.mensaapp.data.sources.local.database.daos.WeekdayDao
-import de.erikspall.mensaapp.data.sources.remote.RemoteApiDataSource
+import de.erikspall.mensaapp.data.sources.remote.api.RemoteApiDataSource
+import de.erikspall.mensaapp.domain.const.Firestore.FOODPROVIDERS_COLLECTION
+import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
+import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
@@ -26,29 +30,11 @@ object AppModule {
         return AppDatabase.getDatabase(app)
     }
 
-    @Provides
-    @Singleton
-    fun provideFoodProviderRepository(db: AppDatabase): FoodProviderRepository {
-        return FoodProviderRepository(db.foodProviderDao())
-    }
 
     @Provides
     @Singleton
-    fun provideLocationRepository(db: AppDatabase): LocationRepository {
-        return LocationRepository(db.locationDao())
-    }
+    fun provideFirebaseFirestore() = FirebaseFirestore.getInstance()
 
-    @Provides
-    @Singleton
-    fun provideOpeningHoursRepository(db: AppDatabase): OpeningHoursRepository {
-        return OpeningHoursRepository(db.openingHoursDao())
-    }
-
-    @Provides
-    @Singleton
-    fun provideWeekdayRepository(db: AppDatabase): WeekdayRepository {
-        return WeekdayRepository(db.weekdayDao())
-    }
 
     @Provides
     @Singleton
@@ -62,11 +48,6 @@ object AppModule {
         return IngredientRepository(db.ingredientsDao())
     }
 
-    @Provides
-    @Singleton
-    fun provideFoodProviderTypeRepository(db: AppDatabase): FoodProviderTypeRepository {
-        return FoodProviderTypeRepository(db.foodProviderTypeDao())
-    }
 
     @Provides
     @Singleton
@@ -77,34 +58,32 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAppRepository(
-        foodProviderRepository: FoodProviderRepository,
-        locationRepository: LocationRepository,
-        openingHoursRepository: OpeningHoursRepository,
-        weekdayRepository: WeekdayRepository,
-        foodProviderTypeRepository: FoodProviderTypeRepository,
         allergenicRepository: AllergenicRepository,
         ingredientRepository: IngredientRepository,
-        apiDataSource: RemoteApiDataSource,
-        @DefaultDispatcher defaultDispatcher: CoroutineDispatcher
+        foodProvidersReference: CollectionReference,
+        openingHourUseCases: OpeningHourUseCases
     ): AppRepository {
         return AppRepository(
-            foodProviderRepository,
-            locationRepository,
-            openingHoursRepository,
-            weekdayRepository,
-            foodProviderTypeRepository,
             allergenicRepository,
             ingredientRepository,
-            apiDataSource,
-            CoroutineScope(defaultDispatcher)
+            foodProvidersReference,
+            openingHourUseCases = openingHourUseCases
         )
     }
 
     @Provides
     @Singleton
+    fun provideFoodProvidersCollectionReference(rootRef: FirebaseFirestore): CollectionReference =
+        rootRef.collection(FOODPROVIDERS_COLLECTION)
+
+    @Provides
+    @Singleton
     fun provideSharedPreferences(
         @ApplicationContext appContext: Context
-    ) : SharedPreferences {
-        return appContext.getSharedPreferences(appContext.getString(R.string.shared_pref_name), Context.MODE_PRIVATE)
+    ): SharedPreferences {
+        return appContext.getSharedPreferences(
+            appContext.getString(R.string.shared_pref_name),
+            Context.MODE_PRIVATE
+        )
     }
 }

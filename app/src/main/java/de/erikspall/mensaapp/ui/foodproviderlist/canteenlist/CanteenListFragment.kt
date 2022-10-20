@@ -1,5 +1,9 @@
 package de.erikspall.mensaapp.ui.foodproviderlist.canteenlist
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,29 +15,31 @@ import androidx.annotation.RawRes
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialElevationScale
 import dagger.hilt.android.AndroidEntryPoint
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.databinding.FragmentCanteenListBinding
 import de.erikspall.mensaapp.domain.const.MaterialSizes
+import de.erikspall.mensaapp.domain.enums.Category
+import de.erikspall.mensaapp.domain.utils.Extensions.observeOnce
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
 import de.erikspall.mensaapp.ui.foodproviderlist.adapter.FoodProviderCardAdapter
+import de.erikspall.mensaapp.ui.foodproviderlist.cafelist.CafeListFragmentDirections
+import de.erikspall.mensaapp.ui.foodproviderlist.cafelist.CafeListViewModel
 import de.erikspall.mensaapp.ui.foodproviderlist.event.FoodProviderListEvent
 import de.erikspall.mensaapp.ui.state.UiState
-import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class CanteenListFragment : Fragment() {
     private var _binding: FragmentCanteenListBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     private val viewModel: CanteenListViewModel by viewModels()
+
+    lateinit var timeTickReceiver: BroadcastReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,11 +57,8 @@ class CanteenListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //binding.recyclerViewCanteen.setHasFixedSize(true)
-
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
-
     }
 
 
@@ -67,19 +70,10 @@ class CanteenListFragment : Fragment() {
         _binding = FragmentCanteenListBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-
-
         binding.recyclerViewCanteen.pushContentUpBy(
             HeightExtractor.getNavigationBarHeight(requireContext()) +
                     MaterialSizes.BOTTOM_NAV_HEIGHT
         )
-
-        val adapter = FoodProviderCardAdapter(
-            requireContext(),
-            findNavController()
-        )
-
-        binding.recyclerViewCanteen.adapter = adapter
 
         binding.swipeRefresh.setProgressViewOffset(
             false,
@@ -87,44 +81,32 @@ class CanteenListFragment : Fragment() {
             binding.swipeRefresh.progressViewEndOffset - 24
         )
 
+        val adapter = FoodProviderCardAdapter { foodProviderId, category ->
+            val directions = if (category == Category.CAFETERIA)
+                CafeListFragmentDirections.actionOpenDetails(foodProviderId, category.ordinal)
+            else
+                CanteenListFragmentDirections.actionOpenDetails(foodProviderId, category.ordinal)
+
+            findNavController().navigate(directions)
+        }
+
+        binding.recyclerViewCanteen.adapter = adapter
+
         setupListeners()
         setupObservers()
 
-        viewModel.onEvent(FoodProviderListEvent.CheckIfNewLocationSet)
+        viewModel.onEvent(FoodProviderListEvent.Init)
 
         return root
     }
 
     private fun setupListeners() {
         binding.swipeRefresh.setOnRefreshListener {
-            viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.onEvent(FoodProviderListEvent.GetLatestInfo)
-            }
+            viewModel.onEvent(FoodProviderListEvent.GetLatest)
         }
     }
 
     private fun setupObservers() {
-        viewModel.state.isRefreshing.observe(viewLifecycleOwner) { isRefreshing ->
-            if (!isRefreshing)
-                binding.swipeRefresh.isRefreshing = false
-        }
-
-        viewModel.canteens.observe(viewLifecycleOwner) { canteens ->
-            if (canteens.isEmpty()) {
-                viewModel.onEvent(FoodProviderListEvent.GetLatestInfo)
-                viewModel.onEvent(FoodProviderListEvent.NewUiState(UiState.LOADING))
-            } else {
-                viewModel.onEvent(FoodProviderListEvent.NewUiState(UiState.NORMAL))
-
-            }
-            Log.d("CanteenListFragment", "Canteens: $canteens")
-            canteens.let {
-                (binding.recyclerViewCanteen.adapter as FoodProviderCardAdapter).submitList(it.filter { foodProvider ->
-                    foodProvider.location.name == requireContext().getString(viewModel.state.location.getValue())
-                })
-            }
-        }
-
         viewModel.state.uiState.observe(viewLifecycleOwner) { uiState ->
             when (uiState) {
                 UiState.NORMAL -> {
@@ -163,6 +145,54 @@ class CanteenListFragment : Fragment() {
                 }
             }
         }
+
+        viewModel.state.receivedData.observe(viewLifecycleOwner) {
+            viewModel.canteens.observeOnce(viewLifecycleOwner) { optionalCanteens ->
+
+                binding.swipeRefresh.isRefreshing = false
+
+                if (optionalCanteens != null) {
+                    if (optionalCanteens.isPresent) {
+                        val canteens = optionalCanteens.get()
+
+                        Log.d(
+                            "$TAG:livedata-canteens",
+                            "New livedata received! ${canteens.size} items"
+                        )
+                        if (canteens.isNotEmpty()) {
+                            viewModel.onEvent(FoodProviderListEvent.SetUiState(UiState.NORMAL))
+                            canteens.let {
+                                (binding.recyclerViewCanteen.adapter as FoodProviderCardAdapter).submitList(
+                                    it.filter { foodProvider ->
+                                        foodProvider.location == requireContext().getString(
+                                            viewModel.state.location.getValue()
+                                        )
+                                    }
+                                )
+                            }
+                        } else {
+                            showMessage(
+                                R.raw.error,
+                                "Irgendetwas ist schiefgelaufen :(\nBesteht eine Internetverbindung?"
+                            )
+                        }
+
+                    } else {
+                        Log.e("$TAG:livedata-canteens", optionalCanteens.getMessage())
+                        viewModel.onEvent(FoodProviderListEvent.SetUiState(UiState.ERROR))
+                    }
+                } else {
+                    viewModel.onEvent(FoodProviderListEvent.SetUiState(UiState.ERROR))
+                }
+            }
+        }
+
+        viewModel.state.isRefreshing.observe(viewLifecycleOwner) { isRefreshing ->
+            if (!isRefreshing)
+                binding.swipeRefresh.isRefreshing = false
+        }
+
+
     }
 
     private fun showMessage(@RawRes animation: Int, errorMsg: String, animationSpeed: Float = 1f) {
@@ -190,8 +220,39 @@ class CanteenListFragment : Fragment() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // TODO: does not update when resumed after fragment paused and minute passes
+        timeTickReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                Log.d("$TAG:broadcast-receiver", "Tick!")
+                // Update content of recyclerview if present
+                viewModel.onEvent(FoodProviderListEvent.UpdateOpeningHours)
+            }
+        }
+        requireActivity().registerReceiver(timeTickReceiver, IntentFilter(Intent.ACTION_TIME_TICK))
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        requireActivity().unregisterReceiver(timeTickReceiver)
+    }
+
+    override fun onStop() {
+        super.onStop()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        const val TAG = "CanteenListFragment"
     }
 }

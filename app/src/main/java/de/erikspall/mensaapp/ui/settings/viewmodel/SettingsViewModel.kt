@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Location
-import de.erikspall.mensaapp.data.sources.local.database.entities.enums.Role
-import de.erikspall.mensaapp.data.sources.local.database.entities.enums.StringResEnum
+import de.erikspall.mensaapp.domain.enums.Location
+import de.erikspall.mensaapp.domain.enums.Role
+import de.erikspall.mensaapp.domain.enums.StringResEnum
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
 import de.erikspall.mensaapp.ui.settings.event.SettingsEvent
 import de.erikspall.mensaapp.ui.settings.viewmodel.state.SettingsState
