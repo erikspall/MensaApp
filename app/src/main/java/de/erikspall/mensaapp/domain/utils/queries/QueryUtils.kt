@@ -29,4 +29,9 @@ object QueryUtils {
             .whereGreaterThanOrEqualTo(Meal.FIELD_DATE, date)
             .orderBy(Meal.FIELD_DATE, Query.Direction.ASCENDING)
     }
+
+    fun queryAdditives(): Query {
+        return FirebaseFirestore.getInstance().collection("additives")
+            .orderBy("name", Query.Direction.ASCENDING)
+    }
 }

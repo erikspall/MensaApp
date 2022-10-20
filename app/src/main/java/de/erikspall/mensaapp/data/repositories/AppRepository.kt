@@ -2,17 +2,16 @@ package de.erikspall.mensaapp.data.repositories
 
 import android.util.Log
 import androidx.annotation.DrawableRes
+import androidx.lifecycle.LiveData
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.errorhandling.OptionalResult
 import de.erikspall.mensaapp.data.sources.local.database.entities.*
+import de.erikspall.mensaapp.domain.enums.AdditiveType
 import de.erikspall.mensaapp.domain.enums.Role
-import de.erikspall.mensaapp.domain.model.FoodProvider
-import de.erikspall.mensaapp.domain.model.Meal
-import de.erikspall.mensaapp.domain.model.Menu
-import de.erikspall.mensaapp.domain.model.OpeningHour
+import de.erikspall.mensaapp.domain.model.*
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import de.erikspall.mensaapp.domain.utils.Extensions.toDate
 import de.erikspall.mensaapp.domain.utils.queries.QueryUtils
@@ -29,10 +28,10 @@ class AppRepository(
     private val openingHourUseCases: OpeningHourUseCases
 ) {
 
-    val allAllergens: Flow<List<AllergenEntity>> =
+    val allAllergens: LiveData<List<AllergenEntity>> =
         allergenicRepository.getAll()
 
-    val allIngredients: Flow<List<IngredientEntity>> =
+    val allIngredients: LiveData<List<IngredientEntity>> =
         ingredientRepository.getAll()
 
     // var foodProviders: OptionalResult<List<FoodProvider>> = OptionalResult.ofMsg("not ready")
@@ -72,6 +71,48 @@ class AppRepository(
         } catch (e: FirebaseFirestoreException) {
             return OptionalResult.ofMsg(e.message ?: "An error occurred")
         }
+    }
+
+    /**
+     * Does not return additives, they are saved in the local database instead (we want to persist
+     * the users preference) - changes are brought to UI Layer by live data
+     *
+     * The method only returns OptionalResult to propagate errors
+     */
+    suspend fun fetchAllAdditives(
+        source: Source
+    ): OptionalResult<List<Additive>> {
+        try {
+            val query = QueryUtils.queryAdditives()
+
+            var additivesSnapshot: QuerySnapshot = query
+                .get(source)
+                .await()
+
+            if (additivesSnapshot.isEmpty) {
+                val backupSource = if (source == Source.SERVER) Source.CACHE else Source.SERVER
+                additivesSnapshot = query
+                    .get(backupSource)
+                    .await()
+            }
+
+            for (document in additivesSnapshot) {
+                val type = AdditiveType.from(document.get(Additive.FIELD_TYPE) as String)
+                val name = document.get(Additive.FIELD_NAME) as String
+
+                if (type != null) {
+                    when (type) {
+                        AdditiveType.ALLERGEN -> getOrInsertAllergenic(name)
+                        AdditiveType.INGREDIENT -> getOrInsertIngredient(name)
+                    }
+                } else {
+                    Log.d("$TAG:saveAllAdditives", "Unknown additive '$name'")
+                }
+            }
+        } catch (e: Exception) {
+            return OptionalResult.ofMsg(e.message ?: "An error occurred")
+        }
+        return OptionalResult.of(emptyList()) // No need to pass actual data for now
     }
 
     suspend fun getMenusOfFoodProvider(

@@ -65,6 +65,8 @@ class MealComponentFragment : Fragment() {
         setupObservers()
         setupListeners()
 
+        viewModel.onEvent(AllergenicEvent.Init)
+
         return root
     }
 
@@ -82,7 +84,7 @@ class MealComponentFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.state.ingredients.observeOnce(viewLifecycleOwner) { ingredients ->
+        viewModel.state.ingredients.observe(viewLifecycleOwner) { ingredients ->
             Log.d("SettingsAllergenic", "${ingredients.size}")
             binding.filterGroupIngredients.chipGroupFilterGroup.removeAllViews()
             ingredients.forEach { ingredient ->
@@ -103,7 +105,7 @@ class MealComponentFragment : Fragment() {
                 )
             }
         }
-        viewModel.state.allergens.observeOnce(viewLifecycleOwner) { allergens ->
+        viewModel.state.allergens.observe(viewLifecycleOwner) { allergens ->
             binding.filterGroupAllergenic.chipGroupFilterGroup.removeAllViews()
             allergens.forEach { allergen ->
                 binding.filterGroupAllergenic.chipGroupFilterGroup.addView(

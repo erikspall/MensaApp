@@ -20,11 +20,16 @@ class MealComponentViewModel @Inject constructor(
 ) : ViewModel() {
     val state = MealComponentState(
             warningsActivated = MutableLiveData(sharedPreferences.getBoolean(R.string.setting_warnings_enabled, false)),
-            allergens = mealComponentUseCases.getAllergens().asLiveData(),
-            ingredients = mealComponentUseCases.getIngredients().asLiveData()
+            allergens = mealComponentUseCases.getAllergens(),
+            ingredients = mealComponentUseCases.getIngredients()
     )
     fun onEvent(event: AllergenicEvent) {
         when (event) {
+            is AllergenicEvent.Init -> {
+                viewModelScope.launch {
+                    mealComponentUseCases.fetchLatest()
+                }
+            }
             is AllergenicEvent.OnWarningsChanged -> {
                 sharedPreferences.setBoolean(R.string.setting_warnings_enabled, event.warningsActivated)
                 state.warningsActivated.postValue(event.warningsActivated) // TODO change to sharedPreferences listener
