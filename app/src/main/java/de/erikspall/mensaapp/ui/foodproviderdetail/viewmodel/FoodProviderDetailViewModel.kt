@@ -40,7 +40,7 @@ class FoodProviderDetailViewModel @Inject constructor(
 
                     viewModelScope.launch {
                         Log.d("$TAG:setters", "Retrieving info of FoodProvider ${event.foodProviderId}")
-                        foodProviderUseCases.get(
+                        foodProviderUseCases.fetch(
                             event.foodProviderId
                         ).apply {
                             if (this.isPresent) {
@@ -72,10 +72,9 @@ class FoodProviderDetailViewModel @Inject constructor(
                 if (state.category != Category.CAFETERIA) // Obsolete, always false here ?
                     viewModelScope.launch {
                         Log.d("$TAG:setters", "Retrieving menus of foodprovider ${state.foodProviderId}")
-                        val result = foodProviderUseCases.getMenusOfFoodProviderFromDate(
+                        val result = foodProviderUseCases.fetchMenus(
                             foodProviderId = state.foodProviderId,
-                            date = LocalDate.now(),
-                            source = Source.SERVER
+                            date = LocalDate.now()
                         ).apply {
 
                             if (this.isPresent) {

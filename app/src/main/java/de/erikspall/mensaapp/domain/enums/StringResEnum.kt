@@ -7,6 +7,8 @@ interface StringResEnum {
     @StringRes
     fun getValue(): Int
 
+    fun getRawValue(): String
+
     companion object {
         fun roleFrom(@StringRes stringRes: Int): Role {
             return when (stringRes) {

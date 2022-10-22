@@ -28,9 +28,9 @@ object UseCaseModel {
         appRepository: AppRepository
     ): FoodProviderUseCases {
         return FoodProviderUseCases(
-            getAll = FetchFoodProviders(appRepository),
-            get = FetchFoodProvider(appRepository),
-            getMenusOfFoodProviderFromDate = FetchMenus(appRepository)
+            fetchAll = FetchFoodProviders(appRepository),
+            fetch = FetchFoodProvider(appRepository),
+            fetchMenus = FetchMenus(appRepository)
         )
     }
 
@@ -56,7 +56,9 @@ object UseCaseModel {
             registerListener = RegisterListener(sharedPref),
             getValueRes = GetValueRes(appContext, sharedPref),
             setBoolean = SetBoolean(appContext, sharedPref),
-            getBoolean = GetBoolean(appContext, sharedPref)
+            getBoolean = GetBoolean(appContext, sharedPref),
+            setLocalDateTime = SetLocalDateTime(appContext, sharedPref),
+            getLocalDateTime = GetLocalDateTime(appContext, sharedPref)
         )
     }
 

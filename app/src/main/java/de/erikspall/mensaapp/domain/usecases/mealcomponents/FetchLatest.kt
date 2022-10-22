@@ -10,11 +10,7 @@ import kotlinx.coroutines.withContext
 class FetchLatest(
     private val appRepository: AppRepository
 ) {
-    suspend operator fun invoke(
-        source: Source = Source.CACHE
-    ): OptionalResult<List<Additive>> = withContext(Dispatchers.IO) {
-        appRepository.fetchAllAdditives(
-            source
-        )
+    suspend operator fun invoke(): OptionalResult<List<Additive>> {
+        return appRepository.fetchAllAdditives()
     }
 }

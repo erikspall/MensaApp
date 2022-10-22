@@ -1,5 +1,6 @@
 package de.erikspall.mensaapp.data.sources.remote.firestore
 
+import android.util.Log
 import com.google.firebase.firestore.*
 import de.erikspall.mensaapp.data.errorhandling.OptionalResult
 import de.erikspall.mensaapp.domain.enums.Category
@@ -24,6 +25,7 @@ class FirestoreDataSource(
         category: Category
     ): OptionalResult<QuerySnapshot> = withContext(ioDispatcher) {
         try {
+            Log.d("$TAG:fetchingProcess", "Data Source is using ${if (Source.CACHE == source) "CACHE" else "SERVER"}")
             val query = if (location == Location.ANY && category == Category.ANY)
                 queryFoodProviders()
             else if (location == Location.ANY)
@@ -33,10 +35,9 @@ class FirestoreDataSource(
             else
                 queryFoodProvidersByLocationAndCategory(location, category)
 
-            val foodProviderSnapshot = getSnapshot(
-                source,
-                query
-            )
+            val foodProviderSnapshot = query
+                .get(source)
+                .await()
 
             return@withContext OptionalResult.of(foodProviderSnapshot)
 
@@ -54,10 +55,9 @@ class FirestoreDataSource(
         try {
             val query = queryFoodProvidersById(foodProviderId)
 
-            val foodProviderSnapshot = getSnapshot(
-                source,
-                query
-            )
+            val foodProviderSnapshot = query
+                .get(source)
+                .await()
 
             return@withContext OptionalResult.of(foodProviderSnapshot)
 
@@ -73,10 +73,9 @@ class FirestoreDataSource(
     ): OptionalResult<QuerySnapshot> = withContext(ioDispatcher) {
         try {
 
-            val additiveSnapshot = getSnapshot(
-                source,
-                queryAdditives()
-            )
+            val additiveSnapshot = queryAdditives()
+                .get(source)
+                .await()
 
             return@withContext OptionalResult.of(additiveSnapshot)
 
@@ -94,10 +93,12 @@ class FirestoreDataSource(
     ): OptionalResult<QuerySnapshot> = withContext(ioDispatcher) {
         try {
 
-            val mealsSnapshot = getSnapshot(
-                source,
-                queryMealsOfFoodProviderStartingFromDate(foodProviderId, date)
+            val mealsSnapshot = queryMealsOfFoodProviderStartingFromDate(
+                foodProviderId,
+                date
             )
+                .get(source)
+                .await()
 
             return@withContext OptionalResult.of(mealsSnapshot)
 
@@ -108,24 +109,6 @@ class FirestoreDataSource(
         }
     }
 
-    private suspend fun getSnapshot(
-        source: Source,
-        query: Query
-    ): QuerySnapshot {
-        val backupSource = if (source == Source.CACHE) Source.SERVER else Source.CACHE
-
-        var snapshot = query
-            .get(source)
-            .await()
-
-        if (snapshot.isEmpty)
-            snapshot = query
-                .get(backupSource)
-                .await()
-
-        return snapshot
-    }
-
     private fun queryFoodProviders(): Query {
         return firestoreInstance.collection(COLLECTION_FOOD_PROVIDERS)
             .orderBy(FoodProvider.FIELD_NAME, Query.Direction.ASCENDING)
@@ -133,13 +116,13 @@ class FirestoreDataSource(
 
     private fun queryFoodProvidersByLocation(location: Location): Query {
         return firestoreInstance.collection(COLLECTION_FOOD_PROVIDERS)
-            .whereEqualTo(FoodProvider.FIELD_LOCATION, location.getValue())
+            .whereEqualTo(FoodProvider.FIELD_LOCATION, location.getRawValue())
             .orderBy(FoodProvider.FIELD_NAME, Query.Direction.ASCENDING)
     }
 
     private fun queryFoodProvidersByLocationAndCategory(location: Location, category: Category): Query {
         return firestoreInstance.collection(COLLECTION_FOOD_PROVIDERS)
-            .whereEqualTo(FoodProvider.FIELD_LOCATION, location.getValue())
+            .whereEqualTo(FoodProvider.FIELD_LOCATION, location.getRawValue())
             .whereEqualTo(FoodProvider.FIELD_CATEGORY, category.getValue())
     }
 
@@ -170,5 +153,7 @@ class FirestoreDataSource(
         const val COLLECTION_FOOD_PROVIDERS = "foodProviders"
         const val COLLECTION_MENUS = "menus"
         const val COLLECTION_ADDITIVES = "additives"
+
+        const val TAG="FirestoreDataSource"
     }
 }

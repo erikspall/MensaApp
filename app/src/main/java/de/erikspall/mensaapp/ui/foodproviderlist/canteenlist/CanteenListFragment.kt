@@ -146,45 +146,30 @@ class CanteenListFragment : Fragment() {
             }
         }
 
-        viewModel.state.receivedData.observe(viewLifecycleOwner) {
-            viewModel.canteens.observeOnce(viewLifecycleOwner) { optionalCanteens ->
+        //viewModel.state.receivedData.observe(viewLifecycleOwner) {
+        viewModel.state.foodProviders.observe(viewLifecycleOwner) { canteens ->
 
-                binding.swipeRefresh.isRefreshing = false
+            binding.swipeRefresh.isRefreshing = false
 
-                if (optionalCanteens != null) {
-                    if (optionalCanteens.isPresent) {
-                        val canteens = optionalCanteens.get()
 
-                        Log.d(
-                            "$TAG:livedata-canteens",
-                            "New livedata received! ${canteens.size} items"
-                        )
-                        if (canteens.isNotEmpty()) {
-                            viewModel.onEvent(FoodProviderListEvent.SetUiState(UiState.NORMAL))
-                            canteens.let {
-                                (binding.recyclerViewCanteen.adapter as FoodProviderCardAdapter).submitList(
-                                    it.filter { foodProvider ->
-                                        foodProvider.location == requireContext().getString(
-                                            viewModel.state.location.getValue()
-                                        )
-                                    }
-                                )
-                            }
-                        } else {
-                            showMessage(
-                                R.raw.error,
-                                "Irgendetwas ist schiefgelaufen :(\nBesteht eine Internetverbindung?"
-                            )
-                        }
-
-                    } else {
-                        Log.e("$TAG:livedata-canteens", optionalCanteens.getMessage())
-                        viewModel.onEvent(FoodProviderListEvent.SetUiState(UiState.ERROR))
-                    }
-                } else {
-                    viewModel.onEvent(FoodProviderListEvent.SetUiState(UiState.ERROR))
+            Log.d(
+                "$TAG:livedata-canteens",
+                "New livedata received! ${canteens.size} items"
+            )
+            if (canteens.isNotEmpty()) {
+                viewModel.onEvent(FoodProviderListEvent.SetUiState(UiState.NORMAL))
+                canteens.let {
+                    (binding.recyclerViewCanteen.adapter as FoodProviderCardAdapter).submitList(
+                        it
+                    )
                 }
+            } else {
+                showMessage(
+                    R.raw.error,
+                    "Irgendetwas ist schiefgelaufen :(\nBesteht eine Internetverbindung?"
+                )
             }
+
         }
 
         viewModel.state.isRefreshing.observe(viewLifecycleOwner) { isRefreshing ->
