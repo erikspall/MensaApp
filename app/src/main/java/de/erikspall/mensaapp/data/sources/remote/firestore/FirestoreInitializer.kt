@@ -2,11 +2,11 @@ package de.erikspall.mensaapp.data.sources.remote.firestore
 
 import android.content.Context
 import androidx.startup.Initializer
+import com.google.firebase.firestore.BuildConfig
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import de.erikspall.mensaapp.BuildConfig
 
 
 class FirestoreInitializer : Initializer<FirebaseFirestore> {

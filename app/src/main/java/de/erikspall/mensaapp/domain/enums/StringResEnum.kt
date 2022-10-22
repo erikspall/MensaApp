@@ -24,7 +24,7 @@ interface StringResEnum {
                 R.string.location_schweinfurt -> Location.SCHWEINFURT
                 R.string.location_wuerzburg -> Location.WUERZBURG
                 else -> {
-                    Location.INVALID
+                    Location.ANY
                 }
             }
         }

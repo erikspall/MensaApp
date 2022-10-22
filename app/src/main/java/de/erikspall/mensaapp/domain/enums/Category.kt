@@ -3,7 +3,7 @@ package de.erikspall.mensaapp.domain.enums
 enum class Category(private val value: String) {
     CANTEEN("Canteen"),
     CAFETERIA("Cafeteria"),
-    UNKNOWN("Unknown");
+    ANY("any");
 
     fun getValue(): String {
         return value;
@@ -14,7 +14,7 @@ enum class Category(private val value: String) {
             return when (str) {
                 "Canteen" -> CANTEEN
                 "Cafeteria" -> CAFETERIA
-                else -> UNKNOWN
+                else -> ANY
             }
         }
     }
