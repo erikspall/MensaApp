@@ -8,11 +8,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import de.erikspall.mensaapp.data.repositories.AppRepository
-import de.erikspall.mensaapp.domain.model.Meal
 import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
-import de.erikspall.mensaapp.domain.usecases.foodproviders.GetFoodProvider
-import de.erikspall.mensaapp.domain.usecases.foodproviders.GetFoodProviders
-import de.erikspall.mensaapp.domain.usecases.foodproviders.GetMenusOfFoodProviderFromDate
+import de.erikspall.mensaapp.domain.usecases.foodproviders.FetchFoodProvider
+import de.erikspall.mensaapp.domain.usecases.foodproviders.FetchFoodProviders
+import de.erikspall.mensaapp.domain.usecases.foodproviders.FetchMenus
 import de.erikspall.mensaapp.domain.usecases.mealcomponents.*
 import de.erikspall.mensaapp.domain.usecases.openinghours.FormatToString
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
@@ -29,9 +28,9 @@ object UseCaseModel {
         appRepository: AppRepository
     ): FoodProviderUseCases {
         return FoodProviderUseCases(
-            getAll = GetFoodProviders(appRepository),
-            get = GetFoodProvider(appRepository),
-            getMenusOfFoodProviderFromDate = GetMenusOfFoodProviderFromDate(appRepository)
+            getAll = FetchFoodProviders(appRepository),
+            get = FetchFoodProvider(appRepository),
+            getMenusOfFoodProviderFromDate = FetchMenus(appRepository)
         )
     }
 

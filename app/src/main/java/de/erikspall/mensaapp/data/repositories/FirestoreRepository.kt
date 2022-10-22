@@ -14,8 +14,10 @@ import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.domain.enums.Location
 import de.erikspall.mensaapp.domain.model.*
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
+import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
 import de.erikspall.mensaapp.domain.utils.Extensions.toDate
 import java.time.DayOfWeek
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -24,18 +26,32 @@ import java.util.*
 
 class FirestoreRepository(
     private val firestoreDataSource: FirestoreDataSource,
-    private val openingHourUseCases: OpeningHourUseCases
+    private val openingHourUseCases: OpeningHourUseCases,
+    private val sharedPreferenceUseCases: SharedPreferenceUseCases
 ) {
     suspend fun fetchFoodProviders(
-        source: Source,
         location: Location,
         category: Category
     ): OptionalResult<List<FoodProvider>> {
-        val foodProviderSnapshot = firestoreDataSource.fetchFoodProviders(
-            source,
-            location,
-            category
+        val lastUpdate = sharedPreferenceUseCases.getLocalDateTime(
+            R.string.shared_pref_last_food_provider_update,
+            LocalDateTime.now().minusDays(7)
         )
+
+        val duration = Duration.between(lastUpdate, LocalDateTime.now()).toDays()
+
+        val foodProviderSnapshot = if (duration >= 7)
+            firestoreDataSource.fetchFoodProviders(
+                location = location,
+                category = category,
+                source = Source.SERVER
+            )
+        else
+            firestoreDataSource.fetchFoodProviders(
+                location = location,
+                category = category,
+                source = Source.CACHE
+            )
 
         val foodProviderList = mutableListOf<FoodProvider>()
 
@@ -53,12 +69,48 @@ class FirestoreRepository(
 
     }
 
-    suspend fun fetchAdditives(
-        source: Source
-    ): OptionalResult<List<Additive>> {
-        val additiveSnapshot = firestoreDataSource.fetchAdditives(
-            source
+    suspend fun fetchFoodProvider(
+        foodProviderId: Int
+    ): OptionalResult<FoodProvider> {
+        val lastUpdate = sharedPreferenceUseCases.getLocalDateTime(
+            R.string.shared_pref_last_food_provider_update,
+            LocalDateTime.now().minusDays(7),
+            foodProviderId
         )
+
+        val duration = Duration.between(lastUpdate, LocalDateTime.now()).toDays()
+
+        val foodProviderSnapshot = if (duration >= 7)
+            firestoreDataSource.fetchFoodProvider(
+                source = Source.SERVER,
+                foodProviderId = foodProviderId
+            )
+        else
+            firestoreDataSource.fetchFoodProvider(
+                source = Source.CACHE,
+                foodProviderId = foodProviderId
+            )
+
+        return if (foodProviderSnapshot.isPresent)
+            OptionalResult.of(foodProviderSnapshot.get().first().toFoodProvider())
+        else
+            OptionalResult.ofMsg(foodProviderSnapshot.getMessage())
+    }
+
+    suspend fun fetchAdditives(
+    ): OptionalResult<List<Additive>> {
+        val lastUpdate = sharedPreferenceUseCases.getLocalDateTime(
+            R.string.shared_pref_last_additive_update,
+            LocalDateTime.now().minusDays(7),
+        )
+
+        val duration = Duration.between(lastUpdate, LocalDateTime.now()).toDays()
+
+        val additiveSnapshot = if (duration >= 7) {
+            firestoreDataSource.fetchAdditives(source = Source.SERVER)
+        } else {
+            firestoreDataSource.fetchAdditives(source = Source.CACHE)
+        }
 
         val additiveList = mutableListOf<Additive>()
 
@@ -72,17 +124,14 @@ class FirestoreRepository(
         } else {
             return OptionalResult.ofMsg(additiveSnapshot.getMessage())
         }
-
     }
 
     suspend fun fetchMeals(
-        source: Source,
         foodProviderId: Int,
         date: LocalDate
     ): OptionalResult<QuerySnapshot> = firestoreDataSource.fetchMeals(
-        source,
-        foodProviderId,
-        date.toDate()
+        foodProviderId = foodProviderId,
+        date = date.toDate()
     )
 
     private fun QueryDocumentSnapshot.toFoodProvider(): FoodProvider {

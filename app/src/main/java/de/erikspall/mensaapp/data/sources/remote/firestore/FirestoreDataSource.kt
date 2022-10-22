@@ -10,6 +10,8 @@ import de.erikspall.mensaapp.domain.model.Meal
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.security.cert.PKIXRevocationChecker.Option
+import java.time.LocalDateTime
 import java.util.*
 
 class FirestoreDataSource(
@@ -17,7 +19,7 @@ class FirestoreDataSource(
     private val ioDispatcher: CoroutineDispatcher
 ) {
     suspend fun fetchFoodProviders(
-        source: Source,
+        source: Source = Source.CACHE,
         location: Location,
         category: Category
     ): OptionalResult<QuerySnapshot> = withContext(ioDispatcher) {
@@ -45,8 +47,29 @@ class FirestoreDataSource(
         }
     }
 
+    suspend fun fetchFoodProvider(
+        source: Source = Source.CACHE,
+        foodProviderId: Int
+    ): OptionalResult<QuerySnapshot> = withContext(ioDispatcher) {
+        try {
+            val query = queryFoodProvidersById(foodProviderId)
+
+            val foodProviderSnapshot = getSnapshot(
+                source,
+                query
+            )
+
+            return@withContext OptionalResult.of(foodProviderSnapshot)
+
+        } catch (e: FirebaseFirestoreException) {
+            return@withContext OptionalResult.ofMsg(e.message ?: "An unknown error occured")
+        } catch (e: Exception) {
+            return@withContext OptionalResult.ofMsg(e.message ?: "An unknown error occured")
+        }
+    }
+
     suspend fun fetchAdditives(
-        source: Source
+        source: Source = Source.CACHE
     ): OptionalResult<QuerySnapshot> = withContext(ioDispatcher) {
         try {
 
@@ -65,7 +88,7 @@ class FirestoreDataSource(
     }
 
     suspend fun fetchMeals(
-        source: Source,
+        source: Source = Source.CACHE,
         foodProviderId: Int,
         date: Date
     ): OptionalResult<QuerySnapshot> = withContext(ioDispatcher) {

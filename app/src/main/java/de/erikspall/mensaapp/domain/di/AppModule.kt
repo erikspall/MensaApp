@@ -14,6 +14,7 @@ import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.repositories.*
 import de.erikspall.mensaapp.data.sources.local.database.AppDatabase
 import de.erikspall.mensaapp.data.sources.remote.api.RemoteApiDataSource
+import de.erikspall.mensaapp.data.sources.remote.firestore.FirestoreDataSource
 import de.erikspall.mensaapp.domain.const.Firestore.FOODPROVIDERS_COLLECTION
 import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
@@ -33,8 +34,34 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseFirestore() = FirebaseFirestore.getInstance()
+    fun provideFirestore(): FirebaseFirestore {
+        return FirebaseFirestore.getInstance()
+    }
 
+
+    @Provides
+    @Singleton
+    fun provideFirestoreRepository(
+        firestoreDataSource: FirestoreDataSource,
+        openingHourUseCases: OpeningHourUseCases
+    ): FirestoreRepository {
+        return FirestoreRepository(
+            firestoreDataSource,
+            openingHourUseCases
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirestoreDataSource(
+        firebaseFirestore: FirebaseFirestore,
+        @IoDispatcher ioDispatcher: CoroutineDispatcher
+    ): FirestoreDataSource {
+        return FirestoreDataSource(
+            firestoreInstance = firebaseFirestore,
+            ioDispatcher = ioDispatcher
+        )
+    }
 
     @Provides
     @Singleton
@@ -60,21 +87,15 @@ object AppModule {
     fun provideAppRepository(
         allergenicRepository: AllergenicRepository,
         ingredientRepository: IngredientRepository,
-        foodProvidersReference: CollectionReference,
-        openingHourUseCases: OpeningHourUseCases
+        firestoreRepository: FirestoreRepository
     ): AppRepository {
         return AppRepository(
             allergenicRepository,
             ingredientRepository,
-            foodProvidersReference,
-            openingHourUseCases = openingHourUseCases
+            firestoreRepository
         )
     }
 
-    @Provides
-    @Singleton
-    fun provideFoodProvidersCollectionReference(rootRef: FirebaseFirestore): CollectionReference =
-        rootRef.collection(FOODPROVIDERS_COLLECTION)
 
     @Provides
     @Singleton

@@ -31,15 +31,16 @@ class AppRepository(
     // var foodProviders: OptionalResult<List<FoodProvider>> = OptionalResult.ofMsg("not ready")
 
     suspend fun fetchFoodProviders(
-        source: Source,
         location: Location,
         category: Category
     ): OptionalResult<List<FoodProvider>> = firestoreRepository.fetchFoodProviders(
-        source,
         location,
         category
     )
 
+    suspend fun fetchFoodProvider(
+        foodProviderId: Int
+    ): OptionalResult<FoodProvider> = firestoreRepository.fetchFoodProvider(foodProviderId)
 
     /**
      * Does not return additives, they are saved in the local database instead (we want to persist
@@ -48,10 +49,9 @@ class AppRepository(
      * The method only returns OptionalResult to propagate errors
      */
     suspend fun fetchAllAdditives(
-        source: Source
     ): OptionalResult<List<Additive>> {
 
-        val additives = firestoreRepository.fetchAdditives(source)
+        val additives = firestoreRepository.fetchAdditives()
 
         return if (additives.isPresent) {
             for (additive in additives.get()) {
@@ -68,13 +68,11 @@ class AppRepository(
     }
 
     suspend fun fetchMenus(
-        source: Source,
         foodProviderId: Int,
         date: LocalDate
     ): OptionalResult<List<Menu>> {
 
         val mealsSnapshot = firestoreRepository.fetchMeals(
-            source,
             foodProviderId,
             date
         )
