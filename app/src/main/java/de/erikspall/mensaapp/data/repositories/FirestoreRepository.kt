@@ -79,7 +79,10 @@ class FirestoreRepository(
         val foodProviderList = mutableListOf<FoodProvider>()
 
         return if (foodProviderSnapshot.isPresent) {
-            sharedPreferenceUseCases.setLocalDateTime(R.string.shared_pref_last_food_provider_update, LocalDateTime.now())
+            sharedPreferenceUseCases.setLocalDateTime(
+                R.string.shared_pref_last_food_provider_update,
+                LocalDateTime.now()
+            )
             Log.d("$TAG:fetchingProcess", "Snapshot contains ${foodProviderSnapshot.get().size()}")
             for (document in foodProviderSnapshot.get())
                 document.toFoodProvider().let {
@@ -100,7 +103,7 @@ class FirestoreRepository(
         val lastUpdate = sharedPreferenceUseCases.getLocalDateTime(
             R.string.shared_pref_last_food_provider_update,
             LocalDateTime.now().minusDays(8),
-            foodProviderId
+            /* foodProviderId -- not needed for now*/
         )
 
         val duration = Duration.between(lastUpdate, LocalDateTime.now()).toDays()
@@ -136,7 +139,7 @@ class FirestoreRepository(
                 foodProviderId
             )
             OptionalResult.of(foodProviderSnapshot.get().first().toFoodProvider())
-        }else
+        } else
             OptionalResult.ofMsg(foodProviderSnapshot.getMessage())
     }
 
@@ -166,12 +169,16 @@ class FirestoreRepository(
         val additiveList = mutableListOf<Additive>()
 
         return if (additiveSnapshot.isPresent) {
-            sharedPreferenceUseCases.setLocalDateTime(R.string.shared_pref_last_additive_update, LocalDateTime.now())
+            sharedPreferenceUseCases.setLocalDateTime(
+                R.string.shared_pref_last_additive_update,
+                LocalDateTime.now()
+            )
             for (document in additiveSnapshot.get()) {
                 additiveList.add(
                     Additive(
                         name = document.get(Additive.FIELD_NAME) as String,
-                        type = AdditiveType.from(document.get(Additive.FIELD_TYPE) as String) ?: AdditiveType.ALLERGEN
+                        type = AdditiveType.from(document.get(Additive.FIELD_TYPE) as String)
+                            ?: AdditiveType.ALLERGEN
                     )
                 )
             }
@@ -188,11 +195,11 @@ class FirestoreRepository(
     ): OptionalResult<QuerySnapshot> {
         val lastUpdate = sharedPreferenceUseCases.getLocalDateTime(
             R.string.shared_pref_last_menu_update,
-            LocalDateTime.now().minusHours(1),
+            LocalDateTime.now().minusHours(2),
             foodProviderId
         )
-
-        val duration = Duration.between(lastUpdate, LocalDateTime.now()).toDays()
+        // TODO: Allow updates after cloud function
+        val duration = Duration.between(lastUpdate, LocalDateTime.now()).toHours()
 
         var mealsSnapshot = if (duration >= 1)
             firestoreDataSource.fetchMeals(
@@ -207,7 +214,7 @@ class FirestoreRepository(
                 source = Source.CACHE
             )
 
-        if (mealsSnapshot.isEmpty || (mealsSnapshot.isPresent && mealsSnapshot.get().isEmpty)) {
+        if (mealsSnapshot.isEmpty) {
             mealsSnapshot = if (duration >= 1)
                 firestoreDataSource.fetchMeals(
                     foodProviderId = foodProviderId,
@@ -221,7 +228,17 @@ class FirestoreRepository(
                     source = Source.SERVER
                 )
         }
-        return mealsSnapshot
+
+        sharedPreferenceUseCases.setLocalDateTime(
+            R.string.shared_pref_last_menu_update,
+            LocalDateTime.now(),
+            foodProviderId
+        )
+
+        return if (mealsSnapshot.isEmpty || (mealsSnapshot.isPresent && mealsSnapshot.get().isEmpty))
+            OptionalResult.ofMsg("no menus")
+        else
+            mealsSnapshot
     }
 
     private fun QueryDocumentSnapshot.toFoodProvider(): FoodProvider {

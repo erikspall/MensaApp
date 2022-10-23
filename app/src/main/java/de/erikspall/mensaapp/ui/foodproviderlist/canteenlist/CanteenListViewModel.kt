@@ -35,7 +35,10 @@ class CanteenListViewModel @Inject constructor(
                     R.string.location_wuerzburg
                 )
 
-                if (state.location.getValue() != newLocationValue || state.foodProviders.value == null) {
+                if (state.location.getValue() != newLocationValue ||
+                    state.foodProviders.value == null ||
+                    state.foodProviders.value!!.isEmpty()
+                ) {
                     state.location = StringResEnum.locationFrom(newLocationValue)
                     onEvent(FoodProviderListEvent.GetLatest)
                 }
@@ -55,7 +58,7 @@ class CanteenListViewModel @Inject constructor(
                     if (test.isPresent) {
                         Log.d("$TAG:fetchingProcess", "Setting ${test.get().size} items ...")
                         state.foodProviders.value = test.get()
-                    }else {
+                    } else {
                         Log.d("$TAG:fetchingCanteens", test.getMessage())
                     }
                     // Notify Fragment that it should update its list

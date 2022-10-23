@@ -124,6 +124,7 @@ class FirestoreDataSource(
         return firestoreInstance.collection(COLLECTION_FOOD_PROVIDERS)
             .whereEqualTo(FoodProvider.FIELD_LOCATION, location.getRawValue())
             .whereEqualTo(FoodProvider.FIELD_CATEGORY, category.getValue())
+            .orderBy(FoodProvider.FIELD_NAME, Query.Direction.ASCENDING)
     }
 
     private fun queryFoodProvidersByCategory(category: Category): Query {
