@@ -7,6 +7,8 @@ interface StringResEnum {
     @StringRes
     fun getValue(): Int
 
+    fun getRawValue(): String
+
     companion object {
         fun roleFrom(@StringRes stringRes: Int): Role {
             return when (stringRes) {
@@ -24,7 +26,7 @@ interface StringResEnum {
                 R.string.location_schweinfurt -> Location.SCHWEINFURT
                 R.string.location_wuerzburg -> Location.WUERZBURG
                 else -> {
-                    Location.INVALID
+                    Location.ANY
                 }
             }
         }

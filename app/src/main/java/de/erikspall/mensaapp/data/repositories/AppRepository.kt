@@ -1,22 +1,17 @@
 package de.erikspall.mensaapp.data.repositories
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.lifecycle.LiveData
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.*
-import com.google.firebase.firestore.ktx.toObject
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.errorhandling.OptionalResult
 import de.erikspall.mensaapp.data.sources.local.database.entities.*
 import de.erikspall.mensaapp.domain.enums.AdditiveType
+import de.erikspall.mensaapp.domain.enums.Category
+import de.erikspall.mensaapp.domain.enums.Location
 import de.erikspall.mensaapp.domain.enums.Role
 import de.erikspall.mensaapp.domain.model.*
-import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
-import de.erikspall.mensaapp.domain.utils.Extensions.toDate
-import de.erikspall.mensaapp.domain.utils.queries.QueryUtils
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.tasks.await
 import java.time.*
 import java.time.format.TextStyle
 import java.util.*
@@ -24,8 +19,7 @@ import java.util.*
 class AppRepository(
     private val allergenicRepository: AllergenicRepository,
     private val ingredientRepository: IngredientRepository,
-    private val foodProvidersRef: CollectionReference,
-    private val openingHourUseCases: OpeningHourUseCases
+    private val firestoreRepository: FirestoreRepository
 ) {
 
     val allAllergens: LiveData<List<AllergenEntity>> =
@@ -36,42 +30,17 @@ class AppRepository(
 
     // var foodProviders: OptionalResult<List<FoodProvider>> = OptionalResult.ofMsg("not ready")
 
-    suspend fun getFoodProvidersFromFirestore(
-        source: Source,
-        query: Query
-    ): OptionalResult<List<FoodProvider>> {
-        try {
-            val foodProviderList = mutableListOf<FoodProvider>()
+    suspend fun fetchFoodProviders(
+        location: Location,
+        category: Category
+    ): OptionalResult<List<FoodProvider>> = firestoreRepository.fetchFoodProviders(
+        location,
+        category
+    )
 
-            var foodProviderSnapshot: QuerySnapshot = query
-                .get(source)
-                .await()
-
-            if (foodProviderSnapshot.isEmpty) {
-                val backupSource = if (source == Source.SERVER) Source.CACHE else Source.SERVER
-                foodProviderSnapshot = query
-                    .get(backupSource)
-                    .await()
-            }
-
-            for (document in foodProviderSnapshot) {
-                document.toObject<FoodProvider>().let {
-                    it.photo = getImageOfFoodProvider(it.name, it.type, it.location)
-                    it.openingHours = getOpeningHoursFromDocument(document)
-                    it.openingHoursString = openingHourUseCases.formatToString(
-                        it.openingHours,
-                        LocalDateTime.now(),
-                        Locale.getDefault()
-                    )
-                    foodProviderList.add(it)
-                }
-            }
-            //foodProviders =
-            return OptionalResult.of(foodProviderList)
-        } catch (e: FirebaseFirestoreException) {
-            return OptionalResult.ofMsg(e.message ?: "An error occurred")
-        }
-    }
+    suspend fun fetchFoodProvider(
+        foodProviderId: Int
+    ): OptionalResult<FoodProvider> = firestoreRepository.fetchFoodProvider(foodProviderId)
 
     /**
      * Does not return additives, they are saved in the local database instead (we want to persist
@@ -80,74 +49,43 @@ class AppRepository(
      * The method only returns OptionalResult to propagate errors
      */
     suspend fun fetchAllAdditives(
-        source: Source
     ): OptionalResult<List<Additive>> {
-        try {
-            val query = QueryUtils.queryAdditives()
 
-            var additivesSnapshot: QuerySnapshot = query
-                .get(source)
-                .await()
+        val additives = firestoreRepository.fetchAdditives()
 
-            if (additivesSnapshot.isEmpty) {
-                val backupSource = if (source == Source.SERVER) Source.CACHE else Source.SERVER
-                additivesSnapshot = query
-                    .get(backupSource)
-                    .await()
-            }
-
-            for (document in additivesSnapshot) {
-                val type = AdditiveType.from(document.get(Additive.FIELD_TYPE) as String)
-                val name = document.get(Additive.FIELD_NAME) as String
-
-                if (type != null) {
-                    when (type) {
-                        AdditiveType.ALLERGEN -> getOrInsertAllergenic(name)
-                        AdditiveType.INGREDIENT -> getOrInsertIngredient(name)
-                    }
-                } else {
-                    Log.d("$TAG:saveAllAdditives", "Unknown additive '$name'")
+        return if (additives.isPresent) {
+            for (additive in additives.get()) {
+                when (additive.type) {
+                    AdditiveType.ALLERGEN -> getOrInsertAllergen(additive.name)
+                    AdditiveType.INGREDIENT -> getOrInsertIngredient(additive.name)
                 }
             }
-        } catch (e: Exception) {
-            return OptionalResult.ofMsg(e.message ?: "An error occurred")
+
+            OptionalResult.of(emptyList())
+        } else {
+            additives
         }
-        return OptionalResult.of(emptyList()) // No need to pass actual data for now
     }
 
-    suspend fun getMenusOfFoodProvider(
-        source: Source,
+    suspend fun fetchMenus(
         foodProviderId: Int,
         date: LocalDate
     ): OptionalResult<List<Menu>> {
-        try {
-            val query = QueryUtils.queryMealsOfFoodProviderStartingFromDate(foodProviderId, date.toDate())
 
-            var mealsSnapshot: QuerySnapshot = query
-                .get(source)
-                .await()
+        val mealsSnapshot = firestoreRepository.fetchMeals(
+            foodProviderId,
+            date
+        )
 
-            if (mealsSnapshot.isEmpty) {
-                val backupSource = if (source == Source.SERVER) Source.CACHE else Source.SERVER
-                mealsSnapshot = query
-                    .get(backupSource)
-                    .await()
-            }
-            Log.d("$TAG:menus", "returning ${mealsSnapshot.documents.size} meals")
-
-            val meals = parseMenusFromSnapshot(mealsSnapshot)
-
-            return if (meals.isNotEmpty())
-                OptionalResult.of(meals)
-            else
-                OptionalResult.ofMsg("no menus")
-        } catch (e: Exception) {
-            return OptionalResult.ofMsg(e.message ?: "An error occurred")
+        return if (mealsSnapshot.isPresent) {
+            OptionalResult.of(extractMenusFromMeals(mealsSnapshot.get()))
+        } else {
+            OptionalResult.ofMsg(mealsSnapshot.getMessage())
         }
 
     }
 
-    private suspend fun parseMenusFromSnapshot(snapshot: QuerySnapshot): List<Menu> {
+    private suspend fun extractMenusFromMeals(snapshot: QuerySnapshot): List<Menu> {
         val menuMap = mutableMapOf<LocalDate, MutableList<Meal>>()
         for (document in snapshot) {
             val date = (document.get(Meal.FIELD_DATE) as Timestamp).toDate().let {
@@ -165,8 +103,8 @@ class AppRepository(
             meals.add(
                 Meal(
                     name = document.get(Meal.FIELD_NAME) as String,
-                    allergens = getOrInsertAllAllergens(document.get(Meal.FIELD_ALLERGENS) as String),
-                    ingredients = getOrInsertAllIngredients(document.get(Meal.FIELD_INGREDIENTS) as String),
+                    allergenEntities = getOrInsertAllAllergens(document.get(Meal.FIELD_ALLERGENS) as String),
+                    ingredientEntities = getOrInsertAllIngredients(document.get(Meal.FIELD_INGREDIENTS) as String),
                     prices = mapOf(
                         Role.EMPLOYEE to document.get(Meal.FIELD_PRICE_EMPLOYEE) as String,
                         Role.GUEST to document.get(Meal.FIELD_PRICE_GUEST) as String,
@@ -181,10 +119,12 @@ class AppRepository(
         val menus = mutableListOf<Menu>()
 
         for (date in menuMap.keys) {
-            menus.add(Menu(
-                date = date,
-                meals = menuMap[date]?.toList() ?: emptyList()
-            ))
+            menus.add(
+                Menu(
+                    date = date,
+                    meals = menuMap[date]?.toList() ?: emptyList()
+                )
+            )
         }
 
         return menus
@@ -201,7 +141,7 @@ class AppRepository(
     private suspend fun getOrInsertAllAllergens(rawAllergens: String): List<AllergenEntity> {
         val allergens = mutableListOf<AllergenEntity>()
         for (rawAllergen in rawAllergens.split(",")) {
-            allergens.add(getOrInsertAllergenic(rawAllergen) as AllergenEntity)
+            allergens.add(getOrInsertAllergen(rawAllergen) as AllergenEntity)
         }
         return allergens
     }
@@ -285,7 +225,7 @@ class AppRepository(
         }
     }
 
-    private suspend fun getOrInsertAllergenic(name: String): MealComponentEntity {
+    private suspend fun getOrInsertAllergen(name: String): MealComponentEntity {
         return if (allergenicRepository.exists(name)) {
             allergenicRepository.get(name)!!
         } else {

@@ -1,26 +1,20 @@
 package de.erikspall.mensaapp.ui.foodproviderlist.canteenlist
 
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
-import com.google.firebase.firestore.Source
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.data.errorhandling.OptionalResult
 import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.domain.enums.Location
 import de.erikspall.mensaapp.domain.enums.StringResEnum
-import de.erikspall.mensaapp.domain.model.FoodProvider
-import de.erikspall.mensaapp.domain.model.OpeningHour
 import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
-import de.erikspall.mensaapp.domain.utils.queries.QueryUtils
-import de.erikspall.mensaapp.ui.foodproviderlist.adapter.FoodProviderCardAdapter
 import de.erikspall.mensaapp.ui.foodproviderlist.event.FoodProviderListEvent
 import de.erikspall.mensaapp.ui.foodproviderlist.state.FoodProviderListState
-import kotlinx.coroutines.Dispatchers
+import de.erikspall.mensaapp.ui.state.UiState
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
@@ -34,11 +28,6 @@ class CanteenListViewModel @Inject constructor(
 
     val state = FoodProviderListState()
 
-    var canteens = foodProviderUseCases.getAll(
-        Category.CANTEEN
-    )
-
-
     fun onEvent(event: FoodProviderListEvent) {
         when (event) {
             is FoodProviderListEvent.Init -> {
@@ -47,29 +36,47 @@ class CanteenListViewModel @Inject constructor(
                     R.string.location_wuerzburg
                 )
 
-                if (state.location.getValue() != newLocationValue || canteens.value == null) {
+                if (state.location.getValue() != newLocationValue ||
+                    state.foodProviders.value == null ||
+                    state.foodProviders.value!!.isEmpty()
+                ) {
                     state.location = StringResEnum.locationFrom(newLocationValue)
+                    state.uiState.value = UiState.LOADING
+                    onEvent(FoodProviderListEvent.GetLatest)
                 }
             }
             is FoodProviderListEvent.SetUiState -> {
                 state.uiState.postValue(event.uiState)
             }
             is FoodProviderListEvent.GetLatest -> {
-                // TODO: only allow server fetch every x mins/hours/days?
+                viewModelScope.launch {
+                    Log.d("$TAG:fetchingProcess", "Starting to fetch ...")
+                    val test = foodProviderUseCases.fetchAll(
+                        location = state.location,
+                        category = Category.CANTEEN
+                    )
+                    Log.d("$TAG:fetchingProcess", "Fetching ended ...")
+                    if (test.isPresent) {
+                        Log.d("$TAG:fetchingProcess", "Setting ${test.get().size} items ...")
+                        state.foodProviders.value = test.get()
+                        state.uiState.postValue(UiState.NORMAL)
+                    } else {
+                        Log.d("$TAG:fetchingProcess", "Error!")
+                        state.uiState.postValue(UiState.ERROR)
+                        Log.d("$TAG:fetchingCanteens", test.getMessage())
+                    }
+                    // Notify Fragment that it should update its list
+                    //state.receivedData.postValue(!state.receivedData.value!!)
+                }
 
-                canteens = foodProviderUseCases.getAll(
-                    Category.CANTEEN,
-                    Source.SERVER
-                )
-                // Notify Fragment that it should update its list
-                state.receivedData.postValue(!state.receivedData.value!!)
             }
             is FoodProviderListEvent.UpdateOpeningHours -> {
-                canteens.value ?: return
+                state.foodProviders.value ?: return
 
                 Log.d("$TAG:event-updating-hours", "Let's update!")
 
-                canteens.value!!.get().forEach { oldCanteen ->
+                // TODO: Only assign once
+                state.foodProviders.value!!.forEach { oldCanteen ->
                     oldCanteen.openingHoursString = openingHourUseCases.formatToString(
                         oldCanteen.openingHours,
                         LocalDateTime.now(),
@@ -77,7 +84,7 @@ class CanteenListViewModel @Inject constructor(
                     )
                 }
                 // Notify Fragment that it should update its list
-                state.receivedData.postValue(!state.receivedData.value!!)
+                // state.receivedData.postValue(!state.receivedData.value!!)
             }
         }
     }

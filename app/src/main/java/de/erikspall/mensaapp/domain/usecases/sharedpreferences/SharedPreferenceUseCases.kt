@@ -8,5 +8,7 @@ data class SharedPreferenceUseCases(
     val getValueRes: GetValueRes,
     val registerListener: RegisterListener,
     val getBoolean: GetBoolean,
-    val setBoolean: SetBoolean
+    val setBoolean: SetBoolean,
+    val getLocalDateTime: GetLocalDateTime,
+    val setLocalDateTime: SetLocalDateTime
 )

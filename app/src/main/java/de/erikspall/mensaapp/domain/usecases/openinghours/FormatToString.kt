@@ -29,7 +29,7 @@ class FormatToString {
             )
             // Only +6 because we already looked at that weekday
             while (i <= currentDateTime.dayOfWeek.value + 6) {
-                val currentDay = DayOfWeek.of(i % 7)
+                val currentDay = DayOfWeek.of((i % 7) + 1)
                 val currentDate = currentDateTime.toLocalDate().plusDays(i - dayOffset)
                 val openingHourList = openingHours[currentDay] ?: return "Geschlossen!"
 

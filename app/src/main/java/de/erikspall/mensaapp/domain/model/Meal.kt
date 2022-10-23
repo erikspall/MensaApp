@@ -8,8 +8,8 @@ import de.erikspall.mensaapp.domain.enums.Role
 @IgnoreExtraProperties
 data class Meal (
     var name: String = "",
-    var allergens: List<AllergenEntity> = emptyList(),
-    var ingredients: List<IngredientEntity> = emptyList(),
+    var allergenEntities: List<AllergenEntity> = emptyList(),
+    var ingredientEntities: List<IngredientEntity> = emptyList(),
     var prices: Map<Role, String> = emptyMap()
 ) {
     companion object {

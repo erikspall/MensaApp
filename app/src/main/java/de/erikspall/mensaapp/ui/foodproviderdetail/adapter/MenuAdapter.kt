@@ -98,21 +98,21 @@ class MenuAdapter(
                 textMealName.text = meal.name
                 textMealPrice.text = meal.prices[role]
 
-                chipMealCategory.text = meal.ingredients.joinToString { ingredient ->
-                    if (ingredient.getUserDoesNotLike() && warningsEnabled) {
+                chipMealCategory.text = meal.ingredientEntities.joinToString { ingredientEntity ->
+                    if (ingredientEntity.getUserDoesNotLike() && warningsEnabled) {
                         warningIcon.visibility = View.VISIBLE
                     }
-                    ingredient.getName()
+                    ingredientEntity.getName()
                 }
 
                 // TODO: Hide mealCategory if none set
 
-                meal.allergens.forEach { allergenic ->
+                meal.allergenEntities.forEach { allergenEntity ->
                     Chip(context).apply {
-                        text = allergenic.getName()
+                        text = allergenEntity.getName()
                         setEnsureMinTouchTargetSize(false)
                         isClickable = false
-                        if (allergenic.getUserDoesNotLike() && warningsEnabled) {
+                        if (allergenEntity.getUserDoesNotLike() && warningsEnabled) {
                             chipIcon = ContextCompat.getDrawable(context, R.drawable.ic_info)
                             val colorError = context.getDynamicColorIfAvailable(R.attr.colorError)
                             chipIconTint = ColorStateList.valueOf(colorError)
