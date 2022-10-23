@@ -13,6 +13,7 @@ import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
 import de.erikspall.mensaapp.ui.foodproviderlist.event.FoodProviderListEvent
 import de.erikspall.mensaapp.ui.foodproviderlist.state.FoodProviderListState
+import de.erikspall.mensaapp.ui.state.UiState
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.util.*
@@ -40,6 +41,7 @@ class CanteenListViewModel @Inject constructor(
                     state.foodProviders.value!!.isEmpty()
                 ) {
                     state.location = StringResEnum.locationFrom(newLocationValue)
+                    state.uiState.value = UiState.LOADING
                     onEvent(FoodProviderListEvent.GetLatest)
                 }
             }
@@ -47,7 +49,6 @@ class CanteenListViewModel @Inject constructor(
                 state.uiState.postValue(event.uiState)
             }
             is FoodProviderListEvent.GetLatest -> {
-                // TODO: only allow server fetch every x mins/hours/days?
                 viewModelScope.launch {
                     Log.d("$TAG:fetchingProcess", "Starting to fetch ...")
                     val test = foodProviderUseCases.fetchAll(
@@ -58,7 +59,10 @@ class CanteenListViewModel @Inject constructor(
                     if (test.isPresent) {
                         Log.d("$TAG:fetchingProcess", "Setting ${test.get().size} items ...")
                         state.foodProviders.value = test.get()
+                        state.uiState.postValue(UiState.NORMAL)
                     } else {
+                        Log.d("$TAG:fetchingProcess", "Error!")
+                        state.uiState.postValue(UiState.ERROR)
                         Log.d("$TAG:fetchingCanteens", test.getMessage())
                     }
                     // Notify Fragment that it should update its list

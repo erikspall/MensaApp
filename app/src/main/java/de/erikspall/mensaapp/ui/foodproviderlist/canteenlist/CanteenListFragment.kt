@@ -151,23 +151,18 @@ class CanteenListFragment : Fragment() {
 
             binding.swipeRefresh.isRefreshing = false
 
-
-            Log.d(
-                "$TAG:livedata-canteens",
-                "New livedata received! ${canteens.size} items"
-            )
             if (canteens.isNotEmpty()) {
-                viewModel.onEvent(FoodProviderListEvent.SetUiState(UiState.NORMAL))
+                Log.d(
+                    "$TAG:livedata-canteens",
+                    "New livedata received! ${canteens.size} items"
+                )
+
+               // viewModel.onEvent(FoodProviderListEvent.SetUiState(UiState.NORMAL))
                 canteens.let {
                     (binding.recyclerViewCanteen.adapter as FoodProviderCardAdapter).submitList(
                         it
                     )
                 }
-            } else {
-                showMessage(
-                    R.raw.error,
-                    "Irgendetwas ist schiefgelaufen :(\nBesteht eine Internetverbindung?"
-                )
             }
 
         }
