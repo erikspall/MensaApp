@@ -61,48 +61,48 @@ class FormatToString {
                                     if (timeTo < 60) {
                                         "Öffnet in $timeTo Minuten"
                                     } else if (daysTo == 0) {
-                                        "Öffnet um " + formatTimeToString(time, true, "")
+                                        "Öffnet um " + formatTimeToString(time, true, "Uhr")
                                     } else if (daysTo == 1) {
-                                        "Öffnet morgen um " + formatTimeToString(time, true, "")
+                                        "Öffnet morgen um " + formatTimeToString(time, true, "Uhr")
                                     } else {
                                         "Öffnet am ${
                                             currentDate.dayOfWeek.getDisplayName(
                                                 TextStyle.SHORT_STANDALONE,
                                                 Locale.getDefault()
                                             )
-                                        } um " + formatTimeToString(time, true, "")
+                                        } um " + formatTimeToString(time, true, "Uhr")
                                     }
                                 }
                                 OpeningHour.FIELD_GET_FOOD_TILL -> {
                                     if (timeTo < 60) {
                                         "Essensausgabe endet in $timeTo Minuten"
                                     } else if (daysTo == 0) {
-                                        "Essensausgabe endet um " + formatTimeToString(time, true, "")
+                                        "Essensausgabe endet um " + formatTimeToString(time, true, "Uhr")
                                     } else if (daysTo == 1) {
-                                        "Essensausgabe endet morgen um " + formatTimeToString(time, true, "")
+                                        "Essensausgabe endet morgen um " + formatTimeToString(time, true, "Uhr")
                                     } else {
                                         "Essensausgabe endet am ${
                                             currentDate.dayOfWeek.getDisplayName(
                                                 TextStyle.SHORT_STANDALONE,
                                                 Locale.getDefault()
                                             )
-                                        } um " + formatTimeToString(time, true, "")
+                                        } um " + formatTimeToString(time, true, "Uhr")
                                     }
                                 }
                                 OpeningHour.FIELD_CLOSES_AT -> {
                                     if (timeTo < 60) {
                                         "Schließt in $timeTo Minuten"
                                     } else if (daysTo == 0) {
-                                        "Schließt um " + formatTimeToString(time, true, "")
+                                        "Schließt um " + formatTimeToString(time, true, "Uhr")
                                     } else if (daysTo == 1) {
-                                        "Schließt morgen um " + formatTimeToString(time, true, "")
+                                        "Schließt morgen um " + formatTimeToString(time, true, "Uhr")
                                     } else {
                                         "Schließt am ${
                                             currentDate.dayOfWeek.getDisplayName(
                                                 TextStyle.SHORT_STANDALONE,
                                                 Locale.getDefault()
                                             )
-                                        } um " + formatTimeToString(time, true, "")
+                                        } um " + formatTimeToString(time, true, "Uhr")
                                     }
                                 }
                                 else -> {
@@ -132,7 +132,7 @@ class FormatToString {
         if (amPM == "pm")
             hours -= 12
         return String.format(
-            "%02d:%02d %s %s",
+            "%02d:%02d %s%s",
             hours,
             time.minute,
             amPM,
