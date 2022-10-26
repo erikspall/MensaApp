@@ -7,7 +7,7 @@ import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.toObject
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.data.errorhandling.OptionalResult
+import de.erikspall.mensaapp.data.errorhandling.NoMealsException
 import de.erikspall.mensaapp.data.repositories.interfaces.FirestoreRepository
 import de.erikspall.mensaapp.data.sources.remote.firestore.FirestoreDataSource
 import de.erikspall.mensaapp.domain.enums.AdditiveType
@@ -33,7 +33,7 @@ class FirestoreRepositoryImpl(
     override suspend fun fetchFoodProviders(
         location: Location,
         category: Category
-    ): OptionalResult<List<FoodProvider>> {
+    ): Result<List<FoodProvider>> {
         Log.d("$TAG:fetchingProcess", "Entered Repository")
         val lastUpdate = sharedPreferenceUseCases.getLocalDateTime(
             R.string.shared_pref_last_food_provider_update,
@@ -58,7 +58,7 @@ class FirestoreRepositoryImpl(
             )
 
 
-        if (foodProviderSnapshot.isEmpty) {
+        if (foodProviderSnapshot.isFailure) {
             foodProviderSnapshot = if (duration >= 7) {
                 firestoreDataSource.fetchFoodProviders(
                     location = location,
@@ -77,28 +77,27 @@ class FirestoreRepositoryImpl(
 
         val foodProviderList = mutableListOf<FoodProvider>()
 
-        return if (foodProviderSnapshot.isPresent) {
+        return if (foodProviderSnapshot.isSuccess) {
             sharedPreferenceUseCases.setLocalDateTime(
                 R.string.shared_pref_last_food_provider_update,
                 LocalDateTime.now()
             )
-            Log.d("$TAG:fetchingProcess", "Snapshot contains ${foodProviderSnapshot.get().size()}")
-            for (document in foodProviderSnapshot.get())
+            Log.d("$TAG:fetchingProcess", "Snapshot contains ${foodProviderSnapshot.getOrThrow().size()}")
+            for (document in foodProviderSnapshot.getOrThrow())
                 document.toFoodProvider().let {
                     foodProviderList.add(it)
                 }
 
-            OptionalResult.of(foodProviderList)
+            Result.success(foodProviderList)
         } else {
-            Log.e("$TAG:fetchingProcess", foodProviderSnapshot.getMessage())
-            OptionalResult.ofMsg(foodProviderSnapshot.getMessage())
+            foodProviderSnapshot.exceptionOrNull()!!.let { Result.failure(it) }
         }
 
     }
 
     override suspend fun fetchFoodProvider(
         foodProviderId: Int
-    ): OptionalResult<FoodProvider> {
+    ): Result<FoodProvider> {
         val lastUpdate = sharedPreferenceUseCases.getLocalDateTime(
             R.string.shared_pref_last_food_provider_update,
             LocalDateTime.now().minusDays(8),
@@ -118,7 +117,7 @@ class FirestoreRepositoryImpl(
                 foodProviderId = foodProviderId
             )
 
-        if (foodProviderSnapshot.isEmpty) {
+        if (foodProviderSnapshot.isFailure) {
             foodProviderSnapshot = if (duration >= 7)
                 firestoreDataSource.fetchFoodProvider(
                     source = Source.CACHE,
@@ -131,19 +130,19 @@ class FirestoreRepositoryImpl(
                 )
         }
 
-        return if (foodProviderSnapshot.isPresent) {
+        return if (foodProviderSnapshot.isSuccess) {
             sharedPreferenceUseCases.setLocalDateTime(
                 R.string.shared_pref_last_food_provider_update,
                 LocalDateTime.now(),
                 foodProviderId
             )
-            OptionalResult.of(foodProviderSnapshot.get().first().toFoodProvider())
+            Result.success(foodProviderSnapshot.getOrThrow().first().toFoodProvider())
         } else
-            OptionalResult.ofMsg(foodProviderSnapshot.getMessage())
+            Result.failure(foodProviderSnapshot.exceptionOrNull()!!)
     }
 
     override suspend fun fetchAdditives(
-    ): OptionalResult<List<Additive>> {
+    ): Result<List<Additive>> {
         val lastUpdate = sharedPreferenceUseCases.getLocalDateTime(
             R.string.shared_pref_last_additive_update,
             LocalDateTime.now().minusDays(30),
@@ -157,7 +156,7 @@ class FirestoreRepositoryImpl(
             firestoreDataSource.fetchAdditives(source = Source.CACHE)
         }
 
-        if (additiveSnapshot.isEmpty) {
+        if (additiveSnapshot.isFailure) {
             additiveSnapshot = if (duration >= 30) {
                 firestoreDataSource.fetchAdditives(source = Source.CACHE)
             } else {
@@ -167,12 +166,12 @@ class FirestoreRepositoryImpl(
 
         val additiveList = mutableListOf<Additive>()
 
-        return if (additiveSnapshot.isPresent) {
+        return if (additiveSnapshot.isSuccess) {
             sharedPreferenceUseCases.setLocalDateTime(
                 R.string.shared_pref_last_additive_update,
                 LocalDateTime.now()
             )
-            for (document in additiveSnapshot.get()) {
+            for (document in additiveSnapshot.getOrThrow()) {
                 additiveList.add(
                     Additive(
                         name = document.get(Additive.FIELD_NAME) as String,
@@ -182,16 +181,16 @@ class FirestoreRepositoryImpl(
                 )
             }
 
-            OptionalResult.of(additiveList)
+            Result.success(additiveList)
         } else {
-            return OptionalResult.ofMsg(additiveSnapshot.getMessage())
+            Result.failure(additiveSnapshot.exceptionOrNull()!!)
         }
     }
 
     override suspend fun fetchMeals(
         foodProviderId: Int,
         date: LocalDate
-    ): OptionalResult<QuerySnapshot> {
+    ): Result<QuerySnapshot> {
         val lastUpdate = sharedPreferenceUseCases.getLocalDateTime(
             R.string.shared_pref_last_menu_update,
             LocalDateTime.now().minusHours(2),
@@ -213,7 +212,7 @@ class FirestoreRepositoryImpl(
                 source = Source.CACHE
             )
 
-        if (mealsSnapshot.isEmpty) {
+        if (mealsSnapshot.isFailure) {
             mealsSnapshot = if (duration >= 1)
                 firestoreDataSource.fetchMeals(
                     foodProviderId = foodProviderId,
@@ -234,9 +233,13 @@ class FirestoreRepositoryImpl(
             foodProviderId
         )
 
-        return if (mealsSnapshot.isEmpty || (mealsSnapshot.isPresent && mealsSnapshot.get().isEmpty))
-            OptionalResult.ofMsg("no menus")
-        else
+        // TODO: Move failures as far down as possible
+        return if (mealsSnapshot.isFailure) {
+            if (mealsSnapshot.isSuccess && mealsSnapshot.getOrThrow().isEmpty)
+                Result.failure(NoMealsException("No meals found for food provider '$foodProviderId' on '$date'"))
+            else
+                mealsSnapshot
+        } else
             mealsSnapshot
     }
 

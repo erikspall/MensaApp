@@ -3,7 +3,6 @@ package de.erikspall.mensaapp.data.repositories
 import androidx.lifecycle.LiveData
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.*
-import de.erikspall.mensaapp.data.errorhandling.OptionalResult
 import de.erikspall.mensaapp.data.repositories.interfaces.AdditiveRepository
 import de.erikspall.mensaapp.data.repositories.interfaces.AppRepository
 import de.erikspall.mensaapp.data.repositories.interfaces.FirestoreRepository
@@ -32,14 +31,14 @@ class AppRepositoryImpl(
     override suspend fun fetchFoodProviders(
         location: Location,
         category: Category
-    ): OptionalResult<List<FoodProvider>> = firestoreRepository.fetchFoodProviders(
+    ): Result<List<FoodProvider>> = firestoreRepository.fetchFoodProviders(
         location,
         category
     )
 
     override suspend fun fetchFoodProvider(
         foodProviderId: Int
-    ): OptionalResult<FoodProvider> = firestoreRepository.fetchFoodProvider(foodProviderId)
+    ): Result<FoodProvider> = firestoreRepository.fetchFoodProvider(foodProviderId)
 
     /**
      * Does not return additives, they are saved in the local database instead (we want to persist
@@ -48,12 +47,12 @@ class AppRepositoryImpl(
      * The method only returns OptionalResult to propagate errors
      */
     override suspend fun fetchAllAdditives(
-    ): OptionalResult<List<Additive>> {
+    ): Result<List<Additive>> {
 
         val additives = firestoreRepository.fetchAdditives()
 
-        return if (additives.isPresent) {
-            for (additive in additives.get()) {
+        return if (additives.isSuccess) {
+            for (additive in additives.getOrThrow()) {
                 when (additive.type) {
                     AdditiveType.ALLERGEN -> additiveRepository.getOrInsertAdditive(
                         additive.name,
@@ -66,7 +65,7 @@ class AppRepositoryImpl(
                 }
             }
 
-            OptionalResult.of(emptyList())
+            Result.success(emptyList())
         } else {
             additives
         }
@@ -75,17 +74,17 @@ class AppRepositoryImpl(
     override suspend fun fetchMenus(
         foodProviderId: Int,
         date: LocalDate
-    ): OptionalResult<List<Menu>> {
+    ): Result<List<Menu>> {
 
         val mealsSnapshot = firestoreRepository.fetchMeals(
             foodProviderId,
             date
         )
 
-        return if (mealsSnapshot.isPresent) {
-            OptionalResult.of(extractMenusFromMeals(mealsSnapshot.get()))
+        return if (mealsSnapshot.isSuccess) {
+            Result.success(extractMenusFromMeals(mealsSnapshot.getOrThrow()))
         } else {
-            OptionalResult.ofMsg(mealsSnapshot.getMessage())
+            Result.failure(mealsSnapshot.exceptionOrNull()!!)
         }
 
     }
