@@ -1,31 +1,23 @@
 package de.erikspall.mensaapp.ui.settings
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialElevationScale
-import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
-import com.google.android.material.transition.MaterialSharedAxis.Axis
 import dagger.hilt.android.AndroidEntryPoint
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.data.repositories.AppRepository
 import de.erikspall.mensaapp.domain.enums.Location
 import de.erikspall.mensaapp.domain.enums.Role
 import de.erikspall.mensaapp.databinding.FragmentSettingsBinding
 import de.erikspall.mensaapp.domain.utils.Dialogs
 import de.erikspall.mensaapp.ui.settings.event.SettingsEvent
 import de.erikspall.mensaapp.ui.settings.viewmodel.SettingsViewModel
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {

@@ -9,14 +9,12 @@ import de.erikspall.mensaapp.data.sources.local.database.entities.*
 
 @Database(
     entities = [
-        AllergenEntity::class,
-        IngredientEntity::class
+        AdditiveEntity::class
     ],
     version = 1, exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun allergenicDao(): AllergenicDao
-    abstract fun ingredientsDao(): IngredientDao
+    abstract fun additiveDao(): AdditiveDao
 
     companion object {
         @Volatile

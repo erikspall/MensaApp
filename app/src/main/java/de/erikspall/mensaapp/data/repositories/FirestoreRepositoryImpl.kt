@@ -2,13 +2,13 @@ package de.erikspall.mensaapp.data.repositories
 
 import android.util.Log
 import androidx.annotation.DrawableRes
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.toObject
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.errorhandling.OptionalResult
+import de.erikspall.mensaapp.data.repositories.interfaces.FirestoreRepository
 import de.erikspall.mensaapp.data.sources.remote.firestore.FirestoreDataSource
 import de.erikspall.mensaapp.domain.enums.AdditiveType
 import de.erikspall.mensaapp.domain.enums.Category
@@ -24,14 +24,13 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.TextStyle
 import java.util.*
-import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 
-class FirestoreRepository(
+class FirestoreRepositoryImpl(
     private val firestoreDataSource: FirestoreDataSource,
     private val openingHourUseCases: OpeningHourUseCases,
     private val sharedPreferenceUseCases: SharedPreferenceUseCases
-) {
-    suspend fun fetchFoodProviders(
+) : FirestoreRepository {
+    override suspend fun fetchFoodProviders(
         location: Location,
         category: Category
     ): OptionalResult<List<FoodProvider>> {
@@ -97,7 +96,7 @@ class FirestoreRepository(
 
     }
 
-    suspend fun fetchFoodProvider(
+    override suspend fun fetchFoodProvider(
         foodProviderId: Int
     ): OptionalResult<FoodProvider> {
         val lastUpdate = sharedPreferenceUseCases.getLocalDateTime(
@@ -143,7 +142,7 @@ class FirestoreRepository(
             OptionalResult.ofMsg(foodProviderSnapshot.getMessage())
     }
 
-    suspend fun fetchAdditives(
+    override suspend fun fetchAdditives(
     ): OptionalResult<List<Additive>> {
         val lastUpdate = sharedPreferenceUseCases.getLocalDateTime(
             R.string.shared_pref_last_additive_update,
@@ -189,7 +188,7 @@ class FirestoreRepository(
         }
     }
 
-    suspend fun fetchMeals(
+    override suspend fun fetchMeals(
         foodProviderId: Int,
         date: LocalDate
     ): OptionalResult<QuerySnapshot> {

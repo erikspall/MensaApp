@@ -7,12 +7,12 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import de.erikspall.mensaapp.data.repositories.AppRepository
+import de.erikspall.mensaapp.data.repositories.AppRepositoryImpl
 import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
 import de.erikspall.mensaapp.domain.usecases.foodproviders.FetchFoodProvider
 import de.erikspall.mensaapp.domain.usecases.foodproviders.FetchFoodProviders
 import de.erikspall.mensaapp.domain.usecases.foodproviders.FetchMenus
-import de.erikspall.mensaapp.domain.usecases.mealcomponents.*
+import de.erikspall.mensaapp.domain.usecases.additives.*
 import de.erikspall.mensaapp.domain.usecases.openinghours.FormatToString
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.*
@@ -25,7 +25,7 @@ object UseCaseModel {
     @Provides
     @Singleton
     fun provideFoodProviderUseCases(
-        appRepository: AppRepository
+        appRepository: AppRepositoryImpl
     ): FoodProviderUseCases {
         return FoodProviderUseCases(
             fetchAll = FetchFoodProviders(appRepository),
@@ -65,13 +65,11 @@ object UseCaseModel {
     @Provides
     @Singleton
     fun provideMealComponentUseCases(
-        appRepository: AppRepository
-    ): MealComponentUseCases {
-        return MealComponentUseCases(
-            setIngredientLikeStatus = SetIngredientLikeStatus(appRepository),
-            setAllergenLikeStatus = SetAllergenLikeStatus(appRepository),
-            getAllergens = GetAllergens(appRepository),
-            getIngredients = GetIngredients(appRepository),
+        appRepository: AppRepositoryImpl
+    ): AdditiveUseCases {
+        return AdditiveUseCases(
+            setAdditiveLikeStatus = SetAdditiveLikeStatus(appRepository),
+            getAdditives = GetAdditives(appRepository),
             fetchLatest = FetchLatest(appRepository)
         )
     }
