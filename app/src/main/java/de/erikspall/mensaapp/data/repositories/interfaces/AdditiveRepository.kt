@@ -14,7 +14,9 @@ interface AdditiveRepository {
     suspend fun get(name: String, type: AdditiveType): Result<Additive>
 
     suspend fun updateLike(name: String, type: AdditiveType, isNotLiked: Boolean)
+
     fun getAll(): LiveData<List<Additive>>
+    fun getAll(additiveType: AdditiveType): LiveData<List<Additive>>
 
     suspend fun delete(additive: Additive)
 

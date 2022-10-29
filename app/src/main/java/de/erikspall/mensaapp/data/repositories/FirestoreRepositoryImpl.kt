@@ -5,6 +5,7 @@ import androidx.annotation.DrawableRes
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.Source
+import com.google.firebase.firestore.ktx.getField
 import com.google.firebase.firestore.ktx.toObject
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.errorhandling.NoMealsException
@@ -246,6 +247,7 @@ class FirestoreRepositoryImpl(
                 LocalDateTime.now(),
                 Locale.getDefault()
             )
+            it.description = this.getField(FoodProvider.FIELD_DESCRIPTION) ?: ""
             return it
         }
     }

@@ -19,14 +19,10 @@ class AppRepositoryImpl(
 ) : AppRepository {
 
     override val allAllergens: LiveData<List<Additive>> =
-        additiveRepository.getAll().also { liveData ->
-            liveData.value?.filter { it.type == AdditiveType.ALLERGEN }
-        }
+        additiveRepository.getAll(AdditiveType.ALLERGEN)
 
     override val allIngredients: LiveData<List<Additive>> =
-        additiveRepository.getAll().also { liveData ->
-            liveData.value?.filter { it.type == AdditiveType.INGREDIENT }
-        }
+        additiveRepository.getAll(AdditiveType.INGREDIENT)
 
     override suspend fun fetchFoodProviders(
         location: Location,

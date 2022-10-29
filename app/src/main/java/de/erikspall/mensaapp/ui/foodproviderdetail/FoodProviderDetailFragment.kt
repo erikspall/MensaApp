@@ -3,6 +3,7 @@ package de.erikspall.mensaapp.ui.foodproviderdetail
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,15 +24,21 @@ import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.databinding.FragmentFoodProviderDetailBinding
 import de.erikspall.mensaapp.domain.const.MaterialSizes
 import de.erikspall.mensaapp.domain.enums.Category
+import de.erikspall.mensaapp.domain.utils.Extensions.observeOnce
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
 import de.erikspall.mensaapp.domain.utils.MaterialTextViewExtension.setTextWithLineConstraint
 import de.erikspall.mensaapp.ui.foodproviderdetail.adapter.MenuAdapter
+import de.erikspall.mensaapp.ui.foodproviderdetail.adapter.MenuAdapter2
 import de.erikspall.mensaapp.ui.foodproviderlist.canteenlist.CanteenListFragmentArgs
 import de.erikspall.mensaapp.ui.foodproviderdetail.event.DetailEvent
 import de.erikspall.mensaapp.ui.foodproviderdetail.viewmodel.FoodProviderDetailViewModel
 import de.erikspall.mensaapp.ui.foodproviderlist.cafelist.CafeListFragmentArgs
 import de.erikspall.mensaapp.ui.state.UiState
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.time.format.TextStyle
+import java.util.*
 
 @AndroidEntryPoint
 class FoodProviderDetailFragment : Fragment() {
@@ -104,14 +112,16 @@ class FoodProviderDetailFragment : Fragment() {
                 makeLottieVisible(false)
             }
         )
+        binding.viewPagerMenus.adapter = adapter
 
+        /*
         binding.recyclerViewMenus.adapter = adapter
 
         binding.recyclerViewMenus.pushContentUpBy(
             HeightExtractor.getNavigationBarHeight(requireContext()) +
                     MaterialSizes.BOTTOM_NAV_HEIGHT
         )
-
+        */
         viewModel.onEvent(
             DetailEvent.Init(
                 foodProviderId = foodProviderId,
@@ -121,7 +131,10 @@ class FoodProviderDetailFragment : Fragment() {
 
         // var notFirstTime = false
         viewModel.state.menus.observe(viewLifecycleOwner) { menus ->
+
+
             Log.d("$TAG:menus", "received ${menus.size} menus")
+
             adapter.warningsEnabled = viewModel.state.warningsEnabled
             adapter.role = viewModel.state.role
             //if (menus.isEmpty() && notFirstTime)
@@ -129,6 +142,21 @@ class FoodProviderDetailFragment : Fragment() {
             // else {
             // notFirstTime = true
             menus.let { adapter.submitList(it) }
+
+            if (menus.isNotEmpty())
+                TabLayoutMediator(binding.tabLayout, binding.viewPagerMenus) { tab, position ->
+                    Log.d("$TAG:viewPager", "Lets set this stuff")
+                    if (menus.isNotEmpty()) {
+                        val dayOfWeek = menus[position].date.dayOfWeek.getDisplayName(
+                            TextStyle.SHORT_STANDALONE,
+                            Locale.getDefault()
+                        )
+                        val date =
+                            menus[position].date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
+
+                        tab.text = "$dayOfWeek\n$date"
+                    }
+                }.attach()
             // }
         }
 
@@ -177,15 +205,15 @@ class FoodProviderDetailFragment : Fragment() {
                         1
                     )
                 }
-                /*
+
                 if (foodProvider.description.isBlank())
                     binding.infoFoodProviderDescription.container.visibility = View.GONE
                 else
                     binding.infoFoodProviderDescription.textView.setTextWithLineConstraint(
-                        it.foodProvider.description,
+                        foodProvider.description,
                         1
                     )
-                */
+
                 binding.imageFoodProvider.setImageResource(foodProvider.photo)
             }
         }
@@ -257,7 +285,7 @@ class FoodProviderDetailFragment : Fragment() {
         animationSpeed: Float = 1f,
         forceLottie: Boolean = false
     ) {
-        if (forceLottie || binding.recyclerViewMenus.adapter?.itemCount == 0) {
+        if (forceLottie /*|| binding.recyclerViewMenus.adapter?.itemCount == 0*/) {
             binding.lottieAnimationView.speed = animationSpeed
             binding.lottieAnimationView.clearAnimation()
             binding.lottieAnimationView.setAnimation(animation)
@@ -279,11 +307,11 @@ class FoodProviderDetailFragment : Fragment() {
                     binding.lottieLinear.visibility = View.VISIBLE
                 }
             }
-            binding.recyclerViewMenus.animate().alpha(0f).apply {
+            binding.tabLayout.animate().alpha(0f).apply {
                 duration = 300
                 interpolator = AccelerateInterpolator()
                 withEndAction {
-                    binding.recyclerViewMenus.visibility = View.INVISIBLE
+                    binding.tabLayout.visibility = View.INVISIBLE
                 }
             }
             binding.fadeBottom.animate().alpha(0f).apply {
@@ -302,11 +330,11 @@ class FoodProviderDetailFragment : Fragment() {
                     binding.lottieLinear.visibility = View.INVISIBLE
                 }
             }
-            binding.recyclerViewMenus.animate().alpha(1f).apply {
+            binding.tabLayout.animate().alpha(1f).apply {
                 duration = 300
                 interpolator = AccelerateInterpolator()
                 withEndAction {
-                    binding.recyclerViewMenus.visibility = View.VISIBLE
+                    binding.tabLayout.visibility = View.VISIBLE
                 }
             }
             binding.fadeBottom.animate().alpha(1f).apply {
