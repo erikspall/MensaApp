@@ -234,13 +234,7 @@ class FirestoreRepositoryImpl(
         )
 
         // TODO: Move failures as far down as possible
-        return if (mealsSnapshot.isFailure) {
-            if (mealsSnapshot.isSuccess && mealsSnapshot.getOrThrow().isEmpty)
-                Result.failure(NoMealsException("No meals found for food provider '$foodProviderId' on '$date'"))
-            else
-                mealsSnapshot
-        } else
-            mealsSnapshot
+        return mealsSnapshot
     }
 
     private fun QueryDocumentSnapshot.toFoodProvider(): FoodProvider {
@@ -307,6 +301,8 @@ class FirestoreRepositoryImpl(
         }
         return result
     }
+
+
 
     private fun String.formatToResString(): String {
         return this.lowercase()

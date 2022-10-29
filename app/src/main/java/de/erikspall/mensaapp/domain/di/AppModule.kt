@@ -66,7 +66,9 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAdditiveRepository(db: AppDatabase): AdditiveRepository {
+    fun provideAdditiveRepository(
+        db: AppDatabase
+    ): AdditiveRepository {
         return AdditiveRepositoryImpl(db.additiveDao())
     }
 

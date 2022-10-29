@@ -6,8 +6,10 @@ import androidx.room.Entity
 import de.erikspall.mensaapp.domain.enums.AdditiveType
 
 //TODO: Make combination of name and type unique and ditch id
-@Entity(tableName = "additives")
+@Entity(tableName = "additives", primaryKeys = ["name", "type"])
 data class Additive (
+
+
     var name: String = "",
 
     @DrawableRes
