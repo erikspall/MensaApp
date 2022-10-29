@@ -23,6 +23,7 @@ import com.google.android.material.chip.ChipGroup
 import com.google.android.material.divider.MaterialDivider
 import com.google.android.material.textview.MaterialTextView
 import de.erikspall.mensaapp.R
+import de.erikspall.mensaapp.domain.enums.AdditiveType
 import de.erikspall.mensaapp.domain.enums.Role
 import de.erikspall.mensaapp.domain.model.Menu
 import de.erikspall.mensaapp.domain.utils.Extensions.getDynamicColorIfAvailable
@@ -60,7 +61,10 @@ class MenuAdapter(
     @SuppressLint("SetTextI18n") // TODO: Change later
     override fun onBindViewHolder(holder: MenuViewHolder, position: Int) {
         Log.d("MenuAdapter", "Binding: ${getItem(position).date}")
-        holder.textDayOfWeek.text = getItem(position).date.dayOfWeek.getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault())
+        holder.textDayOfWeek.text = getItem(position).date.dayOfWeek.getDisplayName(
+            TextStyle.FULL_STANDALONE,
+            Locale.getDefault()
+        )
         holder.textDate.text =
             ", der ${getItem(position).date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))}"
         if (position == 0) holder.divider.visibility = View.INVISIBLE
@@ -98,21 +102,23 @@ class MenuAdapter(
                 textMealName.text = meal.name
                 textMealPrice.text = meal.prices[role]
 
-                chipMealCategory.text = meal.ingredientEntities.joinToString { ingredientEntity ->
-                    if (ingredientEntity.getUserDoesNotLike() && warningsEnabled) {
-                        warningIcon.visibility = View.VISIBLE
+                chipMealCategory.text = meal.additives.filter { it.type == AdditiveType.INGREDIENT }
+                    .joinToString { ingredient ->
+                        if (ingredient.isNotLiked && warningsEnabled) {
+                            warningIcon.visibility = View.VISIBLE
+                        }
+
+                        /* return */ ingredient.name
                     }
-                    ingredientEntity.getName()
-                }
 
                 // TODO: Hide mealCategory if none set
 
-                meal.allergenEntities.forEach { allergenEntity ->
+                meal.additives.filter { it.type == AdditiveType.ALLERGEN }.forEach { allergen ->
                     Chip(context).apply {
-                        text = allergenEntity.getName()
+                        text = allergen.name
                         setEnsureMinTouchTargetSize(false)
                         isClickable = false
-                        if (allergenEntity.getUserDoesNotLike() && warningsEnabled) {
+                        if (allergen.isNotLiked && warningsEnabled) {
                             chipIcon = ContextCompat.getDrawable(context, R.drawable.ic_info)
                             val colorError = context.getDynamicColorIfAvailable(R.attr.colorError)
                             chipIconTint = ColorStateList.valueOf(colorError)
@@ -122,6 +128,7 @@ class MenuAdapter(
                         chipGroupAllergenic.addView(this)
                     }
                 }
+
                 buttonExpand.setOnClickListener { button ->
                     val v =
                         if (containerAllergenic.visibility == View.GONE) View.VISIBLE else View.GONE

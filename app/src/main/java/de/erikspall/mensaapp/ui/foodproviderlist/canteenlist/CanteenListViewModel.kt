@@ -45,7 +45,7 @@ class CanteenListViewModel @Inject constructor(
                     onEvent(FoodProviderListEvent.GetLatest)
                 }
             }
-            is FoodProviderListEvent.SetUiState -> {
+            is FoodProviderListEvent.SetUiState -> { // TODO this should not exist
                 state.uiState.postValue(event.uiState)
             }
             is FoodProviderListEvent.GetLatest -> {
@@ -56,14 +56,14 @@ class CanteenListViewModel @Inject constructor(
                         category = Category.CANTEEN
                     )
                     Log.d("$TAG:fetchingProcess", "Fetching ended ...")
-                    if (test.isPresent) {
-                        Log.d("$TAG:fetchingProcess", "Setting ${test.get().size} items ...")
-                        state.foodProviders.value = test.get()
+                    if (test.isSuccess) {
+                        Log.d("$TAG:fetchingProcess", "Setting ${test.getOrThrow().size} items ...")
+                        state.foodProviders.value = test.getOrThrow()
                         state.uiState.postValue(UiState.NORMAL)
                     } else {
                         Log.d("$TAG:fetchingProcess", "Error!")
                         state.uiState.postValue(UiState.ERROR)
-                        Log.d("$TAG:fetchingCanteens", test.getMessage())
+                        Log.d("$TAG:fetchingCanteens", test.exceptionOrNull()!!.toString())
                     }
                     // Notify Fragment that it should update its list
                     //state.receivedData.postValue(!state.receivedData.value!!)

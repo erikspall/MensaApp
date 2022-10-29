@@ -21,10 +21,12 @@ class FirestoreInitializer : Initializer<FirebaseFirestore> {
             .setPersistenceEnabled(true)
             .setCacheSizeBytes(FirebaseFirestoreSettings.CACHE_SIZE_UNLIMITED)
             .build()
-       // if (BuildConfig.DEBUG) {
-            firestore.useEmulator(FIRESTORE_EMULATOR_HOST, FIRESTORE_EMULATOR_PORT)
-            FirebaseFirestore.setLoggingEnabled(true)
-       // }
+
+        /* -- Local Testing only
+        firestore.useEmulator(FIRESTORE_EMULATOR_HOST, FIRESTORE_EMULATOR_PORT)
+        FirebaseFirestore.setLoggingEnabled(true)
+        */
+
         firestore.firestoreSettings = settings
         return firestore
     }

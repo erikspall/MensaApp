@@ -13,6 +13,7 @@ import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.databinding.FragmentSettingsMealComponentsBinding
+import de.erikspall.mensaapp.domain.enums.AdditiveType
 import de.erikspall.mensaapp.domain.utils.Extensions.observeOnce
 import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import de.erikspall.mensaapp.domain.utils.HeightExtractor
@@ -94,12 +95,12 @@ class MealComponentFragment : Fragment() {
                         binding.filterGroupIngredients.chipGroupFilterGroup,
                         false
                     ) as Chip).apply {
-                        text = ingredient.getName()
+                        text = ingredient.name
                         setEnsureMinTouchTargetSize(false)
                         isCheckable = true
-                        isChecked = ingredient.getUserDoesNotLike()
+                        isChecked = ingredient.isNotLiked
                         setOnCheckedChangeListener { chip, isChecked ->
-                            viewModel.onEvent(AllergenicEvent.OnIngredientChecked(chip.text.toString(), isChecked))
+                            viewModel.onEvent(AllergenicEvent.OnAdditiveChecked(chip.text.toString(), AdditiveType.INGREDIENT, isChecked))
                         }
                     }
                 )
@@ -114,12 +115,12 @@ class MealComponentFragment : Fragment() {
                         binding.filterGroupIngredients.chipGroupFilterGroup,
                         false
                     ) as Chip).apply {
-                        text = allergen.getName()
+                        text = allergen.name
                         setEnsureMinTouchTargetSize(false)
                         isCheckable = true
-                        isChecked = allergen.getUserDoesNotLike()
+                        isChecked = allergen.isNotLiked
                         setOnCheckedChangeListener { chip, isChecked ->
-                            viewModel.onEvent(AllergenicEvent.OnAllergenicChecked(chip.text.toString(), isChecked))
+                            viewModel.onEvent(AllergenicEvent.OnAdditiveChecked(chip.text.toString(), AdditiveType.ALLERGEN, isChecked))
                         }
                     }
                 )

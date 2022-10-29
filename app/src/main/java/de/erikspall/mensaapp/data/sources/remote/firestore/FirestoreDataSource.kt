@@ -2,7 +2,6 @@ package de.erikspall.mensaapp.data.sources.remote.firestore
 
 import android.util.Log
 import com.google.firebase.firestore.*
-import de.erikspall.mensaapp.data.errorhandling.OptionalResult
 import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.domain.enums.Location
 import de.erikspall.mensaapp.domain.model.Additive
@@ -11,8 +10,6 @@ import de.erikspall.mensaapp.domain.model.Meal
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import java.security.cert.PKIXRevocationChecker.Option
-import java.time.LocalDateTime
 import java.util.*
 
 class FirestoreDataSource(
@@ -23,7 +20,7 @@ class FirestoreDataSource(
         source: Source = Source.CACHE,
         location: Location,
         category: Category
-    ): OptionalResult<QuerySnapshot> = withContext(ioDispatcher) {
+    ): Result<QuerySnapshot> = withContext(ioDispatcher) {
         try {
             Log.d("$TAG:fetchingProcess", "Data Source is using ${if (Source.CACHE == source) "CACHE" else "SERVER"}")
             val query = if (location == Location.ANY && category == Category.ANY)
@@ -39,19 +36,17 @@ class FirestoreDataSource(
                 .get(source)
                 .await()
 
-            return@withContext OptionalResult.of(foodProviderSnapshot)
+            return@withContext Result.success(foodProviderSnapshot)
 
-        } catch (e: FirebaseFirestoreException) {
-            return@withContext OptionalResult.ofMsg(e.message ?: "An unknown error occured")
         } catch (e: Exception) {
-            return@withContext OptionalResult.ofMsg(e.message ?: "An unknown error occured")
+            return@withContext Result.failure(e)
         }
     }
 
     suspend fun fetchFoodProvider(
         source: Source = Source.CACHE,
         foodProviderId: Int
-    ): OptionalResult<QuerySnapshot> = withContext(ioDispatcher) {
+    ): Result<QuerySnapshot> = withContext(ioDispatcher) {
         try {
             val query = queryFoodProvidersById(foodProviderId)
 
@@ -59,30 +54,26 @@ class FirestoreDataSource(
                 .get(source)
                 .await()
 
-            return@withContext OptionalResult.of(foodProviderSnapshot)
+            return@withContext Result.success(foodProviderSnapshot)
 
-        } catch (e: FirebaseFirestoreException) {
-            return@withContext OptionalResult.ofMsg(e.message ?: "An unknown error occured")
         } catch (e: Exception) {
-            return@withContext OptionalResult.ofMsg(e.message ?: "An unknown error occured")
+            return@withContext Result.failure(e)
         }
     }
 
     suspend fun fetchAdditives(
         source: Source = Source.CACHE
-    ): OptionalResult<QuerySnapshot> = withContext(ioDispatcher) {
+    ): Result<QuerySnapshot> = withContext(ioDispatcher) {
         try {
 
             val additiveSnapshot = queryAdditives()
                 .get(source)
                 .await()
 
-            return@withContext OptionalResult.of(additiveSnapshot)
+            return@withContext Result.success(additiveSnapshot)
 
-        } catch (e: FirebaseFirestoreException) {
-            return@withContext OptionalResult.ofMsg(e.message ?: "An unknown error occured")
         } catch (e: Exception) {
-            return@withContext OptionalResult.ofMsg(e.message ?: "An unknown error occured")
+            return@withContext Result.failure(e)
         }
     }
 
@@ -90,7 +81,7 @@ class FirestoreDataSource(
         source: Source = Source.CACHE,
         foodProviderId: Int,
         date: Date
-    ): OptionalResult<QuerySnapshot> = withContext(ioDispatcher) {
+    ): Result<QuerySnapshot> = withContext(ioDispatcher) {
         try {
 
             val mealsSnapshot = queryMealsOfFoodProviderStartingFromDate(
@@ -100,12 +91,10 @@ class FirestoreDataSource(
                 .get(source)
                 .await()
 
-            return@withContext OptionalResult.of(mealsSnapshot)
+            return@withContext Result.success(mealsSnapshot)
 
-        } catch (e: FirebaseFirestoreException) {
-            return@withContext OptionalResult.ofMsg(e.message ?: "An unknown error occured")
         } catch (e: Exception) {
-            return@withContext OptionalResult.ofMsg(e.message ?: "An unknown error occured")
+            return@withContext Result.failure(e)
         }
     }
 

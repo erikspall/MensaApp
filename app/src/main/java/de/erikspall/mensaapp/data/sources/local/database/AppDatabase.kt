@@ -5,18 +5,16 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import de.erikspall.mensaapp.data.sources.local.database.daos.*
-import de.erikspall.mensaapp.data.sources.local.database.entities.*
+import de.erikspall.mensaapp.domain.model.Additive
 
 @Database(
     entities = [
-        AllergenEntity::class,
-        IngredientEntity::class
+        Additive::class
     ],
     version = 1, exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun allergenicDao(): AllergenicDao
-    abstract fun ingredientsDao(): IngredientDao
+    abstract fun additiveDao(): AdditiveDao
 
     companion object {
         @Volatile
