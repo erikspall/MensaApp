@@ -77,25 +77,22 @@ class FoodProviderDetailViewModel @Inject constructor(
 
                             if (this.isSuccess) {
                                 Log.d("$TAG:setters", "Setting ${this.getOrThrow().size} menus")
+                                if (this.getOrThrow().isEmpty())
+                                    state.uiState.postValue(UiState.NO_INFO)
+                                else
+                                    state.uiState.postValue(UiState.NORMAL)
                                 state.menus.postValue(this.getOrThrow())
                             } else {
                                 Log.d("$TAG:setters", "No menus found!")
                                 state.menus.postValue(emptyList())
+                                when (this.exceptionOrNull()) {
+                                    /*"server unreachable" -> state.uiState.postValue(UiState.NO_INTERNET)
+                                    "server not responding" -> state.uiState.postValue(UiState.NO_CONNECTION)
+                                    "no menus" -> state.uiState.postValue(UiState.NO_INFO)*/
+                                    else -> state.uiState.postValue(UiState.ERROR)
+                                }
                             }
 
-                        }
-                        if (result.isFailure) {
-                            // Set UI state
-                            Log.d(
-                                "ErrorPropagation",
-                                "Error while retrieving menus: ${result.exceptionOrNull()}"
-                            )
-                            when (result.exceptionOrNull()) {
-                                /*"server unreachable" -> state.uiState.postValue(UiState.NO_INTERNET)
-                                "server not responding" -> state.uiState.postValue(UiState.NO_CONNECTION)
-                                "no menus" -> state.uiState.postValue(UiState.NO_INFO)*/
-                                else -> state.uiState.postValue(UiState.ERROR)
-                            }
                         }
                     }
             }

@@ -30,4 +30,7 @@ interface AdditiveDao {
 
     @Query("SELECT * FROM additives")
     fun getAll(): LiveData<List<Additive>>
+
+    @Query("SELECT * FROM additives WHERE type = :additiveType")
+    fun getAll(additiveType: AdditiveType): LiveData<List<Additive>>
 }

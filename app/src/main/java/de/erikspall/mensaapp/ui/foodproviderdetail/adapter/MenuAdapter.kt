@@ -46,10 +46,7 @@ class MenuAdapter(
 ) {
 
     class MenuViewHolder(view: View?) : RecyclerView.ViewHolder(view!!) {
-        val textDayOfWeek: MaterialTextView = view!!.findViewById(R.id.text_day_of_week)
-        val textDate: MaterialTextView = view!!.findViewById(R.id.text_menu_date)
         val layoutMenus: LinearLayout = view!!.findViewById(R.id.linear_layout_menus)
-        val divider: MaterialDivider = view!!.findViewById(R.id.divider)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuViewHolder {
@@ -61,13 +58,6 @@ class MenuAdapter(
     @SuppressLint("SetTextI18n") // TODO: Change later
     override fun onBindViewHolder(holder: MenuViewHolder, position: Int) {
         Log.d("MenuAdapter", "Binding: ${getItem(position).date}")
-        holder.textDayOfWeek.text = getItem(position).date.dayOfWeek.getDisplayName(
-            TextStyle.FULL_STANDALONE,
-            Locale.getDefault()
-        )
-        holder.textDate.text =
-            ", der ${getItem(position).date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))}"
-        if (position == 0) holder.divider.visibility = View.INVISIBLE
         // For each menu a coroutine populates the viewholder
         lifecycleScope.launch {
             for (meal in getItem(position).meals) {
@@ -160,6 +150,8 @@ class MenuAdapter(
                 onFinishedConstructing()
 
         }
+
+
     }
 
     companion object {
