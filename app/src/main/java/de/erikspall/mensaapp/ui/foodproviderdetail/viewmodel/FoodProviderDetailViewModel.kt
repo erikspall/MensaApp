@@ -6,8 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.Source
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.data.errorhandling.OptionalResult
-import de.erikspall.mensaapp.data.errorhandling.OptionalResultMsg
 import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.domain.enums.Role
 import de.erikspall.mensaapp.domain.enums.StringResEnum
@@ -43,9 +41,9 @@ class FoodProviderDetailViewModel @Inject constructor(
                         foodProviderUseCases.fetch(
                             event.foodProviderId
                         ).apply {
-                            if (this.isPresent) {
+                            if (this.isSuccess) {
                                 Log.d("$TAG:setters", "Setting FoodProvider ...")
-                                state.foodProvider.value = (this.get())
+                                state.foodProvider.value = (this.getOrThrow())
                             }
                         }
 
@@ -77,25 +75,25 @@ class FoodProviderDetailViewModel @Inject constructor(
                             date = LocalDate.now()
                         ).apply {
 
-                            if (this.isPresent) {
-                                Log.d("$TAG:setters", "Setting ${this.get().size} menus")
-                                state.menus.postValue(this.get())
+                            if (this.isSuccess) {
+                                Log.d("$TAG:setters", "Setting ${this.getOrThrow().size} menus")
+                                state.menus.postValue(this.getOrThrow())
                             } else {
                                 Log.d("$TAG:setters", "No menus found!")
                                 state.menus.postValue(emptyList())
                             }
 
                         }
-                        if (result.isEmpty) {
+                        if (result.isFailure) {
                             // Set UI state
                             Log.d(
                                 "ErrorPropagation",
-                                "Error while retrieving menus: ${result.getMessage()}"
+                                "Error while retrieving menus: ${result.exceptionOrNull()}"
                             )
-                            when (result.getMessage()) {
-                                "server unreachable" -> state.uiState.postValue(UiState.NO_INTERNET)
+                            when (result.exceptionOrNull()) {
+                                /*"server unreachable" -> state.uiState.postValue(UiState.NO_INTERNET)
                                 "server not responding" -> state.uiState.postValue(UiState.NO_CONNECTION)
-                                "no menus" -> state.uiState.postValue(UiState.NO_INFO)
+                                "no menus" -> state.uiState.postValue(UiState.NO_INFO)*/
                                 else -> state.uiState.postValue(UiState.ERROR)
                             }
                         }
