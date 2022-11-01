@@ -105,15 +105,14 @@ class AppRepositoryImpl(
                     additives = additiveRepository.getOrInsertAllAdditives(
                         document.get(Meal.FIELD_ALLERGENS) as String,
                         AdditiveType.ALLERGEN
-                    ).also {
-                        it.union(
+                    ).union(
                             additiveRepository.getOrInsertAllAdditives(
                                 document.get(
                                     Meal.FIELD_INGREDIENTS
                                 ) as String, AdditiveType.INGREDIENT
                             )
-                        )
-                    },
+                        ).toList()
+                    ,
                     prices = mapOf(
                         Role.EMPLOYEE to document.get(Meal.FIELD_PRICE_EMPLOYEE) as String,
                         Role.GUEST to document.get(Meal.FIELD_PRICE_GUEST) as String,

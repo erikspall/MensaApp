@@ -3,7 +3,6 @@ package de.erikspall.mensaapp.ui.foodproviderdetail
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
@@ -22,14 +21,9 @@ import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.databinding.FragmentFoodProviderDetailBinding
-import de.erikspall.mensaapp.domain.const.MaterialSizes
 import de.erikspall.mensaapp.domain.enums.Category
-import de.erikspall.mensaapp.domain.utils.Extensions.observeOnce
-import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
-import de.erikspall.mensaapp.domain.utils.HeightExtractor
 import de.erikspall.mensaapp.domain.utils.MaterialTextViewExtension.setTextWithLineConstraint
 import de.erikspall.mensaapp.ui.foodproviderdetail.adapter.MenuAdapter
-import de.erikspall.mensaapp.ui.foodproviderdetail.adapter.MenuAdapter2
 import de.erikspall.mensaapp.ui.foodproviderlist.canteenlist.CanteenListFragmentArgs
 import de.erikspall.mensaapp.ui.foodproviderdetail.event.DetailEvent
 import de.erikspall.mensaapp.ui.foodproviderdetail.viewmodel.FoodProviderDetailViewModel

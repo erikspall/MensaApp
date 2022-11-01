@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.allViews
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -60,95 +61,102 @@ class MenuAdapter(
         Log.d("MenuAdapter", "Binding: ${getItem(position).date}")
         // For each menu a coroutine populates the viewholder
         lifecycleScope.launch {
+            Log.d("BindingMenu", "${getItem(position).date} has ${getItem(position).meals.size} meals")
             for (meal in getItem(position).meals) {
                 val mealViewHolder = LayoutInflater.from(context)
                     .inflate(R.layout.item_meal, holder.layoutMenus, false)
-                lateinit var textMealName: MaterialTextView
-                lateinit var textMealPrice: MaterialTextView
-                lateinit var warningIcon: AppCompatImageView
-                lateinit var chipMealCategory: Chip
-                lateinit var layout: ConstraintLayout
-                lateinit var buttonExpand: MaterialButton
-                lateinit var containerAllergenic: LinearLayout
-                lateinit var chipGroupAllergenic: ChipGroup
 
-                withContext(Dispatchers.IO) {
-                    textMealName = mealViewHolder.findViewById(R.id.text_meal_name)
-                    textMealPrice = mealViewHolder.findViewById(R.id.text_meal_price)
+                //if (mealViewHolder.allViews.count() == 0) { // TODO: Views are already present
+                    lateinit var textMealName: MaterialTextView
+                    lateinit var textMealPrice: MaterialTextView
+                    lateinit var warningIcon: AppCompatImageView
+                    lateinit var chipMealCategory: Chip
+                    lateinit var layout: ConstraintLayout
+                    lateinit var buttonExpand: MaterialButton
+                    lateinit var containerAllergenic: LinearLayout
+                    lateinit var chipGroupAllergenic: ChipGroup
 
-                    warningIcon = mealViewHolder.findViewById(R.id.image_meal_error)
+                    withContext(Dispatchers.IO) {
+                        textMealName = mealViewHolder.findViewById(R.id.text_meal_name)
+                        textMealPrice = mealViewHolder.findViewById(R.id.text_meal_price)
 
-                    chipMealCategory = mealViewHolder.findViewById(R.id.chip_meal_category)
+                        warningIcon = mealViewHolder.findViewById(R.id.image_meal_error)
 
-                    layout = mealViewHolder.findViewById(R.id.layout_menu)
+                        chipMealCategory = mealViewHolder.findViewById(R.id.chip_meal_category)
 
-                    buttonExpand = mealViewHolder.findViewById(R.id.button_expand_meal)
+                        layout = mealViewHolder.findViewById(R.id.layout_menu)
 
-                    containerAllergenic = mealViewHolder.findViewById(R.id.container_allergenics)
+                        buttonExpand = mealViewHolder.findViewById(R.id.button_expand_meal)
 
-                    chipGroupAllergenic = mealViewHolder.findViewById(R.id.chip_group_allergenics)
-                }
+                        containerAllergenic =
+                            mealViewHolder.findViewById(R.id.container_allergenics)
 
-                textMealName.text = meal.name
-                textMealPrice.text = meal.prices[role]
-
-                chipMealCategory.text = meal.additives.filter { it.type == AdditiveType.INGREDIENT }
-                    .joinToString { ingredient ->
-                        if (ingredient.isNotLiked && warningsEnabled) {
-                            warningIcon.visibility = View.VISIBLE
-                        }
-
-                        /* return */ ingredient.name
+                        chipGroupAllergenic =
+                            mealViewHolder.findViewById(R.id.chip_group_allergenics)
                     }
 
-                // TODO: Hide mealCategory if none set
+                    textMealName.text = meal.name
+                    textMealPrice.text = meal.prices[role]
 
-                meal.additives.filter { it.type == AdditiveType.ALLERGEN }.forEach { allergen ->
-                    Chip(context).apply {
-                        text = allergen.name
-                        setEnsureMinTouchTargetSize(false)
-                        isClickable = false
-                        if (allergen.isNotLiked && warningsEnabled) {
-                            chipIcon = ContextCompat.getDrawable(context, R.drawable.ic_info)
-                            val colorError = context.getDynamicColorIfAvailable(R.attr.colorError)
-                            chipIconTint = ColorStateList.valueOf(colorError)
-                            setTextColor(colorError)
-                            warningIcon.visibility = View.VISIBLE
+                    chipMealCategory.text =
+                        meal.additives.filter { it.type == AdditiveType.INGREDIENT }
+                            .joinToString { ingredient ->
+                                if (ingredient.isNotLiked && warningsEnabled) {
+                                    warningIcon.visibility = View.VISIBLE
+                                }
+
+                                /* return */ ingredient.name
+                            }
+
+                    // TODO: Hide mealCategory if none set
+
+                    meal.additives.filter { it.type == AdditiveType.ALLERGEN }.forEach { allergen ->
+                        Chip(context).apply {
+                            text = allergen.name
+                            setEnsureMinTouchTargetSize(false)
+                            isClickable = false
+                            if (allergen.isNotLiked && warningsEnabled) {
+                                chipIcon = ContextCompat.getDrawable(context, R.drawable.ic_info)
+                                val colorError =
+                                    context.getDynamicColorIfAvailable(R.attr.colorError)
+                                chipIconTint = ColorStateList.valueOf(colorError)
+                                setTextColor(colorError)
+                                warningIcon.visibility = View.VISIBLE
+                            }
+                            chipGroupAllergenic.addView(this)
                         }
-                        chipGroupAllergenic.addView(this)
                     }
-                }
 
-                buttonExpand.setOnClickListener { button ->
-                    val v =
-                        if (containerAllergenic.visibility == View.GONE) View.VISIBLE else View.GONE
-                    TransitionManager.beginDelayedTransition(menusHolder, AutoTransition())
-                    containerAllergenic.visibility = v
+                    buttonExpand.setOnClickListener { button ->
+                        val v =
+                            if (containerAllergenic.visibility == View.GONE) View.VISIBLE else View.GONE
+                        TransitionManager.beginDelayedTransition(menusHolder, AutoTransition())
+                        containerAllergenic.visibility = v
 
-                    if (v == View.VISIBLE) {
-                        button.animate().rotationBy(-180f).apply {
-                            duration = 100
-                            interpolator = AccelerateInterpolator()
-                            withEndAction {
-                                button.rotation = 180f
+                        if (v == View.VISIBLE) {
+                            button.animate().rotationBy(-180f).apply {
+                                duration = 100
+                                interpolator = AccelerateInterpolator()
+                                withEndAction {
+                                    button.rotation = 180f
+                                }
+                            }
+                        } else {
+                            button.animate().rotationBy(180f).apply {
+                                duration = 100
+                                interpolator = AccelerateInterpolator()
+                                withEndAction {
+                                    button.rotation = 0f
+                                }
                             }
                         }
-                    } else {
-                        button.animate().rotationBy(180f).apply {
-                            duration = 100
-                            interpolator = AccelerateInterpolator()
-                            withEndAction {
-                                button.rotation = 0f
-                            }
-                        }
                     }
+
+                    holder.layoutMenus.addView(mealViewHolder)
                 }
-
-                holder.layoutMenus.addView(mealViewHolder)
-            }
-            if ((itemCount - 1) == position)
-                onFinishedConstructing()
-
+                if ((itemCount - 1) == position)
+                    onFinishedConstructing()
+           // }
         }
 
 
