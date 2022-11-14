@@ -19,14 +19,10 @@ class AppRepositoryImpl(
 ) : AppRepository {
 
     override val allAllergens: LiveData<List<Additive>> =
-        additiveRepository.getAll().also { liveData ->
-            liveData.value?.filter { it.type == AdditiveType.ALLERGEN }
-        }
+        additiveRepository.getAll(AdditiveType.ALLERGEN)
 
     override val allIngredients: LiveData<List<Additive>> =
-        additiveRepository.getAll().also { liveData ->
-            liveData.value?.filter { it.type == AdditiveType.INGREDIENT }
-        }
+        additiveRepository.getAll(AdditiveType.INGREDIENT)
 
     override suspend fun fetchFoodProviders(
         location: Location,
@@ -109,15 +105,14 @@ class AppRepositoryImpl(
                     additives = additiveRepository.getOrInsertAllAdditives(
                         document.get(Meal.FIELD_ALLERGENS) as String,
                         AdditiveType.ALLERGEN
-                    ).also {
-                        it.union(
+                    ).union(
                             additiveRepository.getOrInsertAllAdditives(
                                 document.get(
                                     Meal.FIELD_INGREDIENTS
                                 ) as String, AdditiveType.INGREDIENT
                             )
-                        )
-                    },
+                        ).toList()
+                    ,
                     prices = mapOf(
                         Role.EMPLOYEE to document.get(Meal.FIELD_PRICE_EMPLOYEE) as String,
                         Role.GUEST to document.get(Meal.FIELD_PRICE_GUEST) as String,

@@ -21,6 +21,8 @@ data class FoodProvider(
     var info: String = "",
     var additionalInfo: String = "",
 
+    var description: String = "",
+
     var openingHours: Map<DayOfWeek,  List<Map<String, LocalTime>>> = mutableMapOf(),
     var openingHoursString: String = ""
     //var description: Map<Locale, String> = mutableMapOf()
@@ -35,6 +37,7 @@ data class FoodProvider(
         const val FIELD_TYPE = "type"
         const val FIELD_ADDRESS = "address"
         const val FIELD_NAME = "name"
+        const val FIELD_DESCRIPTION = "description_de"
     }
 
     override fun equals(other: Any?): Boolean {

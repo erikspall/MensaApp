@@ -39,6 +39,10 @@ class AdditiveRepositoryImpl(
         return additiveDao.getAll()
     }
 
+    override fun getAll(additiveType: AdditiveType): LiveData<List<Additive>> {
+        return additiveDao.getAll(additiveType)
+    }
+
     override suspend fun delete(additive: Additive) {
         additiveDao.delete(additive)
     }
