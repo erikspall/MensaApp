@@ -12,7 +12,6 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.allViews
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -21,17 +20,15 @@ import androidx.transition.TransitionManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import com.google.android.material.divider.MaterialDivider
 import com.google.android.material.textview.MaterialTextView
 import de.erikspall.mensaapp.R
+import de.erikspall.mensaapp.domain.const.MaterialSizes
 import de.erikspall.mensaapp.domain.enums.AdditiveType
 import de.erikspall.mensaapp.domain.enums.Role
 import de.erikspall.mensaapp.domain.model.Menu
 import de.erikspall.mensaapp.domain.utils.Extensions.getDynamicColorIfAvailable
+import de.erikspall.mensaapp.domain.utils.Extensions.pushContentUpBy
 import kotlinx.coroutines.*
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.time.format.TextStyle
 import java.util.*
 
 class MenuAdapter(
@@ -59,6 +56,7 @@ class MenuAdapter(
     @SuppressLint("SetTextI18n") // TODO: Change later
     override fun onBindViewHolder(holder: MenuViewHolder, position: Int) {
         Log.d("MenuAdapter", "Binding: ${getItem(position).date}")
+        holder.layoutMenus.removeAllViews()
         // For each menu a coroutine populates the viewholder
         lifecycleScope.launch {
             Log.d("BindingMenu", "${getItem(position).date} has ${getItem(position).meals.size} meals")
@@ -151,11 +149,14 @@ class MenuAdapter(
                             }
                         }
                     }
-
+                    Log.d("BindingMenu", "adding to layoutMenus ...")
                     holder.layoutMenus.addView(mealViewHolder)
                 }
-                if ((itemCount - 1) == position)
+                holder.layoutMenus.pushContentUpBy(dp = MaterialSizes.BOTTOM_NAV_HEIGHT)
+                if ((itemCount - 1) == position){
                     onFinishedConstructing()
+                }
+
            // }
         }
 

@@ -65,7 +65,7 @@ class FoodProviderDetailFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         _binding = FragmentFoodProviderDetailBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -362,6 +362,11 @@ class FoodProviderDetailFragment : Fragment() {
         // )
 
         //binding.iconButton.layoutParams = params
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.tabLayout.requestLayout()
     }
 
     companion object {
