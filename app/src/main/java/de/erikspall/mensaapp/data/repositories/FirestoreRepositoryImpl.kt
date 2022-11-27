@@ -1,25 +1,24 @@
 package de.erikspall.mensaapp.data.repositories
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.getField
 import com.google.firebase.firestore.ktx.toObject
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.data.errorhandling.NoMealsException
-import de.erikspall.mensaapp.data.repositories.interfaces.FirestoreRepository
+import de.erikspall.mensaapp.data.handler.SaveTimeHandler
+import de.erikspall.mensaapp.data.handler.SourceHandler
+import de.erikspall.mensaapp.data.requests.*
+import de.erikspall.mensaapp.domain.interfaces.data.FirestoreRepository
 import de.erikspall.mensaapp.data.sources.remote.firestore.FirestoreDataSource
 import de.erikspall.mensaapp.domain.enums.AdditiveType
 import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.domain.enums.Location
+import de.erikspall.mensaapp.domain.interfaces.data.Request
 import de.erikspall.mensaapp.domain.model.*
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
-import de.erikspall.mensaapp.domain.utils.Extensions.toDate
 import java.time.DayOfWeek
-import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -29,61 +28,37 @@ import java.util.*
 class FirestoreRepositoryImpl(
     private val firestoreDataSource: FirestoreDataSource,
     private val openingHourUseCases: OpeningHourUseCases,
-    private val sharedPreferenceUseCases: SharedPreferenceUseCases
+    private val sourceHandler: SourceHandler,
+    private val saveTimeHandler: SaveTimeHandler
 ) : FirestoreRepository {
+
+    override suspend fun fetchData(request: Request): Result<QuerySnapshot> {
+        sourceHandler.handle(request)
+        val result = request.execute(firestoreDataSource)
+        if (result.isSuccess && !result.getOrThrow().isEmpty) {
+            saveTimeHandler.handle(request)
+        }
+        return result
+    }
+
     override suspend fun fetchFoodProviders(
         location: Location,
         category: Category
     ): Result<List<FoodProvider>> {
-        Log.d("$TAG:fetchingProcess", "Entered Repository")
-        val lastUpdate = sharedPreferenceUseCases.getLocalDateTime(
-            R.string.shared_pref_last_food_provider_update,
-            LocalDateTime.now().minusDays(8)
+
+        var foodProviderSnapshot = fetchData(
+            FoodProviderRequest(
+                requestId = "$location$category",
+                parameters = FoodProviderRequestParameters(
+                    category = category,
+                    location = location
+                )
+            )
         )
-
-        val duration = Duration.between(lastUpdate, LocalDateTime.now()).toDays()
-
-        Log.d("$TAG:fetchingProcess", "Last update was $duration days ago")
-
-        var foodProviderSnapshot = if (duration >= 7) {
-            firestoreDataSource.fetchFoodProviders(
-                location = location,
-                category = category,
-                source = Source.SERVER
-            )
-        } else
-            firestoreDataSource.fetchFoodProviders(
-                location = location,
-                category = category,
-                source = Source.CACHE
-            )
-
-
-        if (foodProviderSnapshot.isFailure) {
-            foodProviderSnapshot = if (duration >= 7) {
-                firestoreDataSource.fetchFoodProviders(
-                    location = location,
-                    category = category,
-                    source = Source.CACHE
-                )
-            } else {
-                firestoreDataSource.fetchFoodProviders(
-                    location = location,
-                    category = category,
-                    source = Source.SERVER
-                )
-            }
-        }
-
 
         val foodProviderList = mutableListOf<FoodProvider>()
 
         return if (foodProviderSnapshot.isSuccess) {
-            sharedPreferenceUseCases.setLocalDateTime(
-                R.string.shared_pref_last_food_provider_update,
-                LocalDateTime.now()
-            )
-            Log.d("$TAG:fetchingProcess", "Snapshot contains ${foodProviderSnapshot.getOrThrow().size()}")
             for (document in foodProviderSnapshot.getOrThrow())
                 document.toFoodProvider().let {
                     foodProviderList.add(it)
@@ -99,44 +74,15 @@ class FirestoreRepositoryImpl(
     override suspend fun fetchFoodProvider(
         foodProviderId: Int
     ): Result<FoodProvider> {
-        val lastUpdate = sharedPreferenceUseCases.getLocalDateTime(
-            R.string.shared_pref_last_food_provider_update,
-            LocalDateTime.now().minusDays(8),
-            /* foodProviderId -- not needed for now*/
-        )
-
-        val duration = Duration.between(lastUpdate, LocalDateTime.now()).toDays()
-
-        var foodProviderSnapshot = if (duration >= 7)
-            firestoreDataSource.fetchFoodProvider(
-                source = Source.SERVER,
+        val foodProviderSnapshot = fetchData(FoodProviderRequest(
+            requestId = "foodProvider${foodProviderId}",
+            parameters = FoodProviderRequestParameters(
                 foodProviderId = foodProviderId
             )
-        else
-            firestoreDataSource.fetchFoodProvider(
-                source = Source.CACHE,
-                foodProviderId = foodProviderId
-            )
+        ))
 
-        if (foodProviderSnapshot.isFailure) {
-            foodProviderSnapshot = if (duration >= 7)
-                firestoreDataSource.fetchFoodProvider(
-                    source = Source.CACHE,
-                    foodProviderId = foodProviderId
-                )
-            else
-                firestoreDataSource.fetchFoodProvider(
-                    source = Source.SERVER,
-                    foodProviderId = foodProviderId
-                )
-        }
 
         return if (foodProviderSnapshot.isSuccess) {
-            sharedPreferenceUseCases.setLocalDateTime(
-                R.string.shared_pref_last_food_provider_update,
-                LocalDateTime.now(),
-                foodProviderId
-            )
             Result.success(foodProviderSnapshot.getOrThrow().first().toFoodProvider())
         } else
             Result.failure(foodProviderSnapshot.exceptionOrNull()!!)
@@ -144,34 +90,12 @@ class FirestoreRepositoryImpl(
 
     override suspend fun fetchAdditives(
     ): Result<List<Additive>> {
-        val lastUpdate = sharedPreferenceUseCases.getLocalDateTime(
-            R.string.shared_pref_last_additive_update,
-            LocalDateTime.now().minusDays(30),
-        )
 
-        val duration = Duration.between(lastUpdate, LocalDateTime.now()).toDays()
-
-        var additiveSnapshot = if (duration >= 30) {
-            firestoreDataSource.fetchAdditives(source = Source.SERVER)
-        } else {
-            firestoreDataSource.fetchAdditives(source = Source.CACHE)
-        }
-
-        if (additiveSnapshot.isFailure) {
-            additiveSnapshot = if (duration >= 30) {
-                firestoreDataSource.fetchAdditives(source = Source.CACHE)
-            } else {
-                firestoreDataSource.fetchAdditives(source = Source.SERVER)
-            }
-        }
+        var additiveSnapshot = fetchData(AdditiveRequest())
 
         val additiveList = mutableListOf<Additive>()
 
         return if (additiveSnapshot.isSuccess) {
-            sharedPreferenceUseCases.setLocalDateTime(
-                R.string.shared_pref_last_additive_update,
-                LocalDateTime.now()
-            )
             for (document in additiveSnapshot.getOrThrow()) {
                 additiveList.add(
                     Additive(
@@ -192,51 +116,17 @@ class FirestoreRepositoryImpl(
         foodProviderId: Int,
         date: LocalDate
     ): Result<QuerySnapshot> {
-        val lastUpdate = sharedPreferenceUseCases.getLocalDateTime(
-            R.string.shared_pref_last_menu_update,
-            LocalDateTime.now().minusHours(2),
-            foodProviderId
-        )
-        // TODO: Allow updates after cloud function
-        val duration = Duration.between(lastUpdate, LocalDateTime.now()).toHours()
-
-        var mealsSnapshot = if (duration >= 1)
-            firestoreDataSource.fetchMeals(
-                foodProviderId = foodProviderId,
-                date = date.toDate(),
-                source = Source.SERVER
-            )
-        else
-            firestoreDataSource.fetchMeals(
-                foodProviderId = foodProviderId,
-                date = date.toDate(),
-                source = Source.CACHE
-            )
-
-        if (mealsSnapshot.isFailure) {
-            mealsSnapshot = if (duration >= 1)
-                firestoreDataSource.fetchMeals(
+        return fetchData(
+            MealRequest(
+                requestId = "meals${foodProviderId}",
+                parameters = MealRequestParameters(
                     foodProviderId = foodProviderId,
-                    date = date.toDate(),
-                    source = Source.CACHE
+                    localDate = date
                 )
-            else
-                firestoreDataSource.fetchMeals(
-                    foodProviderId = foodProviderId,
-                    date = date.toDate(),
-                    source = Source.SERVER
-                )
-        }
-
-        sharedPreferenceUseCases.setLocalDateTime(
-            R.string.shared_pref_last_menu_update,
-            LocalDateTime.now(),
-            foodProviderId
+            )
         )
-
-        // TODO: Move failures as far down as possible
-        return mealsSnapshot
     }
+
 
     private fun QueryDocumentSnapshot.toFoodProvider(): FoodProvider {
         this.toObject<FoodProvider>().let {
@@ -303,7 +193,6 @@ class FirestoreRepositoryImpl(
         }
         return result
     }
-
 
 
     private fun String.formatToResString(): String {

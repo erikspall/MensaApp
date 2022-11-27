@@ -10,10 +10,12 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import de.erikspall.mensaapp.R
+import de.erikspall.mensaapp.data.handler.SaveTimeHandler
+import de.erikspall.mensaapp.data.handler.SourceHandler
 import de.erikspall.mensaapp.data.repositories.*
-import de.erikspall.mensaapp.data.repositories.interfaces.AdditiveRepository
-import de.erikspall.mensaapp.data.repositories.interfaces.AppRepository
-import de.erikspall.mensaapp.data.repositories.interfaces.FirestoreRepository
+import de.erikspall.mensaapp.domain.interfaces.data.AdditiveRepository
+import de.erikspall.mensaapp.domain.interfaces.data.AppRepository
+import de.erikspall.mensaapp.domain.interfaces.data.FirestoreRepository
 import de.erikspall.mensaapp.data.sources.local.database.AppDatabase
 import de.erikspall.mensaapp.data.sources.remote.firestore.FirestoreDataSource
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
@@ -48,7 +50,8 @@ object AppModule {
         return FirestoreRepositoryImpl(
             firestoreDataSource,
             openingHourUseCases,
-            sharedPreferenceUseCases
+            SourceHandler(sharedPreferenceUseCases = sharedPreferenceUseCases),
+            SaveTimeHandler(sharedPreferenceUseCases = sharedPreferenceUseCases)
         )
     }
 

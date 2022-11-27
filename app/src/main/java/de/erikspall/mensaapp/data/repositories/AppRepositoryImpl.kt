@@ -3,9 +3,9 @@ package de.erikspall.mensaapp.data.repositories
 import androidx.lifecycle.LiveData
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.*
-import de.erikspall.mensaapp.data.repositories.interfaces.AdditiveRepository
-import de.erikspall.mensaapp.data.repositories.interfaces.AppRepository
-import de.erikspall.mensaapp.data.repositories.interfaces.FirestoreRepository
+import de.erikspall.mensaapp.domain.interfaces.data.AdditiveRepository
+import de.erikspall.mensaapp.domain.interfaces.data.AppRepository
+import de.erikspall.mensaapp.domain.interfaces.data.FirestoreRepository
 import de.erikspall.mensaapp.domain.enums.AdditiveType
 import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.domain.enums.Location

@@ -1,13 +1,12 @@
 package de.erikspall.mensaapp.data.repositories
 
 import androidx.lifecycle.LiveData
-import de.erikspall.mensaapp.data.repositories.interfaces.AppRepository
+import de.erikspall.mensaapp.domain.interfaces.data.AppRepository
 import de.erikspall.mensaapp.domain.enums.AdditiveType
 import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.domain.enums.Location
 import de.erikspall.mensaapp.domain.model.Additive
 import de.erikspall.mensaapp.domain.model.FoodProvider
-import de.erikspall.mensaapp.domain.model.Meal
 import de.erikspall.mensaapp.domain.model.Menu
 import java.time.LocalDate
 

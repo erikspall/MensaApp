@@ -16,6 +16,13 @@ class SetLocalDateTime(
         }
     }
 
+    operator fun invoke(key: String, value: LocalDateTime) {
+        with(sharedPreferences.edit()) {
+            putString(key, value.toString())
+            commit()
+        }
+    }
+
     operator fun invoke(@StringRes key: Int, value: LocalDateTime, param: Int) {
         with(sharedPreferences.edit()) {
             putString(context.getString(key, param), value.toString())

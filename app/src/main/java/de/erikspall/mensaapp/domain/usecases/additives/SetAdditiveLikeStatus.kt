@@ -1,7 +1,6 @@
 package de.erikspall.mensaapp.domain.usecases.additives
 
-import de.erikspall.mensaapp.data.repositories.AppRepositoryImpl
-import de.erikspall.mensaapp.data.repositories.interfaces.AppRepository
+import de.erikspall.mensaapp.domain.interfaces.data.AppRepository
 import de.erikspall.mensaapp.domain.enums.AdditiveType
 
 class SetAdditiveLikeStatus (
