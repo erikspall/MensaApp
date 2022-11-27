@@ -1,4 +1,4 @@
-package de.erikspall.mensaapp.data.repositories.interfaces
+package de.erikspall.mensaapp.domain.interfaces.data
 
 import androidx.lifecycle.LiveData
 import de.erikspall.mensaapp.domain.enums.AdditiveType

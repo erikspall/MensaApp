@@ -13,7 +13,7 @@
 
     <string name="shared_pref_role">RoleStudent</string>
     <string name="shared_pref_last_menu_update">LastMenuUpdate%d</string>
-    <string name="shared_pref_last_food_provider_update">LastFoodProviderUpdate%d</string>
+    <string name="shared_pref_last_food_provider_update">LastFoodProviderUpdate%d%d</string>
     <string name="shared_pref_last_additive_update">LastAdditiveUpdate</string>
 
     <string name="role_guest">Gast</string>

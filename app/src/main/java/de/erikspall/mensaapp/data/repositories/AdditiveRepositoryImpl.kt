@@ -2,7 +2,7 @@ package de.erikspall.mensaapp.data.repositories
 
 import androidx.lifecycle.LiveData
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.data.repositories.interfaces.AdditiveRepository
+import de.erikspall.mensaapp.domain.interfaces.data.AdditiveRepository
 import de.erikspall.mensaapp.data.sources.local.database.daos.AdditiveDao
 import de.erikspall.mensaapp.domain.enums.AdditiveType
 import de.erikspall.mensaapp.domain.model.Additive

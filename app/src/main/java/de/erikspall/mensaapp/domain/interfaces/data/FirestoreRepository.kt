@@ -1,4 +1,4 @@
-package de.erikspall.mensaapp.data.repositories.interfaces
+package de.erikspall.mensaapp.domain.interfaces.data
 
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
@@ -26,5 +26,9 @@ interface FirestoreRepository {
     suspend fun fetchMeals(
         foodProviderId: Int,
         date: LocalDate
+    ): Result<QuerySnapshot>
+
+    suspend fun fetchData(
+        request: Request
     ): Result<QuerySnapshot>
 }

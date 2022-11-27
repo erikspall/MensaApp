@@ -7,8 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import de.erikspall.mensaapp.data.repositories.AppRepositoryImpl
-import de.erikspall.mensaapp.data.repositories.interfaces.AppRepository
+import de.erikspall.mensaapp.domain.interfaces.data.AppRepository
 import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
 import de.erikspall.mensaapp.domain.usecases.foodproviders.FetchFoodProvider
 import de.erikspall.mensaapp.domain.usecases.foodproviders.FetchFoodProviders
