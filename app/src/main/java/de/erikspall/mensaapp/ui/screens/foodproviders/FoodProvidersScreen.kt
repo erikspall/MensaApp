@@ -8,7 +8,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.erikspall.mensaapp.domain.enums.Category
-import de.erikspall.mensaapp.ui.MensaAppViewModel
 import de.erikspall.mensaapp.ui.components.FoodProvidersList
 import de.erikspall.mensaapp.ui.screens.foodproviders.events.FoodProviderScreenEvent
 import de.erikspall.mensaapp.ui.theme.Shrikhand
@@ -19,7 +18,7 @@ fun FoodProvidersScreen(
     modifier: Modifier = Modifier,
     onFoodProviderClick: (String) -> Unit = {},
     foodProviderCategory: Category,
-    mensaAppViewModel: MensaAppViewModel = hiltViewModel()
+    foodProviderViewModel: FoodProviderViewModel = hiltViewModel()
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val layoutDirection = LocalLayoutDirection.current
@@ -33,8 +32,8 @@ fun FoodProvidersScreen(
             )
         },
         content = { innerPadding ->
-            if (mensaAppViewModel.foodProviders.isEmpty()) {
-                mensaAppViewModel.onEvent(FoodProviderScreenEvent.Init) // TODO: Sus
+            if (foodProviderViewModel.foodProviders.isEmpty()) {
+                foodProviderViewModel.onEvent(FoodProviderScreenEvent.Init) // TODO: Sus
             } else {
                 FoodProvidersList(
                     modifier = modifier.padding(
@@ -43,9 +42,9 @@ fun FoodProvidersScreen(
                         top = innerPadding.calculateTopPadding()
                     ),
                     list = when (foodProviderCategory) {
-                        Category.CANTEEN -> mensaAppViewModel.canteens
-                        Category.CAFETERIA -> mensaAppViewModel.cafeterias
-                        else -> mensaAppViewModel.foodProviders
+                        Category.CANTEEN -> foodProviderViewModel.canteens
+                        Category.CAFETERIA -> foodProviderViewModel.cafeterias
+                        else -> foodProviderViewModel.foodProviders
                     }
                 )
             }

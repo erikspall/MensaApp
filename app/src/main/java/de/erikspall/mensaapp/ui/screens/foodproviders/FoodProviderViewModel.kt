@@ -1,4 +1,4 @@
-package de.erikspall.mensaapp.ui
+package de.erikspall.mensaapp.ui.screens.foodproviders
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -12,14 +12,13 @@ import de.erikspall.mensaapp.domain.model.FoodProvider
 import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
-import de.erikspall.mensaapp.ui.screens.foodproviders.FoodProvidersState
 import de.erikspall.mensaapp.ui.screens.foodproviders.events.FoodProviderScreenEvent
 import de.erikspall.mensaapp.ui.state.UiState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MensaAppViewModel @Inject constructor(
+class FoodProviderViewModel @Inject constructor(
     private val foodProviderUseCases: FoodProviderUseCases,
     private val openingHourUseCases: OpeningHourUseCases,
     private val sharedPreferences: SharedPreferenceUseCases,
