@@ -1,6 +1,5 @@
 package de.erikspall.mensaapp.ui.components
 
-import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -10,14 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.erikspall.mensaapp.R
-import de.erikspall.mensaapp.ui.compose.FoodProvider
-import de.erikspall.mensaapp.ui.theme.ComposeMensaTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

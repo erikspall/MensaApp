@@ -17,7 +17,6 @@ import de.erikspall.mensaapp.domain.enums.Location
 import de.erikspall.mensaapp.domain.interfaces.data.Request
 import de.erikspall.mensaapp.domain.model.*
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
-import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -74,12 +73,14 @@ class FirestoreRepositoryImpl(
     override suspend fun fetchFoodProvider(
         foodProviderId: Int
     ): Result<FoodProvider> {
-        val foodProviderSnapshot = fetchData(FoodProviderRequest(
-            requestId = "foodProvider${foodProviderId}",
-            parameters = FoodProviderRequestParameters(
-                foodProviderId = foodProviderId
+        val foodProviderSnapshot = fetchData(
+            FoodProviderRequest(
+                requestId = "foodProvider${foodProviderId}",
+                parameters = FoodProviderRequestParameters(
+                    foodProviderId = foodProviderId
+                )
             )
-        ))
+        )
 
 
         return if (foodProviderSnapshot.isSuccess) {
@@ -177,8 +178,11 @@ class FirestoreRepositoryImpl(
                                 constructedOpeningHour.opensAt.substringAfter(".").toInt()
                             ),
                             OpeningHour.FIELD_GET_FOOD_TILL to LocalTime.of(
-                                constructedOpeningHour.getFoodTill.substringBefore(".").toInt(),
-                                constructedOpeningHour.getFoodTill.substringAfter(".").toInt()
+                                // Workaround for cafeterias that don't have a "get food till" time
+                                (constructedOpeningHour.getFoodTill.ifEmpty { constructedOpeningHour.closesAt })
+                                    .substringBefore(".").toInt(),
+                                (constructedOpeningHour.getFoodTill.ifEmpty { constructedOpeningHour.closesAt })
+                                    .substringAfter(".").toInt()
                             ),
                             OpeningHour.FIELD_CLOSES_AT to LocalTime.of(
                                 constructedOpeningHour.closesAt.substringBefore(".").toInt(),
