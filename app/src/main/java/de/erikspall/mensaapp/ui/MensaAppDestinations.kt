@@ -1,4 +1,4 @@
-package de.erikspall.mensaapp.ui.compose
+package de.erikspall.mensaapp.ui
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Coffee
@@ -29,7 +29,5 @@ object Settings: MensaAppDestination {
     override val route = "settings"
     override val label = "Einstellungen"
 }
-
-object FoodProvider
 
 val bottomNavBarScreens = listOf(Canteen, Cafeteria, Settings)

@@ -6,7 +6,7 @@ enum class Category(private val value: String) {
     ANY("any");
 
     fun getValue(): String {
-        return value;
+        return value
     }
 
     companion object {

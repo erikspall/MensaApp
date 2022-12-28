@@ -4,14 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
-import de.erikspall.mensaapp.ui.compose.MensaApp
-import de.erikspall.mensaapp.ui.theme.ComposeMensaTheme
+import dagger.hilt.android.AndroidEntryPoint
+import de.erikspall.mensaapp.ui.MensaApp
 
-//@AndroidEntryPoint
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     // private lateinit var binding: ActivityMainBinding
     // private lateinit var navController: NavController
+
+   // private val viewModel: MensaAppViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,9 +22,7 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-
             MensaApp()
-
         }
 
         /*WindowCompat.setDecorFitsSystemWindows(window, false)

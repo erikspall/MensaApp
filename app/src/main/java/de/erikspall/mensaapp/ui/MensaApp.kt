@@ -1,14 +1,13 @@
-package de.erikspall.mensaapp.ui.compose
+package de.erikspall.mensaapp.ui
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import de.erikspall.mensaapp.ui.theme.ComposeMensaTheme
-import de.erikspall.mensaapp.ui.theme.Shrikhand
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -21,17 +20,17 @@ fun MensaApp() {
 
         // Change the variable to this and use Overview as a backup screen if this returns null
         val currentScreen = bottomNavBarScreens.find { it.route == currentDestination?.route } ?: Canteen
+        // var selectedItem by remember { mutableStateOf(0) }
         val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
-        // var selectedItem by remember { mutableStateOf(0) }
-
         Scaffold(
-            topBar = {
-                     LargeTopAppBar (
-                        title = { Text(text = currentScreen.label, fontFamily = Shrikhand) },
-                         scrollBehavior = scrollBehavior
-                     )
-            },
+            //modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+           /* topBar = {
+                LargeTopAppBar (
+                    title = { Text(text = currentScreen.label, fontFamily = Shrikhand) },
+                    scrollBehavior = scrollBehavior,
+                )
+            },*/
             bottomBar = {
                 NavigationBar {
                     bottomNavBarScreens.forEach {
@@ -44,10 +43,23 @@ fun MensaApp() {
                     }
 
                 }
+            },
+            content = { innerPadding ->
+                MensaNavHost(
+                    navController = navController,
+                    modifier = Modifier
+                        .padding(
+                            bottom = innerPadding.calculateBottomPadding()
+                        )
+                )
             }
-        ) { innerPadding ->
-            MensaNavHost(navController = navController, modifier = Modifier.padding(innerPadding))
-        }
+        )
     }
 
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun PreviewMensaApp() {
+    MensaApp()
 }
