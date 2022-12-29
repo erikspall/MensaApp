@@ -27,8 +27,8 @@ fun FoodProviderCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .wrapContentHeight()
-            .clip(RoundedCornerShape(28.dp))
+            .wrapContentHeight(),
+        shape = RoundedCornerShape(28.dp)
     ) {
         Column {
             Box {
