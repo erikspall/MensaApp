@@ -1,10 +1,7 @@
 package de.erikspall.mensaapp.ui.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material3.Icon
@@ -27,10 +24,12 @@ fun SettingsItem(
 ) {
     Row(
         modifier = modifier
-            .padding(top = 28.dp, end = 24.dp, start = 24.dp)
+            .fillMaxWidth()
+            .wrapContentHeight()
             .clickable { onClick }, // TODO: Can this be done better?
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Spacer(modifier = Modifier.width(24.dp))
         Icon(
             imageVector = iconVector,
             modifier = Modifier
@@ -41,6 +40,7 @@ fun SettingsItem(
         Column(
             modifier = Modifier.padding(start = 16.dp)
         ) {
+            Spacer(modifier = Modifier.height(14.dp))
             Text(
                 text = title,
                 style = MaterialTheme.typography.headlineSmall,
@@ -51,8 +51,9 @@ fun SettingsItem(
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.outline
             )
+            Spacer(modifier = Modifier.height(14.dp))
         }
-
+        Spacer(modifier = Modifier.width(24.dp))
     }
 }
 
