@@ -9,7 +9,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.data.handler.SaveTimeHandler
 import de.erikspall.mensaapp.data.handler.SourceHandler
 import de.erikspall.mensaapp.data.repositories.*
@@ -18,6 +17,7 @@ import de.erikspall.mensaapp.domain.interfaces.data.AppRepository
 import de.erikspall.mensaapp.domain.interfaces.data.FirestoreRepository
 import de.erikspall.mensaapp.data.sources.local.database.AppDatabase
 import de.erikspall.mensaapp.data.sources.remote.firestore.FirestoreDataSource
+import de.erikspall.mensaapp.domain.const.SharedPref
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
 import kotlinx.coroutines.CoroutineDispatcher
@@ -95,7 +95,7 @@ object AppModule {
         @ApplicationContext appContext: Context
     ): SharedPreferences {
         return appContext.getSharedPreferences(
-            appContext.getString(R.string.shared_pref_name),
+            SharedPref.NAME,
             Context.MODE_PRIVATE
         )
     }
