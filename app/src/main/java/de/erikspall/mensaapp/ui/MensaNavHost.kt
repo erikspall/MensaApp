@@ -9,14 +9,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.ui.screens.foodproviders.FoodProvidersScreen
-import de.erikspall.mensaapp.ui.screens.foodproviders.FoodProviderViewModel
 import de.erikspall.mensaapp.ui.screens.settings.SettingsScreen
 
 @Composable
 fun MensaNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    foodProviderViewModel: FoodProviderViewModel = hiltViewModel()
+    mensaViewModel: MensaViewModel = hiltViewModel()
 ) {
     NavHost(
         navController = navController,
@@ -24,13 +23,13 @@ fun MensaNavHost(
         modifier = modifier
     ) {
         composable(route = Canteen.route) {
-            FoodProvidersScreen(foodProviderCategory = Category.CANTEEN, foodProviderViewModel = foodProviderViewModel)
+            FoodProvidersScreen(foodProviderCategory = Category.CANTEEN, mensaViewModel = mensaViewModel)
         }
         composable(route = Cafeteria.route) {
-            FoodProvidersScreen(foodProviderCategory = Category.CAFETERIA, foodProviderViewModel = foodProviderViewModel)
+            FoodProvidersScreen(foodProviderCategory = Category.CAFETERIA, mensaViewModel = mensaViewModel)
         }
         composable(route = Settings.route) {
-            SettingsScreen()
+            SettingsScreen(mensaViewModel = mensaViewModel)
         }
     }
 }

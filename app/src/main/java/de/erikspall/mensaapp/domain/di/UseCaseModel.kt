@@ -51,12 +51,12 @@ object UseCaseModel {
         sharedPref: SharedPreferences
     ): SharedPreferenceUseCases {
         return SharedPreferenceUseCases(
-            setValue = SetValue(appContext, sharedPref),
+            setValue = SetValue(sharedPref),
             getValue = GetValue(appContext, sharedPref),
             registerListener = RegisterListener(sharedPref),
-            getValueRes = GetValueRes(appContext, sharedPref),
+            getValueRes = GetValueRes(sharedPref),
             setBoolean = SetBoolean(appContext, sharedPref),
-            getBoolean = GetBoolean(appContext, sharedPref),
+            getBoolean = GetBoolean(sharedPref),
             setLocalDateTime = SetLocalDateTime(appContext, sharedPref),
             getLocalDateTime = GetLocalDateTime(appContext, sharedPref)
         )

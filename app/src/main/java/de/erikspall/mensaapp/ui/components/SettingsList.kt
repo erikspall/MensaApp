@@ -21,7 +21,8 @@ fun SettingsList(
             SettingsItem(
                 iconVector = setting.iconVector,
                 title = setting.title,
-                subtitle = setting.subtitle
+                subtitle = setting.subtitle,
+                onClick = setting.onClick
             )
         }
     }
@@ -30,7 +31,8 @@ fun SettingsList(
 data class Setting(
     val iconVector: ImageVector,
     val title: String,
-    val subtitle: String
+    val subtitle: String,
+    val onClick: () -> Unit = {}
 )
 
 @Preview(showSystemUi = true)

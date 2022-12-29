@@ -1,17 +1,22 @@
 <resources>
     <string name="app_name">MensaApp</string>
-    <string name="text_label_nav_mensa">Mensen</string>
-    <string name="text_label_nav_cafe">Cafeterien</string>
-    <string name="text_label_nav_settings">Einstellungen</string>
+    <string name="text_canteens">Mensen</string>
+    <string name="text_cafes">Cafeterien</string>
+    <string name="text_settings">Einstellungen</string>
+    <string name="text_invalid">Ungültig</string>
     <string name="mensa_image_descriptor">Image of mensa</string>
     <string name="hide_back_button_on_scroll_behavior">
         de.erikspall.mensaapp.ui.foodproviderdetail.behavior.HideBackButtonOnScrollBehavior
     </string>
     <string name="food_provider_card_detail_transition_name">food_provider_detail</string>
-    <string name="shared_pref_name">SharedPrefs</string>
+
     <string name="role_student">Student</string>
 
-    <string name="shared_pref_role">RoleStudent</string>
+   <!--
+   <string name="shared_pref_role">RoleStudent</string>
+   <string name="shared_pref_name">SharedPrefs</string>
+
+   -->
     <string name="shared_pref_last_menu_update">LastMenuUpdate%d</string>
     <string name="shared_pref_last_food_provider_update">LastFoodProviderUpdate%d%d</string>
     <string name="shared_pref_last_additive_update">LastAdditiveUpdate</string>
@@ -31,6 +36,17 @@
     <string name="setting_warnings_enabled">0</string>
     <string name="text_warnings_enabled">Warnungen aktiviert</string>
     <string name="text_warnings_disabled">Warnungen deaktiviert</string>
+    <string name="text_role">Rolle</string>
+    <string name="text_location">Standort</string>
+    <string name="text_warnings">Warnungen</string>
+    <string name="text_about_this_app">Über die App</string>
+    <string name="text_about_this_app_detail">Impressum, Datenschutz, …</string>
+    <string name="text_select_location">Standort auswählen</string>
+    <string name="text_select_role">Rolle auswählen</string>
+    <string name="text_select_location_description">Wähle hier welche Mensen und Cafeterien du sehen möchtest</string>
+    <string name="text_select_role_description">Die Preise für Gerichte passen sich an deine Rolle an</string>
+    <string name="text_settings_dialog_dismiss">Zurück</string>
+    <string name="text_settings_dialog_save">Speichern</string>
 
     <string name="text_app_info">
         Diese App entstand als Spaßprojekt zweier Informatikstudenten der Universität

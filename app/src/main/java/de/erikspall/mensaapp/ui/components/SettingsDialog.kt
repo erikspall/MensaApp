@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Place
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -13,26 +14,31 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.erikspall.mensaapp.domain.enums.Location
+import de.erikspall.mensaapp.domain.enums.StringResEnum
 
 @Composable
 fun SettingsRadioDialog(
+    showDialog: Boolean = true,
     iconVector: ImageVector,
     title: String,
     message: String,
-    extraContent:  @Composable () -> Unit = {},
+    items: List<StringResEnum>,
+    selectedValue: StringResEnum,
     dismissText: String,
     confirmText: String,
-    onConfirm: () -> Unit = {}
+    onConfirm: (StringResEnum) -> Unit = {},
+    onDismiss: () -> Unit = {}
 ) {
-    val openDialog = remember { mutableStateOf(true) }
+    //val openDialog = remember { mutableStateOf(true) }
+    val selected = remember { mutableStateOf(selectedValue) }
 
-    if (openDialog.value) {
+    if (showDialog) {
         AlertDialog(
             onDismissRequest = {
                 // Dismiss the dialog when the user clicks outside the dialog or on the back
                 // button. If you want to disable that functionality, simply use an empty
                 // onDismissRequest.
-                openDialog.value = false
+                onDismiss()
             },
             icon = { Icon(iconVector, contentDescription = null) },
             title = {
@@ -44,7 +50,30 @@ fun SettingsRadioDialog(
                     Divider(
                         modifier = Modifier.padding(top = 12.dp, bottom = 4.dp)
                     )
-                    extraContent()
+                    Column {
+                        for (item in items) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .selectable(
+                                        selected = (selected.value == item),
+                                        onClick = { selected.value = item },
+                                        role = Role.RadioButton
+                                    )
+                                    .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                RadioButton(
+                                    selected = (selected.value == item),
+                                    onClick = null // null recommended for accessibility with screenreaders
+                                )
+                                Text(
+                                    modifier = Modifier.padding(start = 16.dp),
+                                    text = stringResource(id = item.getValue()),
+                                )
+                            }
+                        }
+                    }
                     Divider(
                         modifier = Modifier.padding(top = 4.dp)
                     )
@@ -54,8 +83,7 @@ fun SettingsRadioDialog(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        openDialog.value = false
-                        onConfirm()
+                        onConfirm(selected.value)
                     }
                 ) {
                     Text(confirmText)
@@ -64,7 +92,7 @@ fun SettingsRadioDialog(
             dismissButton = {
                 TextButton(
                     onClick = {
-                        openDialog.value = false
+                        onDismiss()
                     }
                 ) {
                     Text(dismissText)
@@ -74,41 +102,34 @@ fun SettingsRadioDialog(
     }
 }
 
+@Composable
+fun LocationRadioButtonsGroup() {
+
+
+}
+
 @Preview
 @Composable
 fun PreviewSettingsRadioDialog() {
-    SettingsRadioDialog(
-        iconVector = Icons.Rounded.Place,
-        title = "Standort wählen",
-        confirmText = "Speichern",
-        dismissText = "Zurück",
-        message = "Wähle hier welchen Standort du sehen möchtest",
-        extraContent = {
-            val selected = remember { mutableStateOf(Location.WUERZBURG) }
-            Column {
-                for (location in Location.values()) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = (selected.value == location),
-                                onClick = { selected.value = location },
-                                role = Role.RadioButton
-                            )
-                            .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 10.dp),
-                    ) {
-                        RadioButton(
-                            selected = (selected.value == location),
-                            onClick = null // null recommended for accessibility with screenreaders
-                        )
-                        Text(
-                            modifier = Modifier.padding(start = 16.dp),
-                            text = stringResource(id = location.getValue()),
-                        )
-                    }
-                }
-            }
+    val showDialog = remember { mutableStateOf(true) }
 
-        }
-    )
+    if (showDialog.value) {
+        SettingsRadioDialog(
+            showDialog = showDialog.value,
+            iconVector = Icons.Rounded.Place,
+            title = "Standort wählen",
+            confirmText = "Speichern",
+            dismissText = "Zurück",
+            message = "Wähle hier welchen Standort du sehen möchtest",
+            onConfirm = {
+                showDialog.value = false
+            },
+            onDismiss = {
+                showDialog.value = false
+            },
+            items = Location.values().toList(),
+            selectedValue = Location.WUERZBURG
+        )
+    }
+
 }

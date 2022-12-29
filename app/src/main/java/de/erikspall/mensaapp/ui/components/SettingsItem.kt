@@ -26,7 +26,7 @@ fun SettingsItem(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .clickable { onClick }, // TODO: Can this be done better?
+            .clickable { onClick() }, // TODO: Can this be done better?
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(modifier = Modifier.width(24.dp))
