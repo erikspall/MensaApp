@@ -27,17 +27,23 @@ fun HeroToggle(
     val currentColor = remember {
         Animatable(if (checked) colorChecked else colorUnchecked)
     }
-    if (checked && currentColor.value != colorChecked) {
-        LaunchedEffect(Unit) {
-            currentColor.animateTo(colorChecked, animationSpec = tween(200))
-            //color.animateTo(Color.Gray, animationSpec = tween(1000))
-        }
-    } else if (!checked && currentColor.value != colorUnchecked){
-        LaunchedEffect(Unit) {
-            currentColor.animateTo(colorUnchecked, animationSpec = tween(200))
-        }
 
+    if (checked) {
+        LaunchedEffect(Unit) {
+            currentColor.animateTo(
+                colorChecked,
+                animationSpec = tween(200)
+            )
+        }
+    } else {
+        LaunchedEffect(Unit) {
+            currentColor.animateTo(
+                colorUnchecked,
+                animationSpec = tween(200)
+            )
+        }
     }
+
 
     Card(
         modifier = modifier
