@@ -23,7 +23,6 @@ fun MensaApp() {
     ComposeMensaTheme {
         val navController = rememberNavController()
 
-
         var hideNavBar by rememberSaveable { mutableStateOf(false) }
 
         val hideNavBarState = remember { MutableTransitionState(!hideNavBar) }
