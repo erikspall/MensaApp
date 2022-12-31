@@ -25,13 +25,6 @@ fun FoodProvidersScreen(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val layoutDirection = LocalLayoutDirection.current
 
-    /*
-     TODO: This is called multiple times :(
-     Better: Combine FoodProviderViewModel and SettingsViewModel and read location directly, instead
-     of checking if it has changed
-    */
-    //mensaViewModel.onEvent(FoodProviderScreenEvent.Init)
-
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {

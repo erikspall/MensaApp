@@ -55,7 +55,7 @@ object UseCaseModel {
             getValue = GetValue(appContext, sharedPref),
             registerListener = RegisterListener(sharedPref),
             getValueRes = GetValueRes(sharedPref),
-            setBoolean = SetBoolean(appContext, sharedPref),
+            setBoolean = SetBoolean(sharedPref),
             getBoolean = GetBoolean(sharedPref),
             setLocalDateTime = SetLocalDateTime(appContext, sharedPref),
             getLocalDateTime = GetLocalDateTime(appContext, sharedPref)
