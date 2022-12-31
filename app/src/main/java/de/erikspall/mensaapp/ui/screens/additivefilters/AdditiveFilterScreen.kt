@@ -1,5 +1,6 @@
 package de.erikspall.mensaapp.ui.screens.additivefilters
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.layout.Column
@@ -32,7 +33,7 @@ import de.erikspall.mensaapp.ui.theme.Shrikhand
 @Composable
 fun AdditiveFilterScreen(
     modifier: Modifier = Modifier,
-    onBackClicked: () -> Unit = {},
+    onBackClicked: (() -> Unit)? = null,
     mensaViewModel: MensaViewModel = hiltViewModel()
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -42,6 +43,15 @@ fun AdditiveFilterScreen(
 
     val ingredients by mensaViewModel.ingredients.observeAsState()
     val allergens by mensaViewModel.allergens.observeAsState()
+
+    /**
+     * If onBackClicked is null it was not called from the app -> let system handle it
+     */
+    BackHandler(enabled = onBackClicked != null) {
+        if (onBackClicked != null) {
+            onBackClicked()
+        }
+    }
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -63,7 +73,7 @@ fun AdditiveFilterScreen(
                                 contentDescription = ""
                             )
                         },
-                        onClick = onBackClicked
+                        onClick = onBackClicked ?: {}
                     )
                 }
             )
@@ -86,7 +96,7 @@ fun AdditiveFilterScreen(
                     visibleState = filterVisibilityState
                 ) {
                     Column(
-                        modifier = Modifier.padding(top = 16.dp)
+                        modifier = Modifier.padding(top = 24.dp)
                     ) {
                         AdditiveFilterSection(
                             modifier = Modifier
