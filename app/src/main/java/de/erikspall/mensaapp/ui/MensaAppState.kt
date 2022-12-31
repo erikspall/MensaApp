@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import de.erikspall.mensaapp.domain.enums.Location
 import de.erikspall.mensaapp.domain.enums.Role
+import de.erikspall.mensaapp.domain.model.Additive
 import de.erikspall.mensaapp.domain.model.FoodProvider
 
 class MensaAppState {
@@ -15,5 +16,6 @@ class MensaAppState {
     var warningsActivated by mutableStateOf(false)
     //var canteenUiState by mutableStateOf(UiState.NORMAL)
     var foodProviders: SnapshotStateList<FoodProvider> = mutableStateListOf()
+    var additives: SnapshotStateList<Additive> = mutableStateListOf()
     var settingsInitialized by mutableStateOf(false)
 }

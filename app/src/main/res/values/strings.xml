@@ -31,6 +31,8 @@
     <string name="role_invalid">Ungültig</string>
     <string name="location_invalid">Alle</string>
     <string name="text_label_allergenic">Unverträglichkeiten</string>
+    <string name="text_ingredient_section">Zutaten</string>
+    <string name="text_allergen_section">Allergene</string>
     <string name="text_label_about">Über die App</string>
     <string name="text_hero_toggle_warnings_additives">Vor Unverträglichkeiten warnen</string>
     <string name="setting_warnings_enabled">0</string>

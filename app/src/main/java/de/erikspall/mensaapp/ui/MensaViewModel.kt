@@ -5,11 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.erikspall.mensaapp.domain.const.SharedPrefKey
-import de.erikspall.mensaapp.domain.enums.Category
-import de.erikspall.mensaapp.domain.enums.Location
-import de.erikspall.mensaapp.domain.enums.Role
-import de.erikspall.mensaapp.domain.enums.StringResEnum
+import de.erikspall.mensaapp.domain.enums.*
+import de.erikspall.mensaapp.domain.model.Additive
 import de.erikspall.mensaapp.domain.model.FoodProvider
+import de.erikspall.mensaapp.domain.usecases.additives.AdditiveUseCases
 import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
@@ -21,6 +20,7 @@ class MensaViewModel @Inject constructor(
     private val foodProviderUseCases: FoodProviderUseCases,
     private val openingHourUseCases: OpeningHourUseCases,
     private val sharedPreferences: SharedPreferenceUseCases,
+    private val additiveUseCases: AdditiveUseCases
 ) : ViewModel() {
 
     private val state = MensaAppState()
@@ -44,6 +44,17 @@ class MensaViewModel @Inject constructor(
                 true
             }
         }
+
+    val additives
+        get() = additiveUseCases.getAdditives(AdditiveType.ALLERGEN)
+
+    val ingredients
+        get() = additiveUseCases.getAdditives(AdditiveType.INGREDIENT)
+
+
+
+    val allergens
+        get() = additiveUseCases.getAdditives(AdditiveType.ALLERGEN)
 
     val canteens: List<FoodProvider>
         get() = state.foodProviders.filter { f ->
@@ -175,6 +186,23 @@ class MensaViewModel @Inject constructor(
                 // state.canteenUiState = UiState.ERROR
             }
         }
+    }
+
+    /**
+     * Retrieves Additives.
+     * Data-Layer will decide what source to use
+     */
+    fun getAdditives() {
+        viewModelScope.launch {
+            additiveUseCases.fetchLatest()
+        }
+    }
+
+    fun saveLikeStatus(additive: Additive, isNotLiked: Boolean) {
+        viewModelScope.launch {
+            additiveUseCases.setAdditiveLikeStatus(additive, isNotLiked)
+        }
+
     }
 
     companion object {

@@ -4,8 +4,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Blender
+import androidx.compose.material.icons.rounded.LunchDining
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -14,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.ui.MensaViewModel
+import de.erikspall.mensaapp.ui.components.AdditiveFilterSection
 import de.erikspall.mensaapp.ui.components.HeroToggle
 import de.erikspall.mensaapp.ui.theme.Shrikhand
 
@@ -25,9 +30,8 @@ fun AdditiveFilterScreen(
     mensaViewModel: MensaViewModel = hiltViewModel()
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    //val switchChecked = remember {
-    //    mutableStateOf(mensaViewModel.warningsActivated)
-    // }
+    val ingredients by mensaViewModel.ingredients.observeAsState()
+    val allergens by mensaViewModel.allergens.observeAsState()
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -65,7 +69,34 @@ fun AdditiveFilterScreen(
                     onChecked = {
                         //switchChecked.value = it
                         mensaViewModel.enableWarnings(it)
-                    })
+                    }
+                )
+                if (mensaViewModel.warningsActivated) {
+                    AdditiveFilterSection(
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp),
+                        icon = Icons.Rounded.Blender,
+                        sectionTitle = stringResource(id = R.string.text_ingredient_section),
+                        items = ingredients ?: emptyList(), // Make it null safe?
+                        onAdditiveClicked = {
+                            mensaViewModel.saveLikeStatus(it, !it.isNotLiked)
+                        }
+                    )
+                    Divider(
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
+                    )
+                    AdditiveFilterSection(
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp),
+                        icon = Icons.Rounded.LunchDining,
+                        sectionTitle = stringResource(id = R.string.text_allergen_section),
+                        items = allergens ?: emptyList(), // Make it null safe?
+                        onAdditiveClicked = {
+                            mensaViewModel.saveLikeStatus(it, !it.isNotLiked)
+                        }
+                    )
+                }
+
             }
         }
     )

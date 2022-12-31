@@ -85,6 +85,8 @@ dependencies {
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
     // Compose Alpha extensions aka accompanist
     implementation "com.google.accompanist:accompanist-flowlayout:0.28.0"
+    // LiveData to State
+    implementation 'androidx.compose.runtime:runtime-livedata'
 
     // Room
     implementation "androidx.room:room-runtime:2.4.3"

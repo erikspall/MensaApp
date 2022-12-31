@@ -34,6 +34,7 @@ fun MensaNavHost(
             SettingsScreen(
                 mensaViewModel = mensaViewModel,
                 onWarningsClicked = {
+                    mensaViewModel.getAdditives()
                     onHideNavBar(true)
                     navController.navigate(AdditiveWarningSettings.route)
                 }

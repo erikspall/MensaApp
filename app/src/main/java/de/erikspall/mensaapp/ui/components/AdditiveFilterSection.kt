@@ -13,7 +13,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
 import de.erikspall.mensaapp.domain.model.Additive
-import java.util.logging.Filter
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -22,7 +21,8 @@ fun AdditiveFilterSection(
     modifier: Modifier = Modifier,
     icon: ImageVector,
     sectionTitle: String,
-    items: List<Additive>
+    items: List<Additive>,
+    onAdditiveClicked: (Additive) -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -63,7 +63,7 @@ fun AdditiveFilterSection(
                                 contentDescription = ""
                             )
                     },
-                    onClick = { },
+                    onClick = {onAdditiveClicked(it)},
                     label = {
                         Text(text = it.name)
                     }

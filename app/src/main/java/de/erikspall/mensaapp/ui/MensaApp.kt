@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -22,19 +23,21 @@ fun MensaApp() {
     ComposeMensaTheme {
         val navController = rememberNavController()
 
+        // TODO: On first composition navBarHeight is 0
+        // Possible work around: Hide Navbar when animation finished
         val navBarHeight = with(LocalDensity.current) {
             WindowInsets.navigationBars.getBottom(this)
         }
 
-        val hideNavBar = remember { mutableStateOf(false) }
+        var hideNavBar by rememberSaveable { mutableStateOf(false) }
         val bottomNavOffsetY = remember {
-            if (hideNavBar.value)
+            if (hideNavBar)
                 Animatable(0f)
             else
                 Animatable(MaterialSizes.BOTTOM_NAV_HEIGHT.toFloat() + navBarHeight)
         }
 
-        if (hideNavBar.value) {
+        if (hideNavBar) {
             LaunchedEffect(Unit) {
                 bottomNavOffsetY.animateTo(
                     MaterialSizes.BOTTOM_NAV_HEIGHT.toFloat() + navBarHeight,
@@ -82,7 +85,7 @@ fun MensaApp() {
                 MensaNavHost(
                     navController = navController,
                     onHideNavBar = {
-                        hideNavBar.value = it
+                        hideNavBar = it
                     },
                     modifier = Modifier
                         .padding(
