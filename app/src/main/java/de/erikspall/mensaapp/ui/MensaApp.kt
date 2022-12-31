@@ -1,7 +1,7 @@
 package de.erikspall.mensaapp.ui
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,38 +17,16 @@ import androidx.navigation.compose.rememberNavController
 import de.erikspall.mensaapp.domain.const.MaterialSizes
 import de.erikspall.mensaapp.ui.theme.ComposeMensaTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun MensaApp() {
     ComposeMensaTheme {
         val navController = rememberNavController()
 
-        // TODO: On first composition navBarHeight is 0
-        // Possible work around: Hide Navbar when animation finished
-        val navBarHeight = with(LocalDensity.current) {
-            WindowInsets.navigationBars.getBottom(this)
-        }
 
         var hideNavBar by rememberSaveable { mutableStateOf(false) }
-        val bottomNavOffsetY = remember {
-            if (hideNavBar)
-                Animatable(0f)
-            else
-                Animatable(MaterialSizes.BOTTOM_NAV_HEIGHT.toFloat() + navBarHeight)
-        }
 
-        if (hideNavBar) {
-            LaunchedEffect(Unit) {
-                bottomNavOffsetY.animateTo(
-                    MaterialSizes.BOTTOM_NAV_HEIGHT.toFloat() + navBarHeight,
-                    tween(200)
-                )
-            }
-        } else {
-            LaunchedEffect(Unit) {
-                bottomNavOffsetY.animateTo(0f, tween(200))
-            }
-        }
+        val hideNavBarState = remember { MutableTransitionState(!hideNavBar) }
 
         val currentBackStack by navController.currentBackStackEntryAsState()
         // Fetch your currentDestination:
@@ -60,32 +38,36 @@ fun MensaApp() {
 
         Scaffold(
             bottomBar = {
-
-                NavigationBar(
-                    modifier = Modifier
-                        .offset {
-                            IntOffset(
-                                x = 0,
-                                y = bottomNavOffsetY.value.toInt().dp.roundToPx()
+                AnimatedVisibility(
+                    visibleState = hideNavBarState,
+                    exit = slideOutVertically(
+                        targetOffsetY = { fullHeight -> fullHeight }
+                    ),
+                    enter = slideInVertically(
+                        initialOffsetY = { fullHeight -> fullHeight }
+                    )
+                ) {
+                    NavigationBar(
+                    ) {
+                        bottomNavBarScreens.forEach {
+                            NavigationBarItem(
+                                icon = { Icon(it.icon, contentDescription = "") },
+                                label = { Text(stringResource(id = it.labelId)) },
+                                selected = it == currentScreen,
+                                onClick = { navController.navigateSingleTopTo(it.route) }
                             )
                         }
-                ) {
-                    bottomNavBarScreens.forEach {
-                        NavigationBarItem(
-                            icon = { Icon(it.icon, contentDescription = "") },
-                            label = { Text(stringResource(id = it.labelId)) },
-                            selected = it == currentScreen,
-                            onClick = { navController.navigateSingleTopTo(it.route) }
-                        )
-                    }
 
+                    }
                 }
+
             },
             content = { innerPadding ->
                 MensaNavHost(
                     navController = navController,
                     onHideNavBar = {
                         hideNavBar = it
+                        hideNavBarState.targetState = !it
                     },
                     modifier = Modifier
                         .padding(
