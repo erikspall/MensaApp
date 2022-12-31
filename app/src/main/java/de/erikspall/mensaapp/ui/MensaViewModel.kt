@@ -138,6 +138,12 @@ class MensaViewModel @Inject constructor(
         }
     }
 
+    fun enableWarnings(enabled: Boolean) {
+        sharedPreferences.setBoolean(
+            SharedPrefKey.WARNING, enabled
+        )
+    }
+
     fun saveNewRole(role: Role) {
         Log.d("${TAG}:saveNewRole", "Saving role '$role' ...")
         sharedPreferences.setValue(SharedPrefKey.ROLE, role.getValue())

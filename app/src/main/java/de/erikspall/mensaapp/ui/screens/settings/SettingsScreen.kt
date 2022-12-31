@@ -30,6 +30,7 @@ import de.erikspall.mensaapp.ui.theme.Shrikhand
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
+    onWarningsClicked: () -> Unit = {},
     mensaViewModel: MensaViewModel = hiltViewModel()
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -122,7 +123,8 @@ fun SettingsScreen(
                             stringResource(id = R.string.text_warnings_enabled)
                         } else {
                             stringResource(id = R.string.text_warnings_disabled)
-                        }
+                        },
+                        onClick = onWarningsClicked
                     ),
                     Setting(
                         iconVector = Icons.Rounded.Info,

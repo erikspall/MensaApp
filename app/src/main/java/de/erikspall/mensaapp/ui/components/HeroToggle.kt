@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import de.erikspall.mensaapp.domain.utils.Extensions.noRippleClickable
 
 @Composable
 fun HeroToggle(
@@ -48,6 +49,7 @@ fun HeroToggle(
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .noRippleClickable { onChecked(!checked) }
             .wrapContentHeight(),
         shape = RoundedCornerShape(corner = CornerSize(28.dp)),
         colors = CardDefaults.cardColors(
@@ -56,20 +58,22 @@ fun HeroToggle(
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
+              //  .fillMaxWidth()
                 .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 modifier = Modifier
-                    .padding(horizontal = 24.dp),
+                    .weight(1f)
+                    .wrapContentHeight()
+                    .padding(start = 16.dp, end = 16.dp),
                 text = title,
                 style = MaterialTheme.typography.titleLarge
             )
-            Spacer(modifier = Modifier.weight(1.0f)) // fill height with spacer
             Switch(
                 modifier = Modifier
-                    .padding(end = 24.dp),
+                    .padding(end = 16.dp),
                 checked = checked,
                 thumbContent = {
                     if (checked) {

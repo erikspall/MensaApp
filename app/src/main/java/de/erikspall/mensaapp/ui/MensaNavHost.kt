@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import de.erikspall.mensaapp.domain.enums.Category
+import de.erikspall.mensaapp.ui.screens.additivefilters.AdditiveFilterScreen
 import de.erikspall.mensaapp.ui.screens.foodproviders.FoodProvidersScreen
 import de.erikspall.mensaapp.ui.screens.settings.SettingsScreen
 
@@ -15,6 +16,7 @@ import de.erikspall.mensaapp.ui.screens.settings.SettingsScreen
 fun MensaNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
+    onHideNavBar: (Boolean) -> Unit = {},
     mensaViewModel: MensaViewModel = hiltViewModel()
 ) {
     NavHost(
@@ -29,7 +31,22 @@ fun MensaNavHost(
             FoodProvidersScreen(foodProviderCategory = Category.CAFETERIA, mensaViewModel = mensaViewModel)
         }
         composable(route = Settings.route) {
-            SettingsScreen(mensaViewModel = mensaViewModel)
+            SettingsScreen(
+                mensaViewModel = mensaViewModel,
+                onWarningsClicked = {
+                    onHideNavBar(true)
+                    navController.navigate(AdditiveWarningSettings.route)
+                }
+            )
+        }
+        composable(route = AdditiveWarningSettings.route) {
+            AdditiveFilterScreen(
+                mensaViewModel = mensaViewModel,
+                onBackClicked = {
+                    onHideNavBar(false)
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }
