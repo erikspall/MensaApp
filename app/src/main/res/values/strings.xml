@@ -111,6 +111,6 @@
         konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von
         Rechtsverletzungen werden wir derartige Links umgehend entfernen.
     </string>
-    <string name="resizable_text_read_more">… mehr</string>
-    <string name="resizable_text_read_less">weniger</string>
+    <string name="text_label_read_more">… mehr</string>
+    <string name="text_label_read_less">weniger</string>
 </resources>
