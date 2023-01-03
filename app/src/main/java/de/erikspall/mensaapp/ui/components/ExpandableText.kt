@@ -90,7 +90,7 @@ fun ExpandableText(
     showLessText: String = "show less",
     showMoreStyle: SpanStyle = SpanStyle(
         fontWeight = FontWeight.W500,
-        color = MaterialTheme.colorScheme.primary
+        color = MaterialTheme.colorScheme.tertiary
     ),
     showLessStyle: SpanStyle = showMoreStyle,
     textAlign: TextAlign? = null,

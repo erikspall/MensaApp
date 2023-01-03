@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.erikspall.mensaapp.R
@@ -73,6 +74,9 @@ fun DetailHeader(
                 )
                 IconToggleButton(
                     modifier = Modifier.padding(end = 20.dp),
+                    colors = IconButtonDefaults.iconToggleButtonColors(
+                        checkedContentColor = MaterialTheme.colorScheme.error
+                    ),
                     checked = true,
                     onCheckedChange = { }
                 ) {
@@ -91,16 +95,22 @@ fun DetailHeader(
             ) {
                 DetailChip(
                     modifier = Modifier.padding(start = 20.dp),
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    onContainerColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     iconVector = Icons.Rounded.Schedule,
                     text = foodProvider.openingHoursString
                 )
 
                 DetailChip(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    onContainerColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     iconVector = Icons.Rounded.FoodBank,
                     text = foodProvider.type
                 )
 
                 DetailChip(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    onContainerColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     modifier = Modifier.padding(end = 20.dp),
                     iconVector = Icons.Rounded.Place,
                     text = foodProvider.location
@@ -115,6 +125,8 @@ fun DetailHeader(
                 if (descriptionState != null && foodProvider.description.isNotEmpty()) {
                     ExpandableText(
                         text = foodProvider.description,
+                        showMoreText = stringResource(id = R.string.text_label_read_more),
+                        showLessText = stringResource(id = R.string.text_label_read_less),
                         style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
                         isExpanded = descriptionState.isExpanded,
                         clickable = descriptionState.clickable,
@@ -136,6 +148,8 @@ fun DetailHeader(
                 if (additionalInfoState != null && foodProvider.additionalInfo.isNotEmpty()) {
                     ExpandableText(
                         text = foodProvider.additionalInfo,
+                        showMoreText = stringResource(id = R.string.text_label_read_more),
+                        showLessText = stringResource(id = R.string.text_label_read_less),
                         style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
                         isExpanded = additionalInfoState.isExpanded,
                         clickable = additionalInfoState.clickable,
