@@ -18,7 +18,7 @@ import de.erikspall.mensaapp.ui.theme.Shrikhand
 @Composable
 fun FoodProvidersScreen(
     modifier: Modifier = Modifier,
-    onFoodProviderClick: (String) -> Unit = {},
+    onFoodProviderClick: (Int) -> Unit = {},
     foodProviderCategory: Category,
     mensaViewModel: MensaViewModel = hiltViewModel()
 ) {
@@ -56,6 +56,9 @@ fun FoodProvidersScreen(
                         Category.CANTEEN -> mensaViewModel.canteens
                         Category.CAFETERIA -> mensaViewModel.cafeterias
                         else -> mensaViewModel.foodProviders
+                    },
+                    onClickedFoodProvider = {clickedProvider ->
+                        onFoodProviderClick(clickedProvider.id ?: -1)
                     }
                 )
             }

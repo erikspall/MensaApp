@@ -14,6 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.erikspall.mensaapp.R
+import de.erikspall.mensaapp.domain.utils.Extensions.noRippleClickable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,12 +23,17 @@ fun FoodProviderCard(
     name: String,
     type: String,
     @DrawableRes image: Int,
-    openingInfo: String
+    openingInfo: String,
+    onPressed: () -> Unit = {}
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .wrapContentHeight(),
+            .noRippleClickable {
+                onPressed()
+            }
+            .wrapContentHeight()
+            .clip(RoundedCornerShape(28.dp)),
         shape = RoundedCornerShape(28.dp)
     ) {
         Column {

@@ -25,7 +25,10 @@ fun FoodProvidersList(
                 name = foodProvider.name,
                 type = foodProvider.type,
                 image = foodProvider.photo,
-                openingInfo = foodProvider.openingHoursString
+                openingInfo = foodProvider.openingHoursString,
+                onPressed = {
+                    onClickedFoodProvider(foodProvider)
+                }
             )
         }
     }
