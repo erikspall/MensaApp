@@ -33,6 +33,8 @@ import de.erikspall.mensaapp.domain.model.FoodProvider
 import de.erikspall.mensaapp.ui.components.DetailHeader
 import de.erikspall.mensaapp.ui.components.ExpandableTextState
 import de.erikspall.mensaapp.ui.components.FancyIndicator
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -62,9 +64,14 @@ fun DetailScreen(
         mutableStateOf(0)
     }
 
-    LaunchedEffect(Unit) {
-        Log.d("TABS", "Animation started")
-        pagerState.animateScrollToPage(currentPageIndex, 0f)
+    with(pagerState) {
+        LaunchedEffect(key1 = currentPageIndex) {
+            launch {
+                animateScrollToPage(
+                    page = (currentPageIndex)
+                )
+            }
+        }
     }
 
     // Reuse the default offset animation modifier, but use our own indicator
