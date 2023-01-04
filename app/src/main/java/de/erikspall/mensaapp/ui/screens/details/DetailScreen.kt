@@ -226,17 +226,15 @@ fun DetailScreen(
                             count = pages.size,
                             state = pagerState,
                         ) { page ->
-                            val date = LocalDate.now().plusDays(page.toLong())
-                            // TODO: page content
                             LaunchedEffect(key1 = "$currentPageIndex" + "menus") {
                                 /*scope.*/launch {
 
-                                val menus = mensaViewModel.getMenus(
+                                val menu = mensaViewModel.getMenu(
                                     foodProvider.id!!,
-                                    date
+                                    page
                                 )
-                                val meals = if (menus.isSuccess) {
-                                    menus.getOrThrow()[0].meals
+                                val meals = if (menu.isSuccess) {
+                                    menu.getOrThrow().meals
                                 } else {
                                     emptyList()
                                 }

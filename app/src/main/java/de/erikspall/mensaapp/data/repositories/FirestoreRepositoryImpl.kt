@@ -18,7 +18,7 @@ import de.erikspall.mensaapp.domain.interfaces.data.Request
 import de.erikspall.mensaapp.domain.model.*
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import java.time.DayOfWeek
-import java.time.LocalDate
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.TextStyle
@@ -45,7 +45,7 @@ class FirestoreRepositoryImpl(
         category: Category
     ): Result<List<FoodProvider>> {
 
-        var foodProviderSnapshot = fetchData(
+        val foodProviderSnapshot = fetchData(
             FoodProviderRequest(
                 requestId = "$location$category",
                 parameters = FoodProviderRequestParameters(
@@ -92,7 +92,7 @@ class FirestoreRepositoryImpl(
     override suspend fun fetchAdditives(
     ): Result<List<Additive>> {
 
-        var additiveSnapshot = fetchData(AdditiveRequest())
+        val additiveSnapshot = fetchData(AdditiveRequest())
 
         val additiveList = mutableListOf<Additive>()
 
@@ -115,14 +115,18 @@ class FirestoreRepositoryImpl(
 
     override suspend fun fetchMeals(
         foodProviderId: Int,
-        date: LocalDate
+        offset: Int
     ): Result<QuerySnapshot> {
         return fetchData(
             MealRequest(
-                requestId = "meals${foodProviderId}",
+                requestId = "meals/${foodProviderId}/${offset}",
+                expireDuration = if (offset == 0)
+                    Duration.ofHours(2)
+                else
+                    Duration.ofHours(12),
                 parameters = MealRequestParameters(
                     foodProviderId = foodProviderId,
-                    localDate = date
+                    offset = offset
                 )
             )
         )

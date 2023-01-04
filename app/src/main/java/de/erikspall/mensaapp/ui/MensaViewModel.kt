@@ -13,7 +13,6 @@ import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -207,8 +206,8 @@ class MensaViewModel @Inject constructor(
 
     }
 
-    suspend fun getMenus(foodProviderId: Int, date: LocalDate) =
-        foodProviderUseCases.fetchMenus(foodProviderId, date)
+    suspend fun getMenu(foodProviderId: Int, offset: Int) =
+        foodProviderUseCases.fetchMenu(foodProviderId, offset)
 
 
 

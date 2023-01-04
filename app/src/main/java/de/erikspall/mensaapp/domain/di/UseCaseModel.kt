@@ -11,7 +11,7 @@ import de.erikspall.mensaapp.domain.interfaces.data.AppRepository
 import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
 import de.erikspall.mensaapp.domain.usecases.foodproviders.FetchFoodProvider
 import de.erikspall.mensaapp.domain.usecases.foodproviders.FetchFoodProviders
-import de.erikspall.mensaapp.domain.usecases.foodproviders.FetchMenus
+import de.erikspall.mensaapp.domain.usecases.foodproviders.FetchMenu
 import de.erikspall.mensaapp.domain.usecases.additives.*
 import de.erikspall.mensaapp.domain.usecases.openinghours.FormatToString
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
@@ -30,7 +30,7 @@ object UseCaseModel {
         return FoodProviderUseCases(
             fetchAll = FetchFoodProviders(appRepository),
             fetch = FetchFoodProvider(appRepository),
-            fetchMenus = FetchMenus(appRepository)
+            fetchMenu = FetchMenu(appRepository)
         )
     }
 

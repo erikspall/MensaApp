@@ -144,7 +144,7 @@ fun MealCard(
                 style = MaterialTheme.typography.bodyLarge
             )
             if (expanded) {
-                Divider()
+                Divider(color = MaterialTheme.colorScheme.onSurface)
                 FlowRow(
                     modifier = Modifier
                         .fillMaxWidth(),
