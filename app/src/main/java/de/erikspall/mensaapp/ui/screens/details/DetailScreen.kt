@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -24,17 +25,25 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.domain.model.FoodProvider
+import de.erikspall.mensaapp.domain.model.Meal
+import de.erikspall.mensaapp.ui.MensaViewModel
 import de.erikspall.mensaapp.ui.components.DetailHeader
 import de.erikspall.mensaapp.ui.components.ExpandableTextState
 import de.erikspall.mensaapp.ui.components.FancyIndicator
-import kotlinx.coroutines.delay
+import de.erikspall.mensaapp.ui.components.MealCard
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.time.format.TextStyle
+import java.util.Locale
 import kotlin.math.absoluteValue
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -50,7 +59,8 @@ fun DetailScreen(
     additionalInfoState: ExpandableTextState = remember {
         ExpandableTextState()
     },
-    onBackClicked: (() -> Unit)? = null
+    onBackClicked: (() -> Unit)? = null,
+    mensaViewModel: MensaViewModel = hiltViewModel()
 ) {
 
     var hideBackButton by remember { mutableStateOf(false) }
@@ -63,6 +73,17 @@ fun DetailScreen(
     var currentPageIndex by remember {
         mutableStateOf(0)
     }
+    val scope = rememberCoroutineScope()
+
+    // TODO: Merge this
+    val pages = (0..13).toList()
+    val menuMap = mutableMapOf<Int, SnapshotStateList<Meal>>()
+    pages.forEach { offset ->
+        menuMap[offset] = remember {
+            mutableStateListOf()
+        }
+    }
+
 
     with(pagerState) {
         LaunchedEffect(key1 = currentPageIndex) {
@@ -74,6 +95,7 @@ fun DetailScreen(
         }
     }
 
+
     // Reuse the default offset animation modifier, but use our own indicator
     /* val indicator = @Composable { tabPositions ->
         FancyIndicator(
@@ -81,7 +103,7 @@ fun DetailScreen(
             modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTab]).padding(horizontal = 20.dp)
         )
     }*/
-    val pages = listOf("1", "2", "3")
+
 
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
@@ -156,9 +178,12 @@ fun DetailScreen(
                 }
                 // Tabs
                 item {
-                    Column {
+                    Column(
+                        modifier = Modifier.padding(top = 16.dp)
+                    ) {
                         // TODO: Check if pager support m3 tabrow
-                        androidx.compose.material.TabRow(
+                        androidx.compose.material.ScrollableTabRow(
+                            edgePadding = 20.dp,
                             backgroundColor = MaterialTheme.colorScheme.background,
                             contentColor = MaterialTheme.colorScheme.onBackground,
                             selectedTabIndex = pagerState.currentPage,
@@ -171,14 +196,29 @@ fun DetailScreen(
                             }
                         ) {
                             // Add tabs for all of our pages
-                            pages.forEachIndexed { index, title ->
+                            pages.forEach { dayOffset ->
+                                val date = LocalDate.now().plusDays(dayOffset.toLong())
                                 Tab(
-                                    text = { Text(title) },
-                                    selected = pagerState.currentPage == index,
-                                    onClick = {
-                                        Log.d("TABS", "new index: $index")
-                                        currentPageIndex = index
+                                    modifier = Modifier.wrapContentWidth(),
+                                    text = {
+                                        val dayOfWeek = date.dayOfWeek.getDisplayName(
+                                            TextStyle.SHORT_STANDALONE,
+                                            Locale.getDefault()
+                                        )
+                                        val dateFormatted =
+                                            date.format(
+                                                DateTimeFormatter.ofLocalizedDate(
+                                                    FormatStyle.SHORT
+                                                )
+                                            )
+
+                                        Text("$dayOfWeek\n$dateFormatted")
                                     },
+                                    selected = pagerState.currentPage == dayOffset,
+                                    onClick = {
+                                        Log.d("TABS", "new index: $dayOffset")
+                                        currentPageIndex = dayOffset
+                                    }
                                 )
                             }
                         }
@@ -186,11 +226,36 @@ fun DetailScreen(
                             count = pages.size,
                             state = pagerState,
                         ) { page ->
+                            val date = LocalDate.now().plusDays(page.toLong())
                             // TODO: page content
-                            Text(
-                                text = "Page: $page",
-                                modifier = Modifier.fillMaxWidth()
-                            )
+                            LaunchedEffect(key1 = "$currentPageIndex" + "menus") {
+                                /*scope.*/launch {
+
+                                val menus = mensaViewModel.getMenus(
+                                    foodProvider.id!!,
+                                    date
+                                )
+                                val meals = if (menus.isSuccess) {
+                                    menus.getOrThrow()[0].meals
+                                } else {
+                                    emptyList()
+                                }
+
+                                menuMap[page]!!.clear()
+                                menuMap[page]!!.addAll(meals)
+
+                            }
+                            }
+                            Column(
+                                modifier = Modifier.padding(horizontal = 20.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                               // contentPadding = PaddingValues(vertical = 16.dp)
+                            ) {
+                                menuMap[page]?.forEach { meal ->
+                                    MealCard(meal = meal)
+                                }
+                            }
+
                         }
                         /*Text(
                             modifier = Modifier.align(Alignment.CenterHorizontally),

@@ -13,6 +13,7 @@ import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,6 +34,7 @@ class MensaViewModel @Inject constructor(
         get() = state.warningsActivated
     val settingsInitialized: Boolean
         get() = state.settingsInitialized
+
 
     val foodProviders: List<FoodProvider>
         get() = state.foodProviders.filter { f ->
@@ -204,6 +206,11 @@ class MensaViewModel @Inject constructor(
         }
 
     }
+
+    suspend fun getMenus(foodProviderId: Int, date: LocalDate) =
+        foodProviderUseCases.fetchMenus(foodProviderId, date)
+
+
 
     companion object {
         const val TAG = "MensaViewModel"

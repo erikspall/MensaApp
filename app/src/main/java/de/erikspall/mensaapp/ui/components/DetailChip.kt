@@ -43,6 +43,7 @@ fun DetailChip(
         Row(
             modifier = Modifier.background(color = containerColor),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             if (iconVector != null) {
                 Icon(
@@ -51,7 +52,6 @@ fun DetailChip(
                     contentDescription = "",
                     tint = onContainerColor
                 )
-                Spacer(modifier = Modifier.width(8.dp))
             }
             Text(
                 text = text,

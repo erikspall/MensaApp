@@ -83,7 +83,8 @@ fun MensaNavHost(
                 onBackClicked = {
                     onHideNavBar(false)
                     navController.popBackStack()
-                }
+                },
+                mensaViewModel = mensaViewModel
             )
         }
     }

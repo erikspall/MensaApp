@@ -33,7 +33,7 @@ fun FoodProviderCard(
                 onPressed()
             }
             .wrapContentHeight()
-            .clip(RoundedCornerShape(28.dp)),
+            .clip(RoundedCornerShape(28.dp)), // TODO: Not needed
         shape = RoundedCornerShape(28.dp)
     ) {
         Column {
