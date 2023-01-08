@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -47,7 +48,10 @@ import java.util.Locale
 import kotlin.math.absoluteValue
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalPagerApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun DetailScreen(
     modifier: Modifier = Modifier,
@@ -166,7 +170,8 @@ fun DetailScreen(
 
             }
             LazyColumn(
-                modifier = Modifier.nestedScroll(nestedScrollConnection)
+                modifier = Modifier.nestedScroll(nestedScrollConnection),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
                     DetailHeader(
@@ -177,9 +182,9 @@ fun DetailScreen(
                     )
                 }
                 // Tabs
-                item {
+                stickyHeader {
                     Column(
-                        modifier = Modifier.padding(top = 16.dp)
+                        //  modifier = Modifier.padding(top = 16.dp)
                     ) {
                         // TODO: Check if pager support m3 tabrow
                         androidx.compose.material.ScrollableTabRow(
@@ -222,53 +227,55 @@ fun DetailScreen(
                                 )
                             }
                         }
-                        HorizontalPager(
-                            count = pages.size,
-                            state = pagerState,
-                        ) { page ->
-                            LaunchedEffect(key1 = "$currentPageIndex" + "menus") {
-                                /*scope.*/launch {
-
-                                val menu = mensaViewModel.getMenu(
-                                    foodProvider.id!!,
-                                    page
-                                )
-                                val meals = if (menu.isSuccess) {
-                                    menu.getOrThrow().meals
-                                } else {
-                                    emptyList()
-                                }
-
-                                menuMap[page]!!.clear()
-                                menuMap[page]!!.addAll(meals)
-
-                            }
-                            }
-                            Column(
-                                modifier = Modifier.padding(horizontal = 20.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                               // contentPadding = PaddingValues(vertical = 16.dp)
-                            ) {
-                                menuMap[page]?.forEach { meal ->
-                                    MealCard(meal = meal)
-                                }
-                            }
-
-                        }
-                        /*Text(
-                            modifier = Modifier.align(Alignment.CenterHorizontally),
-                            text = "Text tab ${selectedTab + 1} selected",
-                            style = MaterialTheme.typography.bodyLarge
-                        )*/
                     }
                 }
+                item {
+                    HorizontalPager(
+                        count = pages.size,
+                        state = pagerState,
+                    ) { page ->
+                        LaunchedEffect(key1 = "$currentPageIndex" + "menus") {
+                            /*scope.*/launch {
 
+                            val menu = mensaViewModel.getMenu(
+                                foodProvider.id!!,
+                                page
+                            )
+                            val meals = if (menu.isSuccess) {
+                                menu.getOrThrow().meals
+                            } else {
+                                emptyList()
+                            }
+
+                            menuMap[page]!!.clear()
+                            menuMap[page]!!.addAll(meals)
+
+                        }
+                        }
+                        Column(
+                            modifier = Modifier.padding(horizontal = 20.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            // contentPadding = PaddingValues(vertical = 16.dp)
+                        ) {
+                            menuMap[page]?.forEach { meal ->
+                                MealCard(meal = meal)
+                            }
+                            Spacer(modifier = Modifier.height(2000.dp))
+                        }
+
+                    }
+                    /*Text(
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        text = "Text tab ${selectedTab + 1} selected",
+                        style = MaterialTheme.typography.bodyLarge
+                    )*/
+                }
             }
+
         }
     }
-
-
 }
+
 
 @Preview(showSystemUi = true)
 @Composable
