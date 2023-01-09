@@ -2,11 +2,12 @@ package de.erikspall.mensaapp.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -30,147 +31,95 @@ fun DetailHeader(
     descriptionState: ExpandableTextState? = null,
     additionalInfoState: ExpandableTextState? = null
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        /* FilledIconButton(
-             modifier = Modifier
-
-                 .zIndex(1f),
-             onClick = { /*TODO*/ }
-         ) {
-             Icon(
-                 imageVector = Icons.Rounded.ArrowBack,
-                 contentDescription = ""
-             )
-         }*/
-
-
-        Column {
+        Box(
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth()
+                .height(200.dp)
+        ) {
             Image(
                 modifier = Modifier
-                    .height(250.dp)
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp)),
+                    .clip(RoundedCornerShape(CornerSize(28.dp))),
                 painter = painterResource(id = foodProvider.photo),
                 contentDescription = "",
                 contentScale = ContentScale.Crop
             )
-            Row(
+            DetailChip(
                 modifier = Modifier
-                    .padding(top = 24.dp, start = 20.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    modifier = Modifier
-                        .weight(1f)
-                        .wrapContentHeight(),
-                    text = foodProvider.name,
-                    //fontFamily = Shrikhand,
-                    style = MaterialTheme.typography.headlineLarge
-                )
-                IconToggleButton(
-                    modifier = Modifier.padding(end = 20.dp),
-                    colors = IconButtonDefaults.iconToggleButtonColors(
-                        checkedContentColor = MaterialTheme.colorScheme.error
-                    ),
-                    checked = true,
-                    onCheckedChange = { }
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Favorite,
-                        contentDescription = ""
-                    )
-                }
-            }
-            Row(
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp),
+                text = foodProvider.type,
+                orientation = ChipOrientation.END
+            )
+            DetailChip(
                 modifier = Modifier
-                    .padding(top = 8.dp)
-                    .horizontalScroll(state = chipScrollState),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    .align(Alignment.BottomStart)
+                    .padding(16.dp),
+                text = foodProvider.openingHoursString,
+                orientation = ChipOrientation.START
+            )
+        }
 
-            ) {
-                DetailChip(
-                    modifier = Modifier.padding(start = 20.dp),
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    onContainerColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    iconVector = Icons.Rounded.Schedule,
-                    text = foodProvider.openingHoursString
+        Column(
+            modifier = Modifier.padding(start = 40.dp, end = 40.dp, top = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            if (descriptionState != null && foodProvider.description.isNotEmpty()) {
+                ExpandableText(
+                    text = foodProvider.description,
+                    showMoreText = stringResource(id = R.string.text_label_read_more),
+                    showLessText = stringResource(id = R.string.text_label_read_less),
+                    style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                    isExpanded = descriptionState.isExpanded,
+                    clickable = descriptionState.clickable,
+                    icon = Icons.Outlined.Info,
+                    lastCharIndex = descriptionState.lastCharIndex,
+                    onClick = {
+                        descriptionState.isExpanded = !descriptionState.isExpanded
+                    },
+                    onTextLayout = { textLayoutResult, collapsedMaxLines ->
+                        if (!descriptionState.isExpanded && textLayoutResult.hasVisualOverflow) {
+                            descriptionState.clickable = true
+                            descriptionState.lastCharIndex =
+                                textLayoutResult.getLineEnd(collapsedMaxLines - 1)
+                        }
+                    }
                 )
-
-                DetailChip(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    onContainerColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    iconVector = Icons.Rounded.FoodBank,
-                    text = foodProvider.type
-                )
-
-                DetailChip(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    onContainerColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    modifier = Modifier.padding(end = 20.dp),
-                    iconVector = Icons.Rounded.Place,
-                    text = foodProvider.location
-                )
-
             }
 
-            Column(
-                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                if (descriptionState != null && foodProvider.description.isNotEmpty()) {
-                    ExpandableText(
-                        text = foodProvider.description,
-                        showMoreText = stringResource(id = R.string.text_label_read_more),
-                        showLessText = stringResource(id = R.string.text_label_read_less),
-                        style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
-                        isExpanded = descriptionState.isExpanded,
-                        clickable = descriptionState.clickable,
-                        icon = Icons.Rounded.Info,
-                        lastCharIndex = descriptionState.lastCharIndex,
-                        onClick = {
-                            descriptionState.isExpanded = !descriptionState.isExpanded
-                        },
-                        onTextLayout = { textLayoutResult, collapsedMaxLines ->
-                            if (!descriptionState.isExpanded && textLayoutResult.hasVisualOverflow) {
-                                descriptionState.clickable = true
-                                descriptionState.lastCharIndex =
-                                    textLayoutResult.getLineEnd(collapsedMaxLines - 1)
-                            }
+            if (additionalInfoState != null && foodProvider.additionalInfo.isNotEmpty()) {
+                ExpandableText(
+                    text = foodProvider.additionalInfo,
+                    showMoreText = stringResource(id = R.string.text_label_read_more),
+                    showLessText = stringResource(id = R.string.text_label_read_less),
+                    style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                    isExpanded = additionalInfoState.isExpanded,
+                    clickable = additionalInfoState.clickable,
+                    icon = Icons.Rounded.Store,
+                    lastCharIndex = additionalInfoState.lastCharIndex,
+                    onClick = {
+                        additionalInfoState.isExpanded = !additionalInfoState.isExpanded
+                    },
+                    onTextLayout = { textLayoutResult, collapsedMaxLines ->
+                        if (!additionalInfoState.isExpanded && textLayoutResult.hasVisualOverflow) {
+                            additionalInfoState.clickable = true
+                            additionalInfoState.lastCharIndex =
+                                textLayoutResult.getLineEnd(collapsedMaxLines - 1)
                         }
-                    )
-                }
-
-                if (additionalInfoState != null && foodProvider.additionalInfo.isNotEmpty()) {
-                    ExpandableText(
-                        text = foodProvider.additionalInfo,
-                        showMoreText = stringResource(id = R.string.text_label_read_more),
-                        showLessText = stringResource(id = R.string.text_label_read_less),
-                        style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
-                        isExpanded = additionalInfoState.isExpanded,
-                        clickable = additionalInfoState.clickable,
-                        icon = Icons.Rounded.Store,
-                        lastCharIndex = additionalInfoState.lastCharIndex,
-                        onClick = {
-                            additionalInfoState.isExpanded = !additionalInfoState.isExpanded
-                        },
-                        onTextLayout = { textLayoutResult, collapsedMaxLines ->
-                            if (!additionalInfoState.isExpanded && textLayoutResult.hasVisualOverflow) {
-                                additionalInfoState.clickable = true
-                                additionalInfoState.lastCharIndex =
-                                    textLayoutResult.getLineEnd(collapsedMaxLines - 1)
-                            }
-                        }
-                    )
-                }
+                    }
+                )
             }
-
         }
     }
+
+
+
+
 }
 
 @Preview(showSystemUi = true)

@@ -3,29 +3,26 @@ package de.erikspall.mensaapp.ui.screens.details
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -39,6 +36,7 @@ import de.erikspall.mensaapp.ui.components.DetailHeader
 import de.erikspall.mensaapp.ui.components.ExpandableTextState
 import de.erikspall.mensaapp.ui.components.FancyIndicator
 import de.erikspall.mensaapp.ui.components.MealCard
+import de.erikspall.mensaapp.ui.theme.Shrikhand
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -66,6 +64,7 @@ fun DetailScreen(
     onBackClicked: (() -> Unit)? = null,
     mensaViewModel: MensaViewModel = hiltViewModel()
 ) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     var hideBackButton by remember { mutableStateOf(false) }
 
@@ -133,145 +132,149 @@ fun DetailScreen(
         }
     }
 
-    Scaffold { innerPadding ->
-        Box {
-            AnimatedVisibility(
-                modifier = Modifier
-                    .zIndex(1f),
-                visibleState = hideBackButtonState
-            ) {
-
-                FilledIconButton(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .padding(start = 8.dp),
-                    onClick = onBackClicked ?: {}
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.ArrowBack,
-                        contentDescription = ""
+    Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            LargeTopAppBar(
+                title = {
+                    Text(
+                        text = foodProvider.name,
+                        fontFamily = Shrikhand,
+                        //style = MaterialTheme.typography.headlineMedium
                     )
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(125.dp)
-                    .zIndex(0.9f)
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.background,
-                                Color.Transparent
-                            )
-                        )
-                    )
-            ) {
-
-            }
-            LazyColumn(
-                modifier = Modifier.nestedScroll(nestedScrollConnection),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                item {
-                    DetailHeader(
-                        foodProvider = foodProvider,
-                        chipScrollState = chipScrollState,
-                        descriptionState = descriptionState,
-                        additionalInfoState = additionalInfoState
-                    )
-                }
-                // Tabs
-                stickyHeader {
-                    Column(
-                        //  modifier = Modifier.padding(top = 16.dp)
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            if (onBackClicked != null) {
+                                onBackClicked()
+                            }
+                        }
                     ) {
-                        // TODO: Check if pager support m3 tabrow
-                        androidx.compose.material.ScrollableTabRow(
-                            edgePadding = 20.dp,
-                            backgroundColor = MaterialTheme.colorScheme.background,
-                            contentColor = MaterialTheme.colorScheme.onBackground,
-                            selectedTabIndex = pagerState.currentPage,
-                            indicator = { tabPositions ->
-                                FancyIndicator(
-                                    Modifier
-                                        .pagerTabIndicatorOffset(pagerState, tabPositions)
-                                )
-
-                            }
-                        ) {
-                            // Add tabs for all of our pages
-                            pages.forEach { dayOffset ->
-                                val date = LocalDate.now().plusDays(dayOffset.toLong())
-                                Tab(
-                                    modifier = Modifier.wrapContentWidth(),
-                                    text = {
-                                        val dayOfWeek = date.dayOfWeek.getDisplayName(
-                                            TextStyle.SHORT_STANDALONE,
-                                            Locale.getDefault()
-                                        )
-                                        val dateFormatted =
-                                            date.format(
-                                                DateTimeFormatter.ofLocalizedDate(
-                                                    FormatStyle.SHORT
-                                                )
-                                            )
-
-                                        Text("$dayOfWeek\n$dateFormatted")
-                                    },
-                                    selected = pagerState.currentPage == dayOffset,
-                                    onClick = {
-                                        Log.d("TABS", "new index: $dayOffset")
-                                        currentPageIndex = dayOffset
-                                    }
-                                )
-                            }
-                        }
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack,
+                            contentDescription = ""
+                        )
                     }
-                }
-                item {
-                    HorizontalPager(
-                        count = pages.size,
-                        state = pagerState,
-                    ) { page ->
-                        LaunchedEffect(key1 = "$currentPageIndex" + "menus") {
-                            /*scope.*/launch {
-
-                            val menu = mensaViewModel.getMenu(
-                                foodProvider.id!!,
-                                page
+                },
+                actions = {
+                  IconToggleButton(
+                      checked = true,
+                      onCheckedChange = {}
+                  ) {
+                      Icon(
+                          imageVector = Icons.Rounded.Favorite,
+                          contentDescription = "",
+                          tint = Color.Red
+                      )
+                  }
+                },
+                scrollBehavior = scrollBehavior,
+            )
+        }
+    ) { innerPadding ->
+        LazyColumn(
+            modifier = Modifier.padding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            item {
+                DetailHeader(
+                    modifier = Modifier.padding(top = 8.dp),
+                    foodProvider = foodProvider,
+                    chipScrollState = chipScrollState,
+                    descriptionState = descriptionState,
+                    additionalInfoState = additionalInfoState
+                )
+            }
+            // Tabs
+            stickyHeader {
+                Column(
+                    //  modifier = Modifier.padding(top = 16.dp)
+                ) {
+                    // TODO: Check if pager support m3 tabrow
+                    androidx.compose.material.ScrollableTabRow(
+                        edgePadding = 20.dp,
+                        backgroundColor = MaterialTheme.colorScheme.background,
+                        contentColor = MaterialTheme.colorScheme.onBackground,
+                        selectedTabIndex = pagerState.currentPage,
+                        indicator = { tabPositions ->
+                            FancyIndicator(
+                                Modifier
+                                    .pagerTabIndicatorOffset(pagerState, tabPositions)
                             )
-                            val meals = if (menu.isSuccess) {
-                                menu.getOrThrow().meals
-                            } else {
-                                emptyList()
-                            }
-
-                            menuMap[page]!!.clear()
-                            menuMap[page]!!.addAll(meals)
 
                         }
-                        }
-                        Column(
-                            modifier = Modifier.padding(horizontal = 20.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            // contentPadding = PaddingValues(vertical = 16.dp)
-                        ) {
-                            menuMap[page]?.forEach { meal ->
-                                MealCard(meal = meal)
-                            }
-                            Spacer(modifier = Modifier.height(2000.dp))
-                        }
+                    ) {
+                        // Add tabs for all of our pages
+                        pages.forEach { dayOffset ->
+                            val date = LocalDate.now().plusDays(dayOffset.toLong())
+                            Tab(
+                                modifier = Modifier.wrapContentWidth(),
+                                text = {
+                                    val dayOfWeek = date.dayOfWeek.getDisplayName(
+                                        TextStyle.SHORT_STANDALONE,
+                                        Locale.getDefault()
+                                    )
+                                    val dateFormatted =
+                                        date.format(
+                                            DateTimeFormatter.ofLocalizedDate(
+                                                FormatStyle.SHORT
+                                            )
+                                        )
 
+                                    Text("$dayOfWeek\n$dateFormatted")
+                                },
+                                selected = pagerState.currentPage == dayOffset,
+                                onClick = {
+                                    Log.d("TABS", "new index: $dayOffset")
+                                    currentPageIndex = dayOffset
+                                }
+                            )
+                        }
                     }
-                    /*Text(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        text = "Text tab ${selectedTab + 1} selected",
-                        style = MaterialTheme.typography.bodyLarge
-                    )*/
                 }
             }
+            item {
+                HorizontalPager(
+                    count = pages.size,
+                    state = pagerState,
+                ) { page ->
+                    LaunchedEffect(key1 = "$currentPageIndex" + "menus") {
+                        /*scope.*/launch {
 
+                        val menu = mensaViewModel.getMenu(
+                            foodProvider.id!!,
+                            page
+                        )
+                        val meals = if (menu.isSuccess) {
+                            menu.getOrThrow().meals
+                        } else {
+                            emptyList()
+                        }
+
+                        menuMap[page]!!.clear()
+                        menuMap[page]!!.addAll(meals)
+
+                    }
+                    }
+                    Column(
+                        modifier = Modifier.padding(horizontal = 20.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        // contentPadding = PaddingValues(vertical = 16.dp)
+                    ) {
+                        menuMap[page]?.forEach { meal ->
+                            MealCard(meal = meal)
+                        }
+                        Spacer(modifier = Modifier.height(2000.dp))
+                    }
+
+                }
+                /*Text(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    text = "Text tab ${selectedTab + 1} selected",
+                    style = MaterialTheme.typography.bodyLarge
+                )*/
+            }
         }
     }
 }
