@@ -5,8 +5,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Blender
@@ -79,7 +81,9 @@ fun AdditiveFilterScreen(
             )
         },
         content = { innerPadding ->
-            Column {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState())
+            ) {
                 HeroToggle(
                     modifier = Modifier
                         .padding(top = 16.dp + innerPadding.calculateTopPadding(), start = 16.dp, end = 16.dp),
@@ -96,7 +100,8 @@ fun AdditiveFilterScreen(
                     visibleState = filterVisibilityState
                 ) {
                     Column(
-                        modifier = Modifier.padding(top = 24.dp)
+                        modifier = Modifier
+                            .padding(top = 24.dp)
                     ) {
                         AdditiveFilterSection(
                             modifier = Modifier

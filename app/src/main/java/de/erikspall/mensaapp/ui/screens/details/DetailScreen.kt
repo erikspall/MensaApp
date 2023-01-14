@@ -3,24 +3,34 @@ package de.erikspall.mensaapp.ui.screens.details
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -64,13 +74,32 @@ fun DetailScreen(
     onBackClicked: (() -> Unit)? = null,
     mensaViewModel: MensaViewModel = hiltViewModel()
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     var hideBackButton by remember { mutableStateOf(false) }
 
     val hideBackButtonState = remember { MutableTransitionState(!hideBackButton) }
 
     val pagerState = rememberPagerState()
+
+    val listState = rememberLazyListState()
+
+    val snappingLayout = remember(listState) {
+        SnapLayoutInfoProvider(
+            listState
+        )
+    }
+    val flingBehavior = rememberSnapFlingBehavior(snappingLayout)
+
+
+    val configuration = LocalConfiguration.current
+
+    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp.dp
+
+    val isScrolledDownState = remember {
+        MutableTransitionState(false)
+    }
 
     //TODO Extract to own component
     var currentPageIndex by remember {
@@ -135,7 +164,7 @@ fun DetailScreen(
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            LargeTopAppBar(
+            TopAppBar(
                 title = {
                     Text(
                         text = foodProvider.name,
@@ -158,24 +187,26 @@ fun DetailScreen(
                     }
                 },
                 actions = {
-                  IconToggleButton(
-                      checked = true,
-                      onCheckedChange = {}
-                  ) {
-                      Icon(
-                          imageVector = Icons.Rounded.Favorite,
-                          contentDescription = "",
-                          tint = Color.Red
-                      )
-                  }
+                    IconToggleButton(
+                        checked = true,
+                        onCheckedChange = {}
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Favorite,
+                            contentDescription = "",
+                            tint = Color.Red
+                        )
+                    }
                 },
                 scrollBehavior = scrollBehavior,
             )
         }
     ) { innerPadding ->
         LazyColumn(
-            modifier = Modifier.padding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
+            state = listState,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            flingBehavior = flingBehavior
         ) {
             item {
                 DetailHeader(
@@ -194,7 +225,9 @@ fun DetailScreen(
                     // TODO: Check if pager support m3 tabrow
                     androidx.compose.material.ScrollableTabRow(
                         edgePadding = 20.dp,
-                        backgroundColor = MaterialTheme.colorScheme.background,
+                        backgroundColor = if (listState.firstVisibleItemIndex == 0) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.surfaceColorAtElevation(
+                            3.dp
+                        ),
                         contentColor = MaterialTheme.colorScheme.onBackground,
                         selectedTabIndex = pagerState.currentPage,
                         indicator = { tabPositions ->
@@ -236,8 +269,11 @@ fun DetailScreen(
             }
             item {
                 HorizontalPager(
+                    modifier = Modifier
+                        .height(screenHeight),
                     count = pages.size,
                     state = pagerState,
+                    verticalAlignment = Alignment.Top
                 ) { page ->
                     LaunchedEffect(key1 = "$currentPageIndex" + "menus") {
                         /*scope.*/launch {
@@ -246,6 +282,7 @@ fun DetailScreen(
                             foodProvider.id!!,
                             page
                         )
+
                         val meals = if (menu.isSuccess) {
                             menu.getOrThrow().meals
                         } else {
@@ -254,18 +291,38 @@ fun DetailScreen(
 
                         menuMap[page]!!.clear()
                         menuMap[page]!!.addAll(meals)
-
                     }
                     }
                     Column(
-                        modifier = Modifier.padding(horizontal = 20.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier
+                            .padding(horizontal = 20.dp)
+                            .verticalScroll(
+                                rememberScrollState(),
+                                enabled = isScrolledDownState.currentState
+                            ),
+                        verticalArrangement = Arrangement.Top
                         // contentPadding = PaddingValues(vertical = 16.dp)
                     ) {
-                        menuMap[page]?.forEach { meal ->
-                            MealCard(meal = meal)
+                        LaunchedEffect(listState) {
+                            snapshotFlow { listState.firstVisibleItemIndex }
+                                .collect { isScrolledDownState.targetState = it != 0 }
                         }
-                        Spacer(modifier = Modifier.height(2000.dp))
+
+                        AnimatedVisibility(
+                            modifier = Modifier.clip(RoundedCornerShape(corner = CornerSize(28.dp))), // Looks better
+                            visibleState = isScrolledDownState
+                        ) {
+                            Spacer(modifier = Modifier.height(112.dp))
+                        }
+
+
+                        menuMap[page]?.forEach { meal ->
+                            MealCard(
+                                modifier = Modifier.padding(bottom = 8.dp),
+                                meal = meal
+                            )
+                        }
+                        // Spacer(modifier = Modifier.height(2000.dp))
                     }
 
                 }
