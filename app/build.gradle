@@ -91,6 +91,9 @@ dependencies {
     implementation "com.google.accompanist:accompanist-pager:0.28.0"
     // If using indicators, also depend on
     implementation "com.google.accompanist:accompanist-pager-indicators:0.28.0"
+    // Lottie - Compose
+    implementation "com.airbnb.android:lottie-compose:5.2.0"
+
 
     // Room
     implementation "androidx.room:room-runtime:2.5.0"
@@ -123,8 +126,7 @@ dependencies {
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
-    // Lottie
-    implementation "com.airbnb.android:lottie:5.2.0"
+
 
     // Swipe to Refresh
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"

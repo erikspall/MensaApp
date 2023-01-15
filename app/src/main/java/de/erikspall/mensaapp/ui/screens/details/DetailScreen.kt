@@ -33,6 +33,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,10 +46,8 @@ import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.domain.model.FoodProvider
 import de.erikspall.mensaapp.domain.model.Meal
 import de.erikspall.mensaapp.ui.MensaViewModel
-import de.erikspall.mensaapp.ui.components.DetailHeader
-import de.erikspall.mensaapp.ui.components.ExpandableTextState
-import de.erikspall.mensaapp.ui.components.FancyIndicator
-import de.erikspall.mensaapp.ui.components.MealCard
+import de.erikspall.mensaapp.ui.components.*
+import de.erikspall.mensaapp.ui.state.UiState
 import de.erikspall.mensaapp.ui.theme.Shrikhand
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -110,6 +109,8 @@ fun DetailScreen(
     }
     val scope = rememberCoroutineScope()
 
+    val menuUiStates = mutableListOf<MutableState<UiState>>()
+
     // TODO: Merge this
     val pages = (0..13).toList()
     val menuMap = mutableMapOf<Int, SnapshotStateList<Meal>>()
@@ -117,6 +118,9 @@ fun DetailScreen(
         menuMap[offset] = remember {
             mutableStateListOf()
         }
+        menuUiStates.add(remember {
+            mutableStateOf(UiState.LOADING)
+        })
     }
 
 
@@ -306,8 +310,10 @@ fun DetailScreen(
                         state = pagerState,
                         verticalAlignment = Alignment.Top
                     ) { page ->
-                        LaunchedEffect(key1 = "$currentPageIndex" + "menus") {
+                        LaunchedEffect(key1 = "$page" + "menus") {
                             /*scope.*/launch {
+                            //var menuUiState by mutableStateOf(UiState.LOADING)
+                            menuUiStates[page].value = UiState.LOADING
 
                             val menu = mensaViewModel.getMenu(
                                 foodProvider.id!!,
@@ -315,8 +321,15 @@ fun DetailScreen(
                             )
 
                             val meals = if (menu.isSuccess) {
-                                menu.getOrThrow().meals
+                                val temp = menu.getOrThrow().meals
+                                menuUiStates[page].value = if (temp.isEmpty()) {
+                                    UiState.NO_INFO
+                                } else {
+                                    UiState.NORMAL
+                                }
+                                temp
                             } else {
+                                UiState.ERROR
                                 emptyList()
                             }
 
@@ -346,13 +359,55 @@ fun DetailScreen(
                                 Spacer(modifier = Modifier.height(48.dp))
                             }
 
-
-                            menuMap[page]?.forEach { meal ->
-                                MealCard(
-                                    modifier = Modifier.padding(bottom = 8.dp),
-                                    meal = meal,
-                                    role = mensaViewModel.role
-                                )
+                            when (menuUiStates[page].value) {
+                                UiState.NORMAL -> {
+                                    menuMap[page]?.forEach { meal ->
+                                        MealCard(
+                                            modifier = Modifier.padding(bottom = 8.dp),
+                                            meal = meal,
+                                            role = mensaViewModel.role
+                                        )
+                                    }
+                                }
+                                UiState.NO_INFO -> {
+                                    Column(
+                                        modifier = Modifier.fillMaxHeight(),
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        LottieWithInfo(
+                                            lottie = R.raw.no_menus,
+                                            description = stringResource(
+                                                id = R.string.text_lottie_no_meals
+                                            )
+                                        )
+                                    }
+                                }
+                                UiState.LOADING -> {
+                                    Column(
+                                        modifier = Modifier.fillMaxHeight(),
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        LottieWithInfo(
+                                            lottie = R.raw.loading_menus,
+                                            description = stringResource(
+                                                id = R.string.text_lottie_fetching_meals
+                                            )
+                                        )
+                                    }
+                                }
+                                else -> {
+                                    Column(
+                                        modifier = Modifier.fillMaxHeight(),
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        LottieWithInfo(
+                                            lottie = R.raw.error,
+                                            description = stringResource(
+                                                id = R.string.text_lottie_error
+                                            )
+                                        )
+                                    }
+                                }
                             }
                             Spacer(modifier = Modifier.height(80.dp))
                         }

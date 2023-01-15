@@ -1,6 +1,5 @@
 package de.erikspall.mensaapp.ui.screens.additivefilters
 
-import android.widget.Space
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
@@ -32,6 +31,7 @@ import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.ui.MensaViewModel
 import de.erikspall.mensaapp.ui.components.AdditiveFilterSection
 import de.erikspall.mensaapp.ui.components.HeroToggle
+import de.erikspall.mensaapp.ui.components.LottieWithInfo
 import de.erikspall.mensaapp.ui.theme.Shrikhand
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -113,42 +113,56 @@ fun AdditiveFilterScreen(
                         filterVisibilityState.targetState = it
                     }
                 )
-                AnimatedVisibility(
-                    modifier = Modifier.clip(RoundedCornerShape(corner = CornerSize(28.dp))), // Looks better
-                    visibleState = filterVisibilityState
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(top = 24.dp)
+
+                    AnimatedVisibility(
+                        modifier = Modifier.clip(RoundedCornerShape(corner = CornerSize(28.dp))), // Looks better
+                        visibleState = filterVisibilityState
                     ) {
-                        AdditiveFilterSection(
-                            modifier = Modifier
-                                .padding(horizontal = 24.dp),
-                            icon = Icons.Rounded.Blender,
-                            sectionTitle = stringResource(id = R.string.text_ingredient_section),
-                            items = ingredients ?: emptyList(), // Make it null safe?
-                            onAdditiveClicked = {
-                                mensaViewModel.saveLikeStatus(it, !it.isNotLiked)
+                        if (ingredients.isNullOrEmpty() && allergens.isNullOrEmpty()) {
+                            Column(
+                                modifier = Modifier.fillMaxHeight().padding(top = 16.dp),
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                LottieWithInfo(
+                                    lottie = R.raw.error,
+                                    description = stringResource(
+                                        id = R.string.text_lottie_no_additives
+                                    )
+                                )
                             }
-                        )
-                        Divider(
-                            modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
-                        )
-                        AdditiveFilterSection(
+                        } else {
+                        Column(
                             modifier = Modifier
-                                .padding(horizontal = 24.dp),
-                            icon = Icons.Rounded.LunchDining,
-                            sectionTitle = stringResource(id = R.string.text_allergen_section),
-                            items = allergens ?: emptyList(), // Make it null safe?
-                            onAdditiveClicked = {
-                                mensaViewModel.saveLikeStatus(it, !it.isNotLiked)
-                            }
-                        )
-                        Spacer(modifier = Modifier.height(80.dp))
+                                .padding(top = 24.dp)
+                        ) {
+                            AdditiveFilterSection(
+                                modifier = Modifier
+                                    .padding(horizontal = 24.dp),
+                                icon = Icons.Rounded.Blender,
+                                sectionTitle = stringResource(id = R.string.text_ingredient_section),
+                                items = ingredients ?: emptyList(), // Make it null safe?
+                                onAdditiveClicked = {
+                                    mensaViewModel.saveLikeStatus(it, !it.isNotLiked)
+                                }
+                            )
+                            Divider(
+                                modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
+                            )
+                            AdditiveFilterSection(
+                                modifier = Modifier
+                                    .padding(horizontal = 24.dp),
+                                icon = Icons.Rounded.LunchDining,
+                                sectionTitle = stringResource(id = R.string.text_allergen_section),
+                                items = allergens ?: emptyList(), // Make it null safe?
+                                onAdditiveClicked = {
+                                    mensaViewModel.saveLikeStatus(it, !it.isNotLiked)
+                                }
+                            )
+                            Spacer(modifier = Modifier.height(80.dp))
+                        }
+
                     }
-
                 }
-
             }
         }
     )
