@@ -41,6 +41,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import de.erikspall.mensaapp.R
+import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.domain.model.FoodProvider
 import de.erikspall.mensaapp.domain.model.Meal
 import de.erikspall.mensaapp.ui.MensaViewModel
@@ -244,117 +245,119 @@ fun DetailScreen(
                 )
             }
             // Tabs
-            stickyHeader {
-                Column(
-                    //  modifier = Modifier.padding(top = 16.dp)
-                ) {
-                    // TODO: Check if pager support m3 tabrow
-                    androidx.compose.material.ScrollableTabRow(
-                        edgePadding = 20.dp,
-                        backgroundColor = if (listState.firstVisibleItemIndex == 0)
-                            MaterialTheme.colorScheme.background
-                        else
-                            MaterialTheme.colorScheme.surfaceColorAtElevation(
-                                3.dp
-                            ),
-                        contentColor = MaterialTheme.colorScheme.onBackground,
-                        selectedTabIndex = pagerState.currentPage,
-                        indicator = { tabPositions ->
-                            FancyIndicator(
-                                Modifier
-                                    .pagerTabIndicatorOffset(pagerState, tabPositions)
-                            )
-
-                        }
+            if (Category.from(foodProvider.category) == Category.CANTEEN) {
+                stickyHeader {
+                    Column(
+                        //  modifier = Modifier.padding(top = 16.dp)
                     ) {
-                        // Add tabs for all of our pages
-                        pages.forEach { dayOffset ->
-                            val date = LocalDate.now().plusDays(dayOffset.toLong())
-                            Tab(
-                                modifier = Modifier.wrapContentWidth(),
-                                text = {
-                                    val dayOfWeek = date.dayOfWeek.getDisplayName(
-                                        TextStyle.SHORT_STANDALONE,
-                                        Locale.getDefault()
-                                    )
-                                    val dateFormatted =
-                                        date.format(
-                                            DateTimeFormatter.ofLocalizedDate(
-                                                FormatStyle.SHORT
-                                            )
-                                        )
+                        // TODO: Check if pager support m3 tabrow
+                        androidx.compose.material.ScrollableTabRow(
+                            edgePadding = 20.dp,
+                            backgroundColor = if (listState.firstVisibleItemIndex == 0)
+                                MaterialTheme.colorScheme.background
+                            else
+                                MaterialTheme.colorScheme.surfaceColorAtElevation(
+                                    3.dp
+                                ),
+                            contentColor = MaterialTheme.colorScheme.onBackground,
+                            selectedTabIndex = pagerState.currentPage,
+                            indicator = { tabPositions ->
+                                FancyIndicator(
+                                    Modifier
+                                        .pagerTabIndicatorOffset(pagerState, tabPositions)
+                                )
 
-                                    Text("$dayOfWeek\n$dateFormatted")
-                                },
-                                selected = pagerState.currentPage == dayOffset,
-                                onClick = {
-                                    Log.d("TABS", "new index: $dayOffset")
-                                    currentPageIndex = dayOffset
-                                }
-                            )
+                            }
+                        ) {
+                            // Add tabs for all of our pages
+                            pages.forEach { dayOffset ->
+                                val date = LocalDate.now().plusDays(dayOffset.toLong())
+                                Tab(
+                                    modifier = Modifier.wrapContentWidth(),
+                                    text = {
+                                        val dayOfWeek = date.dayOfWeek.getDisplayName(
+                                            TextStyle.SHORT_STANDALONE,
+                                            Locale.getDefault()
+                                        )
+                                        val dateFormatted =
+                                            date.format(
+                                                DateTimeFormatter.ofLocalizedDate(
+                                                    FormatStyle.SHORT
+                                                )
+                                            )
+
+                                        Text("$dayOfWeek\n$dateFormatted")
+                                    },
+                                    selected = pagerState.currentPage == dayOffset,
+                                    onClick = {
+                                        Log.d("TABS", "new index: $dayOffset")
+                                        currentPageIndex = dayOffset
+                                    }
+                                )
+                            }
                         }
                     }
                 }
-            }
-            item {
-                HorizontalPager(
-                    modifier = Modifier
-                        .height(screenHeight - 64.dp), // 64dp is the height of the top appbar
-                    count = pages.size,
-                    state = pagerState,
-                    verticalAlignment = Alignment.Top
-                ) { page ->
-                    LaunchedEffect(key1 = "$currentPageIndex" + "menus") {
-                        /*scope.*/launch {
-
-                        val menu = mensaViewModel.getMenu(
-                            foodProvider.id!!,
-                            page
-                        )
-
-                        val meals = if (menu.isSuccess) {
-                            menu.getOrThrow().meals
-                        } else {
-                            emptyList()
-                        }
-
-                        menuMap[page]!!.clear()
-                        menuMap[page]!!.addAll(meals)
-                    }
-                    }
-                    Column(
+                item {
+                    HorizontalPager(
                         modifier = Modifier
-                            .padding(horizontal = 20.dp)
-                            .verticalScroll(
-                                rememberScrollState(),
-                                enabled = isScrolledDownState.currentState
-                            ),
-                        verticalArrangement = Arrangement.Top
-                        // contentPadding = PaddingValues(vertical = 16.dp)
-                    ) {
-                        LaunchedEffect(listState) {
-                            snapshotFlow { listState.firstVisibleItemIndex }
-                                .collect { isScrolledDownState.targetState = it != 0 }
-                        }
+                            .height(screenHeight - 64.dp), // 64dp is the height of the top appbar
+                        count = pages.size,
+                        state = pagerState,
+                        verticalAlignment = Alignment.Top
+                    ) { page ->
+                        LaunchedEffect(key1 = "$currentPageIndex" + "menus") {
+                            /*scope.*/launch {
 
-                        AnimatedVisibility(
-                            modifier = Modifier.clip(RoundedCornerShape(corner = CornerSize(28.dp))), // Looks better
-                            visibleState = isScrolledDownState
-                        ) {
-                            Spacer(modifier = Modifier.height(48.dp))
-                        }
-
-
-                        menuMap[page]?.forEach { meal ->
-                            MealCard(
-                                modifier = Modifier.padding(bottom = 8.dp),
-                                meal = meal,
-                                role = mensaViewModel.role
+                            val menu = mensaViewModel.getMenu(
+                                foodProvider.id!!,
+                                page
                             )
-                        }
-                         Spacer(modifier = Modifier.height(80.dp))
-                    }
 
+                            val meals = if (menu.isSuccess) {
+                                menu.getOrThrow().meals
+                            } else {
+                                emptyList()
+                            }
+
+                            menuMap[page]!!.clear()
+                            menuMap[page]!!.addAll(meals)
+                        }
+                        }
+                        Column(
+                            modifier = Modifier
+                                .padding(horizontal = 20.dp)
+                                .verticalScroll(
+                                    rememberScrollState(),
+                                    enabled = isScrolledDownState.currentState
+                                ),
+                            verticalArrangement = Arrangement.Top
+                            // contentPadding = PaddingValues(vertical = 16.dp)
+                        ) {
+                            LaunchedEffect(listState) {
+                                snapshotFlow { listState.firstVisibleItemIndex }
+                                    .collect { isScrolledDownState.targetState = it != 0 }
+                            }
+
+                            AnimatedVisibility(
+                                modifier = Modifier.clip(RoundedCornerShape(corner = CornerSize(28.dp))), // Looks better
+                                visibleState = isScrolledDownState
+                            ) {
+                                Spacer(modifier = Modifier.height(48.dp))
+                            }
+
+
+                            menuMap[page]?.forEach { meal ->
+                                MealCard(
+                                    modifier = Modifier.padding(bottom = 8.dp),
+                                    meal = meal,
+                                    role = mensaViewModel.role
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(80.dp))
+                        }
+
+                    }
                 }
                 /*Text(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
