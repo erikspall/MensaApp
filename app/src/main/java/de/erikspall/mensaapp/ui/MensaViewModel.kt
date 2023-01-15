@@ -12,6 +12,7 @@ import de.erikspall.mensaapp.domain.usecases.additives.AdditiveUseCases
 import de.erikspall.mensaapp.domain.usecases.foodproviders.FoodProviderUseCases
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
+import de.erikspall.mensaapp.ui.state.UiState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,7 +34,8 @@ class MensaViewModel @Inject constructor(
         get() = state.warningsActivated
     val settingsInitialized: Boolean
         get() = state.settingsInitialized
-
+    val foodProviderScreenState: UiState
+        get() = state.foodProviderScreenState
 
     val foodProviders: List<FoodProvider>
         get() = state.foodProviders.filter { f ->
@@ -181,6 +183,9 @@ class MensaViewModel @Inject constructor(
      * Data-Layer will decide what source to use
      */
     private fun getFoodProviders() {
+        state.foodProviderScreenState = UiState.LOADING
+       // state.cafeteriaScreenState = UiState.LOADING
+
         viewModelScope.launch {
             val result = foodProviderUseCases.fetchAll(
                 location = state.location,
@@ -191,9 +196,19 @@ class MensaViewModel @Inject constructor(
                 Log.d("$TAG:init", "Fetched ${result.getOrThrow().size} items")
                 state.foodProviders.clear()
                 state.foodProviders.addAll(result.getOrDefault(emptyList()))
+
+                if (state.foodProviders.isEmpty()) {
+                    state.foodProviderScreenState = UiState.NO_INFO
+                   // state.cafeteriaScreenState = UiState.NO_INFO
+                } else {
+                    state.foodProviderScreenState = UiState.NORMAL
+                   // state.cafeteriaScreenState = UiState.NORMAL
+                }
                 //   state.canteenUiState = UiState.NORMAL
             } else {
                 Log.d("$TAG:init", "Error while fetching: ${result.exceptionOrNull()}")
+                state.foodProviderScreenState = UiState.ERROR
+                //state.cafeteriaScreenState = UiState.ERROR
                 // state.canteenUiState = UiState.ERROR
             }
         }

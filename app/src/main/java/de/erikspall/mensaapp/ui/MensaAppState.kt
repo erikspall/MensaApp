@@ -9,6 +9,7 @@ import de.erikspall.mensaapp.domain.enums.Location
 import de.erikspall.mensaapp.domain.enums.Role
 import de.erikspall.mensaapp.domain.model.Additive
 import de.erikspall.mensaapp.domain.model.FoodProvider
+import de.erikspall.mensaapp.ui.state.UiState
 
 class MensaAppState {
     var location by mutableStateOf(Location.WUERZBURG)
@@ -18,4 +19,6 @@ class MensaAppState {
     var foodProviders: SnapshotStateList<FoodProvider> = mutableStateListOf()
     var additives: SnapshotStateList<Additive> = mutableStateListOf()
     var settingsInitialized by mutableStateOf(false)
+    var foodProviderScreenState by mutableStateOf(UiState.NORMAL)
+    //var cafeteriaScreenState by mutableStateOf(UiState.NORMAL)
 }

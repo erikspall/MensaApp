@@ -50,7 +50,11 @@
     <string name="text_select_role_description">Die Preise für Gerichte passen sich an deine Rolle an</string>
     <string name="text_settings_dialog_dismiss">Zurück</string>
     <string name="text_settings_dialog_save">Speichern</string>
-
+    <string name="text_lottie_fetching_canteens">Suche nach Mensen …</string>
+    <string name="text_lottie_fetching_cafeterias">Suche nach Cafeterien …</string>
+    <string name="text_lottie_error_fetching_canteens">Ohje, da ist etwas schiefgelaufen :(\nVersuche es später erneut</string>
+    <string name="text_lottie_no_info_canteens">Huch! Wir konnten keine Mensen finden :o\nVersuche es vielleicht später erneut!</string>
+    <string name="text_lottie_no_info_cafeterias">Huch! Wir konnten keine Cafeterien finden :o\nVersuche es vielleicht später erneut!</string>
     <string name="text_app_info">
         Diese App entstand als Spaßprojekt zweier Informatikstudenten der Universität
         Würzburg.<![CDATA[<br>]]>
