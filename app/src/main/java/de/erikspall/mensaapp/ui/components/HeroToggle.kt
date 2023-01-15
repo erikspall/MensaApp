@@ -58,7 +58,7 @@ fun HeroToggle(
     ) {
         Row(
             modifier = Modifier
-              //  .fillMaxWidth()
+                //  .fillMaxWidth()
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -75,14 +75,16 @@ fun HeroToggle(
                 modifier = Modifier
                     .padding(end = 16.dp),
                 checked = checked,
-                thumbContent = {
-                    if (checked) {
+                thumbContent = if (checked) {
+                    {
                         Icon(
                             imageVector = Icons.Rounded.Check,
                             contentDescription = "",
                             modifier = Modifier.size(SwitchDefaults.IconSize)
                         )
                     }
+                } else {
+                    null
                 },
                 onCheckedChange = {
                     onChecked(it)

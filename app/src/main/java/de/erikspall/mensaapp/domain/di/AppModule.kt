@@ -50,6 +50,7 @@ object AppModule {
         return FirestoreRepositoryImpl(
             firestoreDataSource,
             openingHourUseCases,
+            sharedPreferenceUseCases,
             SourceHandler(sharedPreferenceUseCases = sharedPreferenceUseCases),
             SaveTimeHandler(sharedPreferenceUseCases = sharedPreferenceUseCases)
         )

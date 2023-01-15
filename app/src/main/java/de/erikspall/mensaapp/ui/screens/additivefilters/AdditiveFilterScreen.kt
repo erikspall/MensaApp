@@ -1,11 +1,15 @@
 package de.erikspall.mensaapp.ui.screens.additivefilters
 
+import android.widget.Space
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Blender
@@ -17,6 +21,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,7 +38,7 @@ import de.erikspall.mensaapp.ui.theme.Shrikhand
 @Composable
 fun AdditiveFilterScreen(
     modifier: Modifier = Modifier,
-    onBackClicked: () -> Unit = {},
+    onBackClicked: (() -> Unit)? = null,
     mensaViewModel: MensaViewModel = hiltViewModel()
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -42,6 +48,15 @@ fun AdditiveFilterScreen(
 
     val ingredients by mensaViewModel.ingredients.observeAsState()
     val allergens by mensaViewModel.allergens.observeAsState()
+
+    /**
+     * If onBackClicked is null it was not called from the app -> let system handle it
+     */
+    BackHandler(enabled = onBackClicked != null) {
+        if (onBackClicked != null) {
+            onBackClicked()
+        }
+    }
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -63,13 +78,30 @@ fun AdditiveFilterScreen(
                                 contentDescription = ""
                             )
                         },
-                        onClick = onBackClicked
+                        onClick = onBackClicked ?: {}
                     )
                 }
             )
         },
+        bottomBar = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                MaterialTheme.colorScheme.background
+                            )
+                        )
+                    )
+            )
+        },
         content = { innerPadding ->
-            Column {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState())
+            ) {
                 HeroToggle(
                     modifier = Modifier
                         .padding(top = 16.dp + innerPadding.calculateTopPadding(), start = 16.dp, end = 16.dp),
@@ -86,7 +118,8 @@ fun AdditiveFilterScreen(
                     visibleState = filterVisibilityState
                 ) {
                     Column(
-                        modifier = Modifier.padding(top = 16.dp)
+                        modifier = Modifier
+                            .padding(top = 24.dp)
                     ) {
                         AdditiveFilterSection(
                             modifier = Modifier
@@ -111,6 +144,7 @@ fun AdditiveFilterScreen(
                                 mensaViewModel.saveLikeStatus(it, !it.isNotLiked)
                             }
                         )
+                        Spacer(modifier = Modifier.height(80.dp))
                     }
 
                 }

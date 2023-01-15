@@ -2,13 +2,17 @@ package de.erikspall.mensaapp.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.domain.enums.Category
+import de.erikspall.mensaapp.domain.model.FoodProvider
 import de.erikspall.mensaapp.ui.screens.additivefilters.AdditiveFilterScreen
+import de.erikspall.mensaapp.ui.screens.details.DetailScreen
 import de.erikspall.mensaapp.ui.screens.foodproviders.FoodProvidersScreen
 import de.erikspall.mensaapp.ui.screens.settings.SettingsScreen
 
@@ -25,10 +29,24 @@ fun MensaNavHost(
         modifier = modifier
     ) {
         composable(route = Canteen.route) {
-            FoodProvidersScreen(foodProviderCategory = Category.CANTEEN, mensaViewModel = mensaViewModel)
+            FoodProvidersScreen(
+                foodProviderCategory = Category.CANTEEN,
+                mensaViewModel = mensaViewModel,
+                onFoodProviderClick = {id ->
+                    onHideNavBar(true)
+                    navController.navigateToDetailScreen(id)
+                },
+            )
         }
         composable(route = Cafeteria.route) {
-            FoodProvidersScreen(foodProviderCategory = Category.CAFETERIA, mensaViewModel = mensaViewModel)
+            FoodProvidersScreen(
+                foodProviderCategory = Category.CAFETERIA,
+                mensaViewModel = mensaViewModel,
+                onFoodProviderClick = {id ->
+                    onHideNavBar(true)
+                    navController.navigateToDetailScreen(id)
+                },
+            )
         }
         composable(route = Settings.route) {
             SettingsScreen(
@@ -49,6 +67,26 @@ fun MensaNavHost(
                 }
             )
         }
+        composable(
+            route = FoodProviderDetails.routeWithArgs,
+            arguments = FoodProviderDetails.arguments
+        ) { navBackStackEntry ->
+            val foodProviderId =
+                navBackStackEntry.arguments?.getInt(FoodProviderDetails.foodProviderIdArg)
+            DetailScreen(
+                foodProvider = mensaViewModel.foodProviders.find { foodProvider -> foodProvider.id == foodProviderId }
+                ?: FoodProvider(
+                    name = stringResource(
+                        R.string.text_invalid
+                    )
+                ),
+                onBackClicked = {
+                    onHideNavBar(false)
+                    navController.popBackStack()
+                },
+                mensaViewModel = mensaViewModel
+            )
+        }
     }
 }
 
@@ -62,3 +100,7 @@ fun NavHostController.navigateSingleTopTo(route: String) =
         launchSingleTop = true
         restoreState = true
     }
+
+private fun NavHostController.navigateToDetailScreen(foodProviderId: Int) {
+    this.navigate("${FoodProviderDetails.route}/$foodProviderId")
+}

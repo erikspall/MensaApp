@@ -2,18 +2,17 @@ package de.erikspall.mensaapp.domain.usecases.foodproviders
 
 import de.erikspall.mensaapp.domain.interfaces.data.AppRepository
 import de.erikspall.mensaapp.domain.model.Menu
-import java.time.LocalDate
 
-class FetchMenus(
+class FetchMenu(
     private val appRepository: AppRepository
 ) {
     suspend operator fun invoke(
         foodProviderId: Int,
-        date: LocalDate
-    ): Result<List<Menu>> {
-        return appRepository.fetchMenus(
+        offset: Int
+    ): Result<Menu> {
+        return appRepository.fetchMenu(
             foodProviderId = foodProviderId,
-            date = date
+            offset = offset
         )
     }
 }

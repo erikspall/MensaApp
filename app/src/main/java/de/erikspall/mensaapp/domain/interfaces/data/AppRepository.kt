@@ -7,7 +7,6 @@ import de.erikspall.mensaapp.domain.enums.Location
 import de.erikspall.mensaapp.domain.model.Additive
 import de.erikspall.mensaapp.domain.model.FoodProvider
 import de.erikspall.mensaapp.domain.model.Menu
-import java.time.LocalDate
 
 interface AppRepository {
     val allAllergens: LiveData<List<Additive>>
@@ -31,10 +30,10 @@ interface AppRepository {
     suspend fun fetchAllAdditives(
     ): Result<List<Additive>>
 
-    suspend fun fetchMenus(
+    suspend fun fetchMenu(
         foodProviderId: Int,
-        date: LocalDate
-    ): Result<List<Menu>>
+        offset: Int
+    ): Result<Menu>
 
     suspend fun setAdditiveLikeStatus(name: String, type: AdditiveType, userDoesNotLike: Boolean)
 }

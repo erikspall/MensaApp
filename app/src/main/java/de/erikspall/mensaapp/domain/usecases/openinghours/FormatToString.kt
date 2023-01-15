@@ -77,9 +77,17 @@ class FormatToString {
                                     if (timeTo < 60) {
                                         "Essensausgabe endet in $timeTo Minuten"
                                     } else if (daysTo == 0) {
-                                        "Essensausgabe endet um " + formatTimeToString(time, true, "Uhr")
+                                        "Essensausgabe endet um " + formatTimeToString(
+                                            time,
+                                            true,
+                                            "Uhr"
+                                        )
                                     } else if (daysTo == 1) {
-                                        "Essensausgabe endet morgen um " + formatTimeToString(time, true, "Uhr")
+                                        "Essensausgabe endet morgen um " + formatTimeToString(
+                                            time,
+                                            true,
+                                            "Uhr"
+                                        )
                                     } else {
                                         "Essensausgabe endet am ${
                                             currentDate.dayOfWeek.getDisplayName(
@@ -95,7 +103,11 @@ class FormatToString {
                                     } else if (daysTo == 0) {
                                         "Schließt um " + formatTimeToString(time, true, "Uhr")
                                     } else if (daysTo == 1) {
-                                        "Schließt morgen um " + formatTimeToString(time, true, "Uhr")
+                                        "Schließt morgen um " + formatTimeToString(
+                                            time,
+                                            true,
+                                            "Uhr"
+                                        )
                                     } else {
                                         "Schließt am ${
                                             currentDate.dayOfWeek.getDisplayName(
@@ -121,7 +133,59 @@ class FormatToString {
         return "Parsing opening hours failed!"
     }
 
-    private fun formatTimeToString(time: LocalTime, is24HoursFormat: Boolean, postFix: String): String {
+    /**
+     * Outputs string in format:
+     * Mo: 11.00 - 14.00 Uhr
+     * Di: 11.00 - 14.00 Uhr
+     * ...
+     * So: Geschlossen
+     */
+    fun openingHoursAsExtendedString(
+        openingHours: Map<DayOfWeek, List<Map<String, LocalTime>>>
+    ): String {
+        val formattedString = mutableListOf<String>()
+
+
+
+        for (weekday in openingHours.keys) {
+
+            val stringListOfOpeningHours = mutableListOf<String>()
+
+            for (hourMap in openingHours[weekday]!!) {
+                val opens = hourMap[OpeningHour.FIELD_OPENS_AT]
+                val closes =
+                    hourMap[OpeningHour.FIELD_CLOSES_AT] ?: hourMap[OpeningHour.FIELD_GET_FOOD_TILL]
+
+                if (opens != null && closes != null) {
+                    stringListOfOpeningHours.add(
+                        "${formatTimeToString(opens, true, "")} - ${
+                            formatTimeToString(
+                                closes,
+                                true,
+                                "Uhr"
+                            )
+                        }"
+                    )
+                }
+            }
+
+            formattedString += "${
+                weekday.getDisplayName(
+                    TextStyle.SHORT_STANDALONE,
+                    Locale.getDefault()
+                )
+            }: " + stringListOfOpeningHours.joinToString(", ")
+        }
+       // Log.d("AYOO", formattedString.joinToString(separator = "\n"))
+        return formattedString.joinToString(separator = "\n")
+    }
+
+    private fun formatTimeToString(
+        time: LocalTime,
+        is24HoursFormat: Boolean,
+        postFix: String
+    ): String {
+       // time.format(DateTimeFormatter.)
         var amPM = ""
         var hours = time.hour
         if (!is24HoursFormat && hours > 12) {

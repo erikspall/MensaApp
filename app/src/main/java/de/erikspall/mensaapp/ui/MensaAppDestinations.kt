@@ -2,11 +2,10 @@ package de.erikspall.mensaapp.ui
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Coffee
-import androidx.compose.material.icons.rounded.FoodBank
-import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material.icons.rounded.Warning
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import de.erikspall.mensaapp.R
 
 interface MensaAppDestination {
@@ -38,6 +37,17 @@ object AdditiveWarningSettings: MensaAppDestination {
     override val icon = Icons.Rounded.Warning
     override val route = "additiveWarning"
     override val labelId = R.string.text_warnings
+}
+
+object FoodProviderDetails: MensaAppDestination {
+    override val icon = Icons.Rounded.Details
+    override val route = "foodProviderDetails"
+    override val labelId = R.string.text_details
+    const val foodProviderIdArg = "food_provider_id"
+    val routeWithArgs = "${route}/{${foodProviderIdArg}}"
+    val arguments = listOf(
+        navArgument(foodProviderIdArg) { type = NavType.IntType }
+    )
 }
 
 val bottomNavBarScreens = listOf(Canteen, Cafeteria, Settings)

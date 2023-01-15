@@ -4,6 +4,8 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.erikspall.mensaapp.R
+import de.erikspall.mensaapp.domain.utils.Extensions.noRippleClickable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,12 +25,18 @@ fun FoodProviderCard(
     name: String,
     type: String,
     @DrawableRes image: Int,
-    openingInfo: String
+    openingInfo: String,
+    liked: Boolean = false,
+    onPressed: () -> Unit = {}
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .wrapContentHeight(),
+            .noRippleClickable {
+                onPressed()
+            }
+            .wrapContentHeight()
+            .clip(RoundedCornerShape(28.dp)), // TODO: Not needed
         shape = RoundedCornerShape(28.dp)
     ) {
         Column {
@@ -48,18 +57,34 @@ fun FoodProviderCard(
                     text = type
                 )
             }
-            Text(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                text = name,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            OpeningInfoIndicator(
-                modifier = Modifier
-                    .padding(start = 16.dp, bottom = 16.dp),
-                info = openingInfo
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column {
+                    Text(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        text = name,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    OpeningInfoIndicator(
+                        modifier = Modifier
+                            .padding(start = 16.dp, bottom = 16.dp),
+                        info = openingInfo
+                    )
+                }
+                if (liked) {
+                    Icon(
+                        modifier = Modifier.padding(end = 16.dp),
+                        imageVector = Icons.Rounded.Favorite,
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
         }
     }
 }
@@ -71,6 +96,7 @@ fun FoodProviderCardPreview() {
         name = "Campus Hubland Nord",
         type = "Mensateria",
         image = R.drawable.mensateria_campus_hubland_nord_wuerzburg,
-        openingInfo = "Öffnet in 5 min"
+        openingInfo = "Öffnet in 5 min",
+        liked = true
     )
 }
