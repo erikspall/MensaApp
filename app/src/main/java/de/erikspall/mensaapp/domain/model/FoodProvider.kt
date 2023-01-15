@@ -1,33 +1,49 @@
 package de.erikspall.mensaapp.domain.model
 
-import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.google.firebase.firestore.IgnoreExtraProperties
 import java.time.DayOfWeek
 import java.time.LocalTime
 
 @IgnoreExtraProperties
 data class FoodProvider(
+
     var id: Int? = 0,
+
     var name: String = "",
+
     var location: String = "",
+
     var category: String = "",
+
     var type: String = "",
+
     var address: String = "",
 
     @DrawableRes
     var photo: Int = 0,
 
     var info: String = "",
+
     var additionalInfo: String = "",
 
     var description: String = "",
 
     var openingHours: Map<DayOfWeek,  List<Map<String, LocalTime>>> = mutableMapOf(),
-    var openingHoursString: String = ""
+
+    var openingHoursString: String = "",
+
+    var openingHoursExtendedString: String = "",
+
+    //var liked: MutableState<Boolean> = mutableStateOf(false)
+
+    //var liked: Boolean = false
     //var description: Map<Locale, String> = mutableMapOf()
 ) {
-
+    var liked by mutableStateOf(false)
 
 
     companion object {
@@ -47,6 +63,7 @@ data class FoodProvider(
         other as FoodProvider
 
         if (openingHoursString != other.openingHoursString) return false
+        if (openingHoursExtendedString != other.openingHoursExtendedString) return false
         if (name != other.name) return false
         if (location != other.location) return false
         if (category != other.category) return false
@@ -62,6 +79,7 @@ data class FoodProvider(
     override fun hashCode(): Int {
         var result = name.hashCode() ?: 0
         result = 31 * result + (openingHoursString.hashCode())
+        result = 31 * result + (openingHoursExtendedString.hashCode())
         result = 31 * result + (location.hashCode() ?: 0)
         result = 31 * result + (category.hashCode() ?: 0)
         result = 31 * result + (type.hashCode() ?: 0)

@@ -4,9 +4,7 @@ import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.Source
 import de.erikspall.mensaapp.data.sources.remote.firestore.FirestoreDataSource
 import de.erikspall.mensaapp.domain.interfaces.data.Request
-import de.erikspall.mensaapp.domain.utils.Extensions.toDate
 import java.time.Duration
-import java.time.LocalDate
 
 class MealRequest(
     override val requestId: String,
@@ -18,12 +16,12 @@ class MealRequest(
         return firestoreDataSource.fetchMeals(
             source = source,
             foodProviderId = parameters.foodProviderId,
-            date = parameters.localDate.toDate(),
+            offset = parameters.offset,
         )
     }
 }
 
 data class MealRequestParameters(
     val foodProviderId: Int,
-    val localDate: LocalDate
+    val offset: Int
 )

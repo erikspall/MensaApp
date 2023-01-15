@@ -1,256 +1,38 @@
-<?xml version="1.0" encoding="utf-8"?>
-<layout>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.erikspall.mensaapp.ui.foodproviderdetail.FoodProviderDetailFragment"
-    android:fitsSystemWindows="false"
-    android:transitionName="container_big"
-    >
+    android:fitsSystemWindows="true">
 
-    <View
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@drawable/fade_image"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:translationZ="89dp"/>
-
-    <com.google.android.material.button.MaterialButton
-        style="?attr/materialIconButtonFilledStyle"
-        android:id="@+id/button_back"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:icon="@drawable/ic_round_arrow_back"
-        app:layout_behavior="@string/hide_back_button_on_scroll_behavior"
-        android:translationZ="90dp"/>
+        android:fitsSystemWindows="true">
 
-            <!-- <com.google.android.material.button.MaterialButton
-                style="?attr/materialIconButtonFilledStyle"
-                android:id="@+id/iconButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="8dp"
-                android:fitsSystemWindows="false"
-                app:icon="@drawable/ic_round_arrow_back"
-                /> -->
-
-
-
-
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/cafe_nested_scroll"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/menusHolder"
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            style="?attr/collapsingToolbarLayoutLargeStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="?attr/collapsingToolbarLayoutLargeSize">
 
-
-
-            <com.google.android.material.imageview.ShapeableImageView
-                style="@style/MyCardView"
-                android:id="@+id/image_food_provider"
+            <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:fitsSystemWindows="false"
-                android:scaleType="centerCrop"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:src="@drawable/mensateria_campus_hubland_nord_wuerzburg"
-                />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/text_food_provider_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="32dp"
-                android:maxLines="2"
-                android:textAppearance="@style/TextAppearance.Material3.HeadlineLarge"
-                app:layout_constraintEnd_toStartOf="@id/heartButton"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/image_food_provider"
-                tools:text="Sprachzentrum" />
-
-            <com.google.android.material.button.MaterialButton
-                style="?attr/materialIconButtonFilledTonalStyle"
-                android:id="@+id/heartButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="20dp"
-                app:icon="@drawable/ic_round_favorite_border"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/image_food_provider"
-                />
-            <include layout="@layout/item_info"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_width="match_parent"
-                app:infoImage="@{@drawable/ic_time}"
-                android:id="@+id/info_food_provider_opening"
-                app:layout_constraintTop_toBottomOf="@id/text_food_provider_name"
-                />
-            <include layout="@layout/item_info"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_width="match_parent"
-                app:infoImage="@{@drawable/ic_info}"
-                android:id="@+id/info_food_provider_description"
-                app:layout_constraintTop_toBottomOf="@id/info_food_provider_opening"
-                />
-
-           <!-- <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view_menus"
-                android:layout_width="match_parent"
-                android:layout_marginTop="16dp"
-                tools:listitem="@layout/item_menu"
                 android:layout_height="match_parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                android:nestedScrollingEnabled="false"
-                app:layout_constraintTop_toBottomOf="@id/info_food_provider_description"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:visibility="invisible">
-            </androidx.recyclerview.widget.RecyclerView> -->
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tab_layout"
-                android:layout_width="match_parent"
+                android:contentDescription="Test"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/mensa_am_studentenhaus_wuerzburg" />
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:layout_constraintTop_toBottomOf="@id/info_food_provider_description"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:visibility="invisible"
-                app:tabMode="auto">
+                android:background="@android:color/transparent" />
 
-            </com.google.android.material.tabs.TabLayout>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/view_pager_menus"
-                app:layout_constraintTop_toBottomOf="@id/tab_layout"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_width="match_parent"
-                android:nestedScrollingEnabled="false"
-                android:layout_height="wrap_content"/>
+    </com.google.android.material.appbar.AppBarLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/lottie_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/info_food_provider_description"
-                android:layout_marginTop="16dp"
-                android:visibility="visible">
-                <!--<com.google.android.material.divider.MaterialDivider
-                    android:id="@+id/divider_info_menu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="19dp"
-                    android:layout_marginEnd="19dp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>-->
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/lottie_linear"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="50dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
 
-                    <com.airbnb.lottie.LottieAnimationView
-                        android:id="@+id/lottieAnimationView"
-                        android:layout_width="350dp"
-                        android:layout_height="200dp"
-                        android:layout_gravity="center"
-                        app:lottie_autoPlay="true"
-                        app:lottie_loop="true" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/text_lottie"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        tools:text="Retreiving menus ..."/>
-                </androidx.appcompat.widget.LinearLayoutCompat>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-        <!-- <LinearLayout
-
-        android:layout_marginBottom="?attr/collapsingToolbarLayoutLargeSize"
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <com.google.android.material.textview.MaterialTextView
-                    android:textAppearance="@style/TextAppearance.Material3.HeadlineLarge"
-                    android:id="@+id/text_food_provider_name"
-                    android:layout_marginStart="20dp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:maxLines="2"
-                    tools:text="Campus Hubland Nord"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/heartButton"/>
-                <com.google.android.material.button.MaterialButton
-                    style="?attr/materialIconButtonFilledTonalStyle"
-                    android:id="@+id/heartButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="20dp"
-                    app:icon="@drawable/ic_round_favorite_border"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </LinearLayout> -->
-
-    </androidx.core.widget.NestedScrollView>
-    <View
-        android:id="@+id/fade_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@drawable/fade_image"
-        android:layout_gravity="bottom"
-        android:rotation="180"
-        android:translationZ="89dp"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-</layout>
 
 
 

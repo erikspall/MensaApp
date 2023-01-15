@@ -11,6 +11,7 @@ import de.erikspall.mensaapp.data.handler.SourceHandler
 import de.erikspall.mensaapp.data.requests.*
 import de.erikspall.mensaapp.domain.interfaces.data.FirestoreRepository
 import de.erikspall.mensaapp.data.sources.remote.firestore.FirestoreDataSource
+import de.erikspall.mensaapp.domain.const.SharedPrefKey
 import de.erikspall.mensaapp.domain.enums.AdditiveType
 import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.domain.enums.Location
@@ -19,7 +20,7 @@ import de.erikspall.mensaapp.domain.model.*
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
 import java.time.DayOfWeek
-import java.time.LocalDate
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.TextStyle
@@ -28,6 +29,7 @@ import java.util.*
 class FirestoreRepositoryImpl(
     private val firestoreDataSource: FirestoreDataSource,
     private val openingHourUseCases: OpeningHourUseCases,
+    private val sharedPreferenceUseCases: SharedPreferenceUseCases,
     private val sourceHandler: SourceHandler,
     private val saveTimeHandler: SaveTimeHandler
 ) : FirestoreRepository {
@@ -46,7 +48,7 @@ class FirestoreRepositoryImpl(
         category: Category
     ): Result<List<FoodProvider>> {
 
-        var foodProviderSnapshot = fetchData(
+        val foodProviderSnapshot = fetchData(
             FoodProviderRequest(
                 requestId = "$location$category",
                 parameters = FoodProviderRequestParameters(
@@ -74,12 +76,14 @@ class FirestoreRepositoryImpl(
     override suspend fun fetchFoodProvider(
         foodProviderId: Int
     ): Result<FoodProvider> {
-        val foodProviderSnapshot = fetchData(FoodProviderRequest(
-            requestId = "foodProvider${foodProviderId}",
-            parameters = FoodProviderRequestParameters(
-                foodProviderId = foodProviderId
+        val foodProviderSnapshot = fetchData(
+            FoodProviderRequest(
+                requestId = "foodProvider${foodProviderId}",
+                parameters = FoodProviderRequestParameters(
+                    foodProviderId = foodProviderId
+                )
             )
-        ))
+        )
 
 
         return if (foodProviderSnapshot.isSuccess) {
@@ -91,7 +95,7 @@ class FirestoreRepositoryImpl(
     override suspend fun fetchAdditives(
     ): Result<List<Additive>> {
 
-        var additiveSnapshot = fetchData(AdditiveRequest())
+        val additiveSnapshot = fetchData(AdditiveRequest())
 
         val additiveList = mutableListOf<Additive>()
 
@@ -114,14 +118,18 @@ class FirestoreRepositoryImpl(
 
     override suspend fun fetchMeals(
         foodProviderId: Int,
-        date: LocalDate
+        offset: Int
     ): Result<QuerySnapshot> {
         return fetchData(
             MealRequest(
-                requestId = "meals${foodProviderId}",
+                requestId = "meals/${foodProviderId}/${offset}",
+                expireDuration = if (offset == 0)
+                    Duration.ofHours(2)
+                else
+                    Duration.ofHours(12),
                 parameters = MealRequestParameters(
                     foodProviderId = foodProviderId,
-                    localDate = date
+                    offset = offset
                 )
             )
         )
@@ -137,9 +145,14 @@ class FirestoreRepositoryImpl(
                 LocalDateTime.now(),
                 Locale.getDefault()
             )
+            it.openingHoursExtendedString = openingHourUseCases.formatToString.openingHoursAsExtendedString(
+                it.openingHours
+            )
             it.description = this.getField(FoodProvider.FIELD_DESCRIPTION) ?: ""
+            it.liked = sharedPreferenceUseCases.getBoolean(SharedPrefKey.constructFoodProviderKey(it), false)
             return it
         }
+
     }
 
     private fun getOpeningHoursFromDocument(document: QueryDocumentSnapshot): Map<DayOfWeek, List<Map<String, LocalTime>>> {
@@ -177,8 +190,11 @@ class FirestoreRepositoryImpl(
                                 constructedOpeningHour.opensAt.substringAfter(".").toInt()
                             ),
                             OpeningHour.FIELD_GET_FOOD_TILL to LocalTime.of(
-                                constructedOpeningHour.getFoodTill.substringBefore(".").toInt(),
-                                constructedOpeningHour.getFoodTill.substringAfter(".").toInt()
+                                // Workaround for cafeterias that don't have a "get food till" time
+                                (constructedOpeningHour.getFoodTill.ifEmpty { constructedOpeningHour.closesAt })
+                                    .substringBefore(".").toInt(),
+                                (constructedOpeningHour.getFoodTill.ifEmpty { constructedOpeningHour.closesAt })
+                                    .substringAfter(".").toInt()
                             ),
                             OpeningHour.FIELD_CLOSES_AT to LocalTime.of(
                                 constructedOpeningHour.closesAt.substringBefore(".").toInt(),
@@ -228,16 +244,16 @@ class FirestoreRepositoryImpl(
             "mensa_am_studentenhaus_wuerzburg" to R.drawable.mensa_am_studentenhaus_wuerzburg,
             "mensa_austrasse_bamberg" to R.drawable.mensa_austrasse_bamberg,
             "mensa_feldkirchenstrasse_bamberg" to R.drawable.mensa_feldkirchenstrasse_bamberg,
-            "mensa_fhws_campus_schweinfurt" to R.drawable.mensa_fhws_campus_schweinfurt,
+            "mensa_thws_campus_schweinfurt" to R.drawable.mensa_thws_campus_schweinfurt,
             "mensa_hochschulcampus_aschaffenburg" to R.drawable.mensa_hochschulcampus_aschaffenburg,
             "mensa_josef_schneider_strasse_wuerzburg" to R.drawable.mensa_josef_schneider_strasse_wuerzburg,
             "mensa_roentgenring_wuerzburg" to R.drawable.mensa_roentgenring_wuerzburg,
             "mensateria_campus_hubland_nord_wuerzburg" to R.drawable.mensateria_campus_hubland_nord_wuerzburg,
             "cafeteria_alte_universitaet_wuerzburg" to R.drawable.cafeteria_alte_universitaet_wuerzburg,
             "cafeteria_alte_weberei_bamberg" to R.drawable.cafeteria_alte_weberei_bamberg,
-            "cafeteria_fhws_muenzstrasse_wuerzburg" to R.drawable.cafeteria_fhws_muenzstrasse_wuerzburg,
-            "cafeteria_fhws_roentgenring_wuerzburg" to R.drawable.cafeteria_fhws_roentgenring_wuerzburg,
-            "cafeteria_fhws_sanderheinrichsleitenweg_wuerzburg" to R.drawable.cafeteria_fhws_sanderheinrichsleitenweg_wuerzburg,
+            "cafeteria_thws_muenzstrasse_wuerzburg" to R.drawable.cafeteria_thws_muenzstrasse_wuerzburg,
+            "cafeteria_thws_roentgenring_wuerzburg" to R.drawable.cafeteria_thws_roentgenring_wuerzburg,
+            "cafeteria_thws_sanderheinrichsleitenweg_wuerzburg" to R.drawable.cafeteria_thws_sanderheinrichsleitenweg_wuerzburg,
             "cafeteria_ledward_campus_schweinfurt" to R.drawable.cafeteria_ledward_campus_schweinfurt,
             "cafeteria_markusplatz_bamberg" to R.drawable.cafeteria_markusplatz_bamberg_day,
             "cafeteria_neue_universitaet_wuerzburg" to R.drawable.cafeteria_neue_universitaet_wuerzburg,
@@ -245,7 +261,7 @@ class FirestoreRepositoryImpl(
             "cafeteria_am_studentenhaus_wuerzburg" to R.drawable.mensa_am_studentenhaus_wuerzburg,
             "cafeteria_hochschulcampus_aschaffenburg" to R.drawable.mensa_hochschulcampus_aschaffenburg,
             "cafeteria_feldkirchenstrasse_bamberg" to R.drawable.mensa_feldkirchenstrasse_bamberg,
-            "cafeteria_fhws_campus_schweinfurt" to R.drawable.mensa_fhws_campus_schweinfurt
+            "cafeteria_thws_campus_schweinfurt" to R.drawable.mensa_thws_campus_schweinfurt
         )
 
         const val TAG = "FirestoreRepository"

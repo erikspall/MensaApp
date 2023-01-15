@@ -7,9 +7,11 @@ import de.erikspall.mensaapp.domain.enums.Location
 import de.erikspall.mensaapp.domain.model.Additive
 import de.erikspall.mensaapp.domain.model.FoodProvider
 import de.erikspall.mensaapp.domain.model.Meal
+import de.erikspall.mensaapp.domain.utils.Extensions.toDate
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 import java.util.*
 
 class FirestoreDataSource(
@@ -80,13 +82,13 @@ class FirestoreDataSource(
     suspend fun fetchMeals(
         source: Source = Source.CACHE,
         foodProviderId: Int,
-        date: Date
+        offset: Int
     ): Result<QuerySnapshot> = withContext(ioDispatcher) {
         try {
 
-            val mealsSnapshot = queryMealsOfFoodProviderStartingFromDate(
+            val mealsSnapshot = queryMealsOfFoodProviderFromDate(
                 foodProviderId,
-                date
+                LocalDate.now().plusDays(offset.toLong()).toDate()
             )
                 .get(source)
                 .await()
@@ -131,6 +133,13 @@ class FirestoreDataSource(
         return firestoreInstance.collectionGroup(COLLECTION_MENUS)
             .whereEqualTo(Meal.FIELD_FOOD_PROVIDER_ID, foodProviderId)
             .whereGreaterThanOrEqualTo(Meal.FIELD_DATE, date)
+            .orderBy(Meal.FIELD_DATE, Query.Direction.ASCENDING)
+    }
+
+    private fun queryMealsOfFoodProviderFromDate(foodProviderId: Int, date: Date): Query {
+        return firestoreInstance.collectionGroup(COLLECTION_MENUS)
+            .whereEqualTo(Meal.FIELD_FOOD_PROVIDER_ID, foodProviderId)
+            .whereEqualTo(Meal.FIELD_DATE, date)
             .orderBy(Meal.FIELD_DATE, Query.Direction.ASCENDING)
     }
 
