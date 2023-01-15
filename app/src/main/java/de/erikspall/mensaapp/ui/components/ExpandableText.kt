@@ -115,14 +115,14 @@ fun ExpandableText(
             }
             Text(
                 modifier = textModifier
-                    .padding(top = 2.dp)
+                    .padding(top = 3.dp)
                     .fillMaxWidth()
                     .animateContentSize(),
                 text = buildAnnotatedString {
                     if (clickable) {
                         if (isExpanded) {
                             append(text)
-                            withStyle(style = showLessStyle) { append(showLessText) }
+                            withStyle(style = showLessStyle) { append(" $showLessText") }
                         } else {
                             val adjustText =
                                 text.substring(startIndex = 0, endIndex = lastCharIndex)

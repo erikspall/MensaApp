@@ -11,12 +11,14 @@ import de.erikspall.mensaapp.data.handler.SourceHandler
 import de.erikspall.mensaapp.data.requests.*
 import de.erikspall.mensaapp.domain.interfaces.data.FirestoreRepository
 import de.erikspall.mensaapp.data.sources.remote.firestore.FirestoreDataSource
+import de.erikspall.mensaapp.domain.const.SharedPrefKey
 import de.erikspall.mensaapp.domain.enums.AdditiveType
 import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.domain.enums.Location
 import de.erikspall.mensaapp.domain.interfaces.data.Request
 import de.erikspall.mensaapp.domain.model.*
 import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
+import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDateTime
@@ -27,6 +29,7 @@ import java.util.*
 class FirestoreRepositoryImpl(
     private val firestoreDataSource: FirestoreDataSource,
     private val openingHourUseCases: OpeningHourUseCases,
+    private val sharedPreferenceUseCases: SharedPreferenceUseCases,
     private val sourceHandler: SourceHandler,
     private val saveTimeHandler: SaveTimeHandler
 ) : FirestoreRepository {
@@ -142,9 +145,14 @@ class FirestoreRepositoryImpl(
                 LocalDateTime.now(),
                 Locale.getDefault()
             )
+            it.openingHoursExtendedString = openingHourUseCases.formatToString.openingHoursAsExtendedString(
+                it.openingHours
+            )
             it.description = this.getField(FoodProvider.FIELD_DESCRIPTION) ?: ""
+            it.liked = sharedPreferenceUseCases.getBoolean(SharedPrefKey.constructFoodProviderKey(it), false)
             return it
         }
+
     }
 
     private fun getOpeningHoursFromDocument(document: QueryDocumentSnapshot): Map<DayOfWeek, List<Map<String, LocalTime>>> {

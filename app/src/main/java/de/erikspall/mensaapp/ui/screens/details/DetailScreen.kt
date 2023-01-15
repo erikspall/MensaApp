@@ -6,7 +6,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
@@ -19,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -64,7 +64,7 @@ import kotlin.math.absoluteValue
 fun DetailScreen(
     modifier: Modifier = Modifier,
     foodProvider: FoodProvider,
-    chipScrollState: ScrollState = rememberScrollState(),
+
     descriptionState: ExpandableTextState = remember {
         ExpandableTextState()
     },
@@ -189,13 +189,23 @@ fun DetailScreen(
                 actions = {
                     IconToggleButton(
                         checked = true,
-                        onCheckedChange = {}
+                        onCheckedChange = {
+                            mensaViewModel.saveLikeStatus(foodProvider, !foodProvider.liked)
+                        }
                     ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Favorite,
-                            contentDescription = "",
-                            tint = Color.Red
-                        )
+                        if (foodProvider.liked) {
+                            Icon(
+                                imageVector = Icons.Rounded.Favorite,
+                                contentDescription = "",
+                                tint = Color.Red
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Rounded.FavoriteBorder,
+                                contentDescription = "",
+                                tint = MaterialTheme.colorScheme.outline
+                            )
+                        }
                     }
                 },
                 scrollBehavior = scrollBehavior,
@@ -212,7 +222,6 @@ fun DetailScreen(
                 DetailHeader(
                     modifier = Modifier.padding(top = 8.dp),
                     foodProvider = foodProvider,
-                    chipScrollState = chipScrollState,
                     descriptionState = descriptionState,
                     additionalInfoState = additionalInfoState
                 )
@@ -225,9 +234,12 @@ fun DetailScreen(
                     // TODO: Check if pager support m3 tabrow
                     androidx.compose.material.ScrollableTabRow(
                         edgePadding = 20.dp,
-                        backgroundColor = if (listState.firstVisibleItemIndex == 0) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.surfaceColorAtElevation(
-                            3.dp
-                        ),
+                        backgroundColor = if (listState.firstVisibleItemIndex == 0)
+                            MaterialTheme.colorScheme.background
+                        else
+                            MaterialTheme.colorScheme.surfaceColorAtElevation(
+                                3.dp
+                            ),
                         contentColor = MaterialTheme.colorScheme.onBackground,
                         selectedTabIndex = pagerState.currentPage,
                         indicator = { tabPositions ->
@@ -270,7 +282,7 @@ fun DetailScreen(
             item {
                 HorizontalPager(
                     modifier = Modifier
-                        .height(screenHeight),
+                        .height(screenHeight - 64.dp), // 64dp is the height of the top appbar
                     count = pages.size,
                     state = pagerState,
                     verticalAlignment = Alignment.Top
@@ -312,7 +324,7 @@ fun DetailScreen(
                             modifier = Modifier.clip(RoundedCornerShape(corner = CornerSize(28.dp))), // Looks better
                             visibleState = isScrolledDownState
                         ) {
-                            Spacer(modifier = Modifier.height(112.dp))
+                            Spacer(modifier = Modifier.height(48.dp))
                         }
 
 

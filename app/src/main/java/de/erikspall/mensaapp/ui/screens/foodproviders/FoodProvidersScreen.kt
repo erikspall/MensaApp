@@ -56,7 +56,7 @@ fun FoodProvidersScreen(
                         Category.CANTEEN -> mensaViewModel.canteens
                         Category.CAFETERIA -> mensaViewModel.cafeterias
                         else -> mensaViewModel.foodProviders
-                    },
+                    }.sortedByDescending { it.liked },
                     onClickedFoodProvider = {clickedProvider ->
                         onFoodProviderClick(clickedProvider.id ?: -1)
                     }

@@ -146,6 +146,12 @@ class MensaViewModel @Inject constructor(
                         false
                     )
                 }
+                else -> { // This is always the like status of a foodProvider
+                    state.foodProviders.find { foodProvider -> SharedPrefKey.constructFoodProviderKey(foodProvider) == key }.apply {
+                        if (this != null)
+                            this.liked = !this.liked
+                    }
+                }
             }
         }
     }
@@ -164,6 +170,10 @@ class MensaViewModel @Inject constructor(
     fun saveNewLocation(location: Location) {
         Log.d("${TAG}:saveNewRole", "Saving location '$location' ...")
         sharedPreferences.setValue(SharedPrefKey.LOCATION, location.getValue())
+    }
+
+    fun saveLikeStatus(foodProvider: FoodProvider, liked: Boolean) {
+        sharedPreferences.setBoolean(SharedPrefKey.constructFoodProviderKey(foodProvider), liked)
     }
 
     /**

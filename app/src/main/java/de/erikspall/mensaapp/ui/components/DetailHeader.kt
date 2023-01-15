@@ -1,9 +1,7 @@
 package de.erikspall.mensaapp.ui.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -22,12 +20,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.domain.model.FoodProvider
+import de.erikspall.mensaapp.domain.model.OpeningHour
+import java.time.DayOfWeek
+import java.time.LocalTime
 
 @Composable
 fun DetailHeader(
     modifier: Modifier = Modifier,
     foodProvider: FoodProvider,
-    chipScrollState: ScrollState,
     descriptionState: ExpandableTextState? = null,
     additionalInfoState: ExpandableTextState? = null
 ) {
@@ -55,13 +55,6 @@ fun DetailHeader(
                     .padding(16.dp),
                 text = foodProvider.type,
                 orientation = ChipOrientation.END
-            )
-            DetailChip(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(16.dp),
-                text = foodProvider.openingHoursString,
-                orientation = ChipOrientation.START
             )
         }
 
@@ -100,7 +93,7 @@ fun DetailHeader(
                     style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
                     isExpanded = additionalInfoState.isExpanded,
                     clickable = additionalInfoState.clickable,
-                    icon = Icons.Rounded.Store,
+                    icon = Icons.Rounded.Storefront,
                     lastCharIndex = additionalInfoState.lastCharIndex,
                     onClick = {
                         additionalInfoState.isExpanded = !additionalInfoState.isExpanded
@@ -114,6 +107,14 @@ fun DetailHeader(
                     }
                 )
             }
+
+            if (foodProvider.openingHours.isNotEmpty()) {
+                OpeningHourTile(
+                    smartText = foodProvider.openingHoursString,
+                    icon = Icons.Rounded.Schedule,
+                    openingHours = foodProvider.openingHours
+                )
+            }
         }
     }
 
@@ -125,13 +126,13 @@ fun DetailHeader(
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewDetailHeader() {
-    val chipScrollState = rememberScrollState()
     val descriptionState = remember {
         ExpandableTextState()
     }
     val additionalInfoState = remember {
         ExpandableTextState()
     }
+
 
     DetailHeader(
         foodProvider = FoodProvider(
@@ -142,10 +143,33 @@ fun PreviewDetailHeader() {
             type = "Mensateria",
             additionalInfo = "Die Abendmensa hat geschlossen!",
             description = "Die Mensateria mit 500 Innen- und 60 Balkonplätzen befindet sich im Obergeschoss des Gebäudes am westlichen Rand des Campus Nord am Hubland. Zur Südseite hin trägt die Mensateria einen Balkon, so dass ein Aufenthalt im Freien mit Blick auf den Hubland-Campus möglich ist.\n"
-                    + "\nAusgestattet ist die Mensateria mit einem modernen Speiseleitsystem sowie speziellen Angebotsvarianten."
+                    + "\nAusgestattet ist die Mensateria mit einem modernen Speiseleitsystem sowie speziellen Angebotsvarianten.",
+            openingHours = mapOf(
+                DayOfWeek.MONDAY to listOf(
+                    mapOf(
+                        OpeningHour.FIELD_OPENS_AT to LocalTime.of(8, 0),
+                        OpeningHour.FIELD_CLOSES_AT to LocalTime.of(14,0)
+                    )
+                ),
+                DayOfWeek.TUESDAY to listOf(
+                    mapOf(
+                        OpeningHour.FIELD_OPENS_AT to LocalTime.of(8, 0),
+                        OpeningHour.FIELD_CLOSES_AT to LocalTime.of(14,0)
+                    )
+                ),
+                DayOfWeek.WEDNESDAY to listOf(
+                    mapOf(
+                        OpeningHour.FIELD_OPENS_AT to LocalTime.of(8, 0),
+                        OpeningHour.FIELD_CLOSES_AT to LocalTime.of(12,0)
+                    ),
+                    mapOf(
+                        OpeningHour.FIELD_OPENS_AT to LocalTime.of(14, 0),
+                        OpeningHour.FIELD_CLOSES_AT to LocalTime.of(16,0)
+                    )
+                )
+            )
         ),
-        chipScrollState = chipScrollState,
         descriptionState = descriptionState,
-        additionalInfoState = additionalInfoState
+        additionalInfoState = additionalInfoState,
     )
 }
