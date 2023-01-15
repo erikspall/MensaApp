@@ -348,7 +348,8 @@ fun DetailScreen(
                         menuMap[page]?.forEach { meal ->
                             MealCard(
                                 modifier = Modifier.padding(bottom = 8.dp),
-                                meal = meal
+                                meal = meal,
+                                role = mensaViewModel.role
                             )
                         }
                          Spacer(modifier = Modifier.height(80.dp))

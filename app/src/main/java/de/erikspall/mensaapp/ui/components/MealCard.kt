@@ -176,6 +176,16 @@ fun MealCard(
                                 } else {
                                     AssistChipDefaults.assistChipColors()
                                 },
+                                leadingIcon = if (additive.isNotLiked) {
+                                    {
+                                        Icon(
+                                            modifier = Modifier.size(18.dp),
+                                            imageVector = Icons.Rounded.ErrorOutline,
+                                            contentDescription = "",
+                                            tint = MaterialTheme.colorScheme.error
+                                        )
+                                    }
+                                } else null,
                                 label = {
                                     Text(text = additive.name)
                                 },
