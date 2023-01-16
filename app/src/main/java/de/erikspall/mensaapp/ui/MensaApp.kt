@@ -1,19 +1,20 @@
 package de.erikspall.mensaapp.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import de.erikspall.mensaapp.ui.theme.ComposeMensaTheme
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MensaApp() {
     ComposeMensaTheme {
@@ -57,17 +58,13 @@ fun MensaApp() {
                 }
 
             },
-            content = { innerPadding ->
+            content = {
                 MensaNavHost(
                     navController = navController,
                     onHideNavBar = {
                         hideNavBar = it
                         hideNavBarState.targetState = !it
-                    },
-                    modifier = Modifier
-                        .padding(
-                            //bottom = innerPadding.calculateBottomPadding()
-                        )
+                    }
                 )
             }
         )

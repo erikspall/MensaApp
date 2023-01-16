@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.domain.utils.Extensions.noRippleClickable
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FoodProviderCard(
     modifier: Modifier = Modifier,

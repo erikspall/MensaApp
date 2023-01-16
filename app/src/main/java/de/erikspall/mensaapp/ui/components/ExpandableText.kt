@@ -21,61 +21,6 @@ import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import de.erikspall.mensaapp.domain.utils.Extensions.noRippleClickable
 
-/*
-@Composable
-fun ExpandableText(
-    modifier: Modifier = Modifier,
-    text: String,
-    minimizedMaxLines: Int,
-    style: TextStyle
-) {
-    var expanded by remember { mutableStateOf(false) }
-    var hasVisualOverflow by remember { mutableStateOf(false) }
-    Box(modifier = modifier) {
-        Text(
-            text = text,
-            maxLines = if (expanded) Int.MAX_VALUE else minimizedMaxLines,
-            onTextLayout = { hasVisualOverflow = it.hasVisualOverflow },
-            style = style
-        )
-        if (hasVisualOverflow) {
-            Row(
-                modifier = Modifier.align(Alignment.BottomEnd),
-                verticalAlignment = Alignment.Bottom
-            ) {
-                val lineHeightDp: Dp = with(LocalDensity.current) { style.lineHeight.toDp() }
-                Spacer(
-                    modifier = Modifier
-                        .width(48.dp)
-                        .height(lineHeightDp)
-                        .background(
-                            brush = Brush.horizontalGradient(
-                                colors = listOf(
-                                    Color.Transparent,
-                                    MaterialTheme.colorScheme.background
-                                )
-                            )
-                        )
-                )
-                Text(
-                    modifier = Modifier
-                        .background(Color.White)
-                        .padding(start = 4.dp)
-                        .clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() },
-                            onClick = { expanded = !expanded }
-                        ),
-                    text = "Show More",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = style
-                )
-            }
-        }
-    }
-}
-*/
-
 @Composable
 fun ExpandableText(
     modifier: Modifier = Modifier,
