@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.domain.enums.Category
 import de.erikspall.mensaapp.domain.model.FoodProvider
+import de.erikspall.mensaapp.ui.screens.about.AboutScreen
 import de.erikspall.mensaapp.ui.screens.additivefilters.AdditiveFilterScreen
 import de.erikspall.mensaapp.ui.screens.details.DetailScreen
 import de.erikspall.mensaapp.ui.screens.foodproviders.FoodProvidersScreen
@@ -55,6 +56,10 @@ fun MensaNavHost(
                     mensaViewModel.getAdditives()
                     onHideNavBar(true)
                     navController.navigate(AdditiveWarningSettings.route)
+                },
+                onAboutClicked = {
+                    onHideNavBar(true)
+                    navController.navigate(AboutThisApp.route)
                 }
             )
         }
@@ -85,6 +90,16 @@ fun MensaNavHost(
                     navController.popBackStack()
                 },
                 mensaViewModel = mensaViewModel
+            )
+        }
+        composable(
+            route = AboutThisApp.route
+        ) {
+            AboutScreen(
+                onBackClicked = {
+                    onHideNavBar(false)
+                    navController.popBackStack()
+                }
             )
         }
     }
