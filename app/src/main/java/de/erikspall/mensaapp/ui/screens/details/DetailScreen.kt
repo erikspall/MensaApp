@@ -26,11 +26,8 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
@@ -55,7 +52,6 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.time.format.TextStyle
 import java.util.Locale
-import kotlin.math.absoluteValue
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(
@@ -130,33 +126,6 @@ fun DetailScreen(
                 animateScrollToPage(
                     page = (currentPageIndex)
                 )
-            }
-        }
-    }
-
-
-    // Reuse the default offset animation modifier, but use our own indicator
-    /* val indicator = @Composable { tabPositions ->
-        FancyIndicator(
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTab]).padding(horizontal = 20.dp)
-        )
-    }*/
-
-
-    val nestedScrollConnection = remember {
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                val delta = available.y
-
-                // Smoother
-                if (delta.absoluteValue > 1.0) {
-                    hideBackButton = delta < 0
-                    hideBackButtonState.targetState = !hideBackButton
-                }
-
-                // called when you scroll the content
-                return Offset.Zero
             }
         }
     }
@@ -419,6 +388,21 @@ fun DetailScreen(
                     text = "Text tab ${selectedTab + 1} selected",
                     style = MaterialTheme.typography.bodyLarge
                 )*/
+            } else {
+                // It is a cafeteria, so show lottie for it
+                item {
+                    Column(
+                        modifier = Modifier.padding(top = 24.dp).fillMaxHeight(),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        LottieWithInfo(
+                            lottie = R.raw.cafeteria,
+                            description = "Life without Coffee is scary", // TODO: random quote
+                            speed = 0.5f
+                        )
+                    }
+                }
+
             }
         }
     }
