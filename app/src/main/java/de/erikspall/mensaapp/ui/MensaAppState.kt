@@ -15,10 +15,8 @@ class MensaAppState {
     var location by mutableStateOf(Location.WUERZBURG)
     var role by mutableStateOf(Role.STUDENT)
     var warningsActivated by mutableStateOf(false)
-    //var canteenUiState by mutableStateOf(UiState.NORMAL)
     var foodProviders: SnapshotStateList<FoodProvider> = mutableStateListOf()
     var additives: SnapshotStateList<Additive> = mutableStateListOf()
     var settingsInitialized by mutableStateOf(false)
     var foodProviderScreenState by mutableStateOf(UiState.NORMAL)
-    //var cafeteriaScreenState by mutableStateOf(UiState.NORMAL)
 }

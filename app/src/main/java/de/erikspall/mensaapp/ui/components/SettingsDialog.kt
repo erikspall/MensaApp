@@ -102,12 +102,6 @@ fun SettingsRadioDialog(
     }
 }
 
-@Composable
-fun LocationRadioButtonsGroup() {
-
-
-}
-
 @Preview
 @Composable
 fun PreviewSettingsRadioDialog() {

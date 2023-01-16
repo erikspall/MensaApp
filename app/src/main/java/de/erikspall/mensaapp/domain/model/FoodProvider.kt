@@ -35,13 +35,6 @@ data class FoodProvider(
     var openingHours: Map<DayOfWeek,  List<Map<String, LocalTime>>> = mutableMapOf(),
 
     var openingHoursString: String = "",
-
-    var openingHoursExtendedString: String = "",
-
-    //var liked: MutableState<Boolean> = mutableStateOf(false)
-
-    //var liked: Boolean = false
-    //var description: Map<Locale, String> = mutableMapOf()
 ) {
     var liked by mutableStateOf(false)
 
@@ -63,7 +56,6 @@ data class FoodProvider(
         other as FoodProvider
 
         if (openingHoursString != other.openingHoursString) return false
-        if (openingHoursExtendedString != other.openingHoursExtendedString) return false
         if (name != other.name) return false
         if (location != other.location) return false
         if (category != other.category) return false
@@ -77,16 +69,15 @@ data class FoodProvider(
     }
 
     override fun hashCode(): Int {
-        var result = name.hashCode() ?: 0
+        var result = name.hashCode()
         result = 31 * result + (openingHoursString.hashCode())
-        result = 31 * result + (openingHoursExtendedString.hashCode())
-        result = 31 * result + (location.hashCode() ?: 0)
-        result = 31 * result + (category.hashCode() ?: 0)
-        result = 31 * result + (type.hashCode() ?: 0)
-        result = 31 * result + (address.hashCode() ?: 0)
-        result = 31 * result + (photo.hashCode() ?: 0)
-        result = 31 * result + (info.hashCode() ?: 0)
-        result = 31 * result + (additionalInfo.hashCode() ?: 0)
+        result = 31 * result + (location.hashCode())
+        result = 31 * result + (category.hashCode())
+        result = 31 * result + (type.hashCode())
+        result = 31 * result + (address.hashCode())
+        result = 31 * result + (photo.hashCode())
+        result = 31 * result + (info.hashCode())
+        result = 31 * result + (additionalInfo.hashCode())
         return result
     }
 }

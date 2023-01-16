@@ -74,10 +74,6 @@ fun DetailScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-    var hideBackButton by remember { mutableStateOf(false) }
-
-    val hideBackButtonState = remember { MutableTransitionState(!hideBackButton) }
-
     val pagerState = rememberPagerState()
 
     val listState = rememberLazyListState()
@@ -89,11 +85,9 @@ fun DetailScreen(
     }
     val flingBehavior = rememberSnapFlingBehavior(snappingLayout)
 
-
     val configuration = LocalConfiguration.current
 
     val screenHeight = configuration.screenHeightDp.dp
-    val screenWidth = configuration.screenWidthDp.dp
 
     val isScrolledDownState = remember {
         MutableTransitionState(false)
@@ -103,7 +97,7 @@ fun DetailScreen(
     var currentPageIndex by remember {
         mutableStateOf(0)
     }
-    val scope = rememberCoroutineScope()
+    //val scope = rememberCoroutineScope()
 
     val menuUiStates = mutableListOf<MutableState<UiState>>()
 
@@ -383,16 +377,13 @@ fun DetailScreen(
 
                     }
                 }
-                /*Text(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    text = "Text tab ${selectedTab + 1} selected",
-                    style = MaterialTheme.typography.bodyLarge
-                )*/
             } else {
                 // It is a cafeteria, so show lottie for it
                 item {
                     Column(
-                        modifier = Modifier.padding(top = 24.dp).fillMaxHeight(),
+                        modifier = Modifier
+                            .padding(top = 24.dp)
+                            .fillMaxHeight(),
                         verticalArrangement = Arrangement.Center
                     ) {
                         LottieWithInfo(
@@ -412,8 +403,6 @@ fun DetailScreen(
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewDetailScreen() {
-
-
     DetailScreen(
         foodProvider = FoodProvider(
             name = "Campus Hubland Nord",
