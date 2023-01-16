@@ -39,6 +39,12 @@ object AdditiveWarningSettings: MensaAppDestination {
     override val labelId = R.string.text_warnings
 }
 
+object AboutThisApp: MensaAppDestination {
+    override val icon = Icons.Rounded.Info
+    override val route = "aboutThisApp"
+    override val labelId = R.string.text_about_this_app
+}
+
 object FoodProviderDetails: MensaAppDestination {
     override val icon = Icons.Rounded.Details
     override val route = "foodProviderDetails"

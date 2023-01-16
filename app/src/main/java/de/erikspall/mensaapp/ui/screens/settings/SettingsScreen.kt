@@ -31,6 +31,7 @@ import de.erikspall.mensaapp.ui.theme.Shrikhand
 fun SettingsScreen(
     modifier: Modifier = Modifier,
     onWarningsClicked: () -> Unit = {},
+    onAboutClicked: () -> Unit = {},
     mensaViewModel: MensaViewModel = hiltViewModel()
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -129,7 +130,8 @@ fun SettingsScreen(
                     Setting(
                         iconVector = Icons.Rounded.Info,
                         title = stringResource(id = R.string.text_about_this_app),
-                        subtitle = stringResource(id = R.string.text_about_this_app_detail)
+                        subtitle = stringResource(id = R.string.text_about_this_app_detail),
+                        onClick = onAboutClicked
                     )
                 )
             )
