@@ -1,10 +1,7 @@
 package de.erikspall.mensaapp.ui.components
 
 import androidx.annotation.RawRes
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +22,8 @@ fun LottieWithInfo(
     modifier: Modifier = Modifier,
     @RawRes lottie: Int,
     description: String,
-    iterations: Int = LottieConstants.IterateForever
+    iterations: Int = LottieConstants.IterateForever,
+    speed: Float = 1f
 ) {
     val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(lottie))
 
@@ -33,13 +31,15 @@ fun LottieWithInfo(
         modifier = modifier
             .wrapContentHeight()
             .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         LottieAnimation(
             modifier = Modifier.fillMaxWidth()
                 .height(200.dp),
             composition = composition,
-            iterations = iterations
+            iterations = iterations,
+            speed = speed
         )
         Text(
             text = description,
