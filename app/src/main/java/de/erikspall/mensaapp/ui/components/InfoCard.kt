@@ -27,7 +27,9 @@ fun InfoCard(
             .fillMaxWidth()
             .wrapContentHeight()
             .clip(RoundedCornerShape(28.dp)), // TODO: Not needed
-        shape = RoundedCornerShape(28.dp)
+        shape = RoundedCornerShape(28.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Column(
             modifier = Modifier
@@ -43,12 +45,12 @@ fun InfoCard(
                         modifier = Modifier.padding(end = 16.dp),
                         imageVector = icon,
                         contentDescription = "",
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        tint = MaterialTheme.colorScheme.primary
                     )
 
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.colorScheme.onPrimaryContainer)
+                    style = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.colorScheme.primary)
                 )
             }
             content()

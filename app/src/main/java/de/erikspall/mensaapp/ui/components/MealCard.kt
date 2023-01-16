@@ -74,6 +74,8 @@ fun MealCard(
             .animateContentSize()
             .clip(RoundedCornerShape(28.dp)), // TODO: Not needed
         shape = RoundedCornerShape(28.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier
@@ -124,8 +126,8 @@ fun MealCard(
                         FilledIconButton(
                             modifier = Modifier.rotate(rotation.value),
                             colors = IconButtonDefaults.filledIconButtonColors(
-                                containerColor = MaterialTheme.colorScheme.surface,
-                                contentColor = MaterialTheme.colorScheme.onSurface
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                contentColor = MaterialTheme.colorScheme.onSurfaceVariant
                             ),
                             onClick = { expanded = !expanded }
                         ) {
