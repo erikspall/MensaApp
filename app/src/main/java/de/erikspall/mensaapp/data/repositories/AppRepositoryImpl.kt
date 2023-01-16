@@ -67,25 +67,26 @@ class AppRepositoryImpl(
         }
     }
 
-    override suspend fun fetchMenus(
+    override suspend fun fetchMenu(
         foodProviderId: Int,
-        date: LocalDate
-    ): Result<List<Menu>> {
+        offset: Int
+    ): Result<Menu> {
+        ///val duration = Duration.between(LocalDate.n, )
 
         val mealsSnapshot = firestoreRepository.fetchMeals(
             foodProviderId,
-            date
+            offset
         )
 
         return if (mealsSnapshot.isSuccess) {
-            Result.success(extractMenusFromMeals(mealsSnapshot.getOrThrow()))
+            Result.success(extractMenuFromMeals(mealsSnapshot.getOrThrow()))
         } else {
             Result.failure(mealsSnapshot.exceptionOrNull()!!)
         }
 
     }
 
-    private suspend fun extractMenusFromMeals(snapshot: QuerySnapshot): List<Menu> {
+    private suspend fun extractMenuFromMeals(snapshot: QuerySnapshot): Menu {
         val menuMap = mutableMapOf<LocalDate, MutableList<Meal>>()
         for (document in snapshot) {
             val date = (document.get(Meal.FIELD_DATE) as Timestamp).toDate().toInstant()
@@ -135,7 +136,11 @@ class AppRepositoryImpl(
             )
         }
 
-        return menus
+
+        return menus.firstOrNull() ?: Menu(
+            date = LocalDate.now(),
+            meals = emptyList()
+        )
     }
 
     override suspend fun setAdditiveLikeStatus(

@@ -77,9 +77,17 @@ class FormatToString {
                                     if (timeTo < 60) {
                                         "Essensausgabe endet in $timeTo Minuten"
                                     } else if (daysTo == 0) {
-                                        "Essensausgabe endet um " + formatTimeToString(time, true, "Uhr")
+                                        "Essensausgabe endet um " + formatTimeToString(
+                                            time,
+                                            true,
+                                            "Uhr"
+                                        )
                                     } else if (daysTo == 1) {
-                                        "Essensausgabe endet morgen um " + formatTimeToString(time, true, "Uhr")
+                                        "Essensausgabe endet morgen um " + formatTimeToString(
+                                            time,
+                                            true,
+                                            "Uhr"
+                                        )
                                     } else {
                                         "Essensausgabe endet am ${
                                             currentDate.dayOfWeek.getDisplayName(
@@ -95,7 +103,11 @@ class FormatToString {
                                     } else if (daysTo == 0) {
                                         "Schließt um " + formatTimeToString(time, true, "Uhr")
                                     } else if (daysTo == 1) {
-                                        "Schließt morgen um " + formatTimeToString(time, true, "Uhr")
+                                        "Schließt morgen um " + formatTimeToString(
+                                            time,
+                                            true,
+                                            "Uhr"
+                                        )
                                     } else {
                                         "Schließt am ${
                                             currentDate.dayOfWeek.getDisplayName(
@@ -121,7 +133,12 @@ class FormatToString {
         return "Parsing opening hours failed!"
     }
 
-    private fun formatTimeToString(time: LocalTime, is24HoursFormat: Boolean, postFix: String): String {
+    private fun formatTimeToString(
+        time: LocalTime,
+        is24HoursFormat: Boolean,
+        postFix: String
+    ): String {
+       // time.format(DateTimeFormatter.)
         var amPM = ""
         var hours = time.hour
         if (!is24HoursFormat && hours > 12) {

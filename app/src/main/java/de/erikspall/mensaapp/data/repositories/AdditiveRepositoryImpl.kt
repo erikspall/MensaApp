@@ -1,7 +1,6 @@
 package de.erikspall.mensaapp.data.repositories
 
 import androidx.lifecycle.LiveData
-import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.domain.interfaces.data.AdditiveRepository
 import de.erikspall.mensaapp.data.sources.local.database.daos.AdditiveDao
 import de.erikspall.mensaapp.domain.enums.AdditiveType
@@ -65,7 +64,7 @@ class AdditiveRepositoryImpl(
         } else {
             val additive = Additive(
                 name = name,
-                icon = R.drawable.ic_mensa, // TODO: extract icon
+                icon = -1, // TODO: extract icon
                 type = type
             )
             if (additive.name.isNotBlank()) // TODO: find a better way if meal cannot be parsed
