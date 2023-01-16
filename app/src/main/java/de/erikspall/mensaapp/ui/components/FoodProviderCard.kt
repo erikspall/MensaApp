@@ -37,7 +37,9 @@ fun FoodProviderCard(
             }
             .wrapContentHeight()
             .clip(RoundedCornerShape(28.dp)), // TODO: Not needed
-        shape = RoundedCornerShape(28.dp)
+        shape = RoundedCornerShape(28.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Column {
             Box {
