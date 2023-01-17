@@ -338,7 +338,8 @@ fun DetailScreen(
                                         verticalArrangement = Arrangement.Center
                                     ) {
                                         LottieWithInfo(
-                                            lottie = R.raw.no_menus,
+                                            lottie = R.raw.no_info,
+                                            iterations = 1,
                                             description = stringResource(
                                                 id = R.string.text_lottie_no_meals
                                             )

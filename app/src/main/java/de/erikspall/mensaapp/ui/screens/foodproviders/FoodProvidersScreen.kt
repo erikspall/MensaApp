@@ -69,8 +69,7 @@ fun FoodProvidersScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         LottieWithInfo(
-                            lottie = R.raw.no_info,
-                            iterations = 1,
+                            lottie = R.raw.no_info_variant,
                             description = stringResource(
                                 id = when (foodProviderCategory) {
                                     Category.CANTEEN -> R.string.text_lottie_no_info_canteens
