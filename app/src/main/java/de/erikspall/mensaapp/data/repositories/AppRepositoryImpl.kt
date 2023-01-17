@@ -1,7 +1,6 @@
 package de.erikspall.mensaapp.data.repositories
 
 import androidx.lifecycle.LiveData
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.*
 import de.erikspall.mensaapp.domain.interfaces.data.AdditiveRepository
 import de.erikspall.mensaapp.domain.interfaces.data.AppRepository
@@ -89,9 +88,7 @@ class AppRepositoryImpl(
     private suspend fun extractMenuFromMeals(snapshot: QuerySnapshot): Menu {
         val menuMap = mutableMapOf<LocalDate, MutableList<Meal>>()
         for (document in snapshot) {
-            val date = (document.get(Meal.FIELD_DATE) as Timestamp).toDate().toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate()
+            val date = LocalDate.parse(document.get(Meal.FIELD_DATE).toString())
 
             val meals = (
                     if (menuMap[date] != null)

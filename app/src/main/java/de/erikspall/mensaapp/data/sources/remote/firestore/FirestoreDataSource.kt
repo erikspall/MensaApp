@@ -7,12 +7,10 @@ import de.erikspall.mensaapp.domain.enums.Location
 import de.erikspall.mensaapp.domain.model.Additive
 import de.erikspall.mensaapp.domain.model.FoodProvider
 import de.erikspall.mensaapp.domain.model.Meal
-import de.erikspall.mensaapp.domain.utils.Extensions.toDate
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
-import java.util.*
 
 class FirestoreDataSource(
     private val firestoreInstance: FirebaseFirestore,
@@ -88,8 +86,7 @@ class FirestoreDataSource(
 
             val mealsSnapshot = queryMealsOfFoodProviderFromDate(
                 foodProviderId,
-                LocalDate.now().plusDays(offset.toLong()).toDate().apply {
-                }
+                LocalDate.now().plusDays(offset.toLong())
             )
                 .get(source)
                 .addOnFailureListener {
@@ -146,9 +143,9 @@ class FirestoreDataSource(
             .orderBy(Meal.FIELD_DATE, Query.Direction.ASCENDING)
     }*/
 
-    private fun queryMealsOfFoodProviderFromDate(foodProviderId: Int, date: Date): Query {
+    private fun queryMealsOfFoodProviderFromDate(foodProviderId: Int, date: LocalDate): Query {
         return firestoreInstance.collectionGroup(COLLECTION_MENUS)
-            .whereGreaterThan(Meal.FIELD_DATE, date)
+            .whereEqualTo(Meal.FIELD_DATE, date.toString())
             .whereEqualTo(Meal.FIELD_FOOD_PROVIDER_ID, foodProviderId)
             //.orderBy(Meal.FIELD_PRICE_STUDENT)
     }
