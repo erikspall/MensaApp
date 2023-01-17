@@ -1,5 +1,6 @@
 package de.erikspall.mensaapp.data.handler
 
+import android.util.Log
 import com.google.firebase.firestore.Source
 import de.erikspall.mensaapp.domain.interfaces.data.Handler
 import de.erikspall.mensaapp.domain.interfaces.data.Request
@@ -31,6 +32,9 @@ class SourceHandler(
         } else {
             Source.CACHE
         }
+
+        Log.d("SourceHandler", "I think we should use ${request.source}")
+
         next?.handle(request)
     }
 }

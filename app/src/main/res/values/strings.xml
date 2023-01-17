@@ -75,7 +75,7 @@
         vor Ort!
     </string>
     <string name="text_app_info_4">
-        Version: 0.1.0 (Aioli)
+        Version: 1.0.0-alpha01
     </string>
 
 
@@ -100,7 +100,7 @@
     </string>
 
     <string name="text_impressum_body_2">
-        Erik Spall\nWürzburg\n\nVertreten durch:\nErik Spall
+        Erik Spall
     </string>
 
     <string name="text_impressum_body_3">
@@ -108,7 +108,7 @@
     </string>
 
     <string name="text_impressum_body_4">
-        Telefon: -\nE-Mail: -\n\nVerantwortlich für den Inhalt nach § 55 Abs. 2 RStV: Erik Spall, Anschrift wie oben.
+        Telefon: -\nE-Mail: android@mensa-app.timo-reusch.de\n\nVerantwortlich für den Inhalt nach § 55 Abs. 2 RStV: Erik Spall, Anschrift wie oben.
     </string>
 
 
