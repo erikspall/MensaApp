@@ -1,7 +1,7 @@
 package de.erikspall.mensaapp.domain.usecases.openinghours
 
 import android.content.res.Resources
-import de.erikspall.mensaapp.MensaApplication
+
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.domain.model.OpeningHour
 import java.time.DayOfWeek
@@ -39,8 +39,10 @@ class FormatToString(
             // day plus 6 days (we don't look at the next 7, because we looked at that weekday
             // already
             for (i in currentDateTime.dayOfWeek.value..currentDateTime.dayOfWeek.value + 6) {
+                // DayOfWeek enum starts at 1
+                val modulo = if (i % 8 == 0) 1 else i % 8
                 // Determine the dayOfWeek, that we are looking at in this iteration
-                val currentDay = DayOfWeek.of((i % 7))
+                val currentDay = DayOfWeek.of(modulo)
                 // Determine the date, that we are looking at in this iteration
                 val currentDate = currentDateTime.toLocalDate().plusDays(i - dayOffset)
 
@@ -67,7 +69,7 @@ class FormatToString(
                                 (duration.toMillis() / 1000.0) / 60.0
                             ).roundToInt()
 
-                            val daysTo = ((timeTo / 60.0) / 24.0).roundToInt()
+                            val daysTo = eventDateTime.dayOfYear - currentDateTime.dayOfYear
 
                             // We found our event
                             return when (field) {
