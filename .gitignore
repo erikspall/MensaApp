@@ -18,3 +18,4 @@ app/google-services.json
 /signature.jks
 /app/release/
 /private_key.pepk
+/app/google-services.json

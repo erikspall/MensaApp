@@ -1,16 +1,21 @@
-package de.erikspall.mensaapp.domain.usecases.openinghours
+package de.erikspall.mensaapp.openinghours
 
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import de.erikspall.mensaapp.domain.model.OpeningHour
+import de.erikspall.mensaapp.domain.usecases.openinghours.FormatToString
+import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.*
-import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 
+@RunWith(AndroidJUnit4::class)
 class OpeningHourUseCasesTest {
     // Subjects under test
     private lateinit var openingHourUseCases: OpeningHourUseCases
@@ -19,7 +24,12 @@ class OpeningHourUseCasesTest {
 
     @Before
     fun setupOpeningHourUseCases() {
-        openingHourUseCases = OpeningHourUseCases(FormatToString())
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        openingHourUseCases = OpeningHourUseCases(
+            FormatToString(
+            res = appContext.resources
+        )
+        )
     }
 
     @Before
@@ -124,8 +134,7 @@ class OpeningHourUseCasesTest {
         // When formatting to string
         val string = openingHourUseCases.formatToString(
             emptyOpeningHours,
-            LocalDateTime.now(),
-            Locale.getDefault() // Doesn't matter for now
+            LocalDateTime.now()
         )
 
         // Then formatted string is "Geschlossen!"
@@ -143,8 +152,7 @@ class OpeningHourUseCasesTest {
         // When formatting to string
         val string = openingHourUseCases.formatToString(
             standardOpeningHours,
-            localDateTime,
-            Locale.getDefault() // Doesn't matter for now
+            localDateTime
         )
 
         // Then formatted string is "Öffnet um 11:00 Uhr"
@@ -162,8 +170,7 @@ class OpeningHourUseCasesTest {
         // When formatting to string
         val string = openingHourUseCases.formatToString(
             standardOpeningHours,
-            localDateTime,
-            Locale.getDefault()
+            localDateTime
         )
 
         // Then formatted string is "Öffnet in 30 Minuten"
@@ -181,8 +188,7 @@ class OpeningHourUseCasesTest {
         // When formatting to string
         val string = openingHourUseCases.formatToString(
             standardOpeningHours,
-            localDateTime,
-            Locale.getDefault()
+            localDateTime
         )
 
         // Then formatted string is "Öffnet in 1 Minute"
@@ -200,12 +206,11 @@ class OpeningHourUseCasesTest {
         // When formatting to string
         val string = openingHourUseCases.formatToString(
             standardOpeningHours,
-            localDateTime,
-            Locale.getDefault()
+            localDateTime
         )
 
         // Then formatted string is "Öffnet in 1 Minute"
-        assertEquals("Geöffnet! Service bis 16:00 Uhr", string)
+        assertEquals("Essensausgabe bis 16:00 Uhr", string)
     }
 
     @Test
@@ -219,12 +224,11 @@ class OpeningHourUseCasesTest {
         // When formatting to string
         val string = openingHourUseCases.formatToString(
             standardOpeningHours,
-            localDateTime,
-            Locale.getDefault()
+            localDateTime
         )
 
         // Then formatted string is "Öffnet in 1 Minute"
-        assertEquals("Geöffnet! Service bis 16:00 Uhr", string)
+        assertEquals("Essensausgabe bis 16:00 Uhr", string)
     }
 
     @Test
@@ -238,12 +242,11 @@ class OpeningHourUseCasesTest {
         // When formatting to string
         val string = openingHourUseCases.formatToString(
             standardOpeningHours,
-            localDateTime,
-            Locale.getDefault()
+            localDateTime
         )
 
         // Then formatted string is
-        assertEquals("Service endet in 30 Minuten", string)
+        assertEquals("Essensausgabe endet in 30 Minuten", string)
     }
 
     @Test
@@ -257,8 +260,7 @@ class OpeningHourUseCasesTest {
         // When formatting to string
         val string = openingHourUseCases.formatToString(
             standardOpeningHours,
-            localDateTime,
-            Locale.getDefault()
+            localDateTime
         )
 
         // Then formatted string contains
@@ -276,8 +278,7 @@ class OpeningHourUseCasesTest {
         // When formatting to string
         val string = openingHourUseCases.formatToString(
             standardOpeningHours,
-            localDateTime,
-            Locale.getDefault()
+            localDateTime
         )
 
         // Then formatted string contains
@@ -295,12 +296,11 @@ class OpeningHourUseCasesTest {
         // When formatting to string
         val string = openingHourUseCases.formatToString(
             standardOpeningHours,
-            localDateTime,
-            Locale.getDefault()
+            localDateTime
         )
 
         // Then formatted string contains
-        assertEquals("Geschlossen! Öffnet wieder morgen um 11:00 Uhr", string)
+        assertEquals("Öffnet morgen um 11:00 Uhr", string)
     }
 
     @Test
@@ -314,12 +314,11 @@ class OpeningHourUseCasesTest {
         // When formatting to string
         val string = openingHourUseCases.formatToString(
             standardOpeningHours,
-            localDateTime,
-            Locale.getDefault()
+            localDateTime
         )
 
         // Then formatted string contains
-        assertEquals("Geschlossen! Öffnet wieder morgen um 11:00 Uhr", string)
+        assertEquals("Öffnet morgen um 11:00 Uhr", string)
     }
 
     @Test
@@ -332,12 +331,11 @@ class OpeningHourUseCasesTest {
         // When formatting to string
         val string = openingHourUseCases.formatToString(
             standardOpeningHours,
-            localDateTime,
-            Locale.getDefault()
+            localDateTime
         )
 
         // Then formatted string contains
-        assertEquals("Geschlossen! Öffnet am Mo um 11:00 Uhr", string)
+        assertEquals("Öffnet am Mo um 11:00 Uhr", string)
     }
 
     @Test
@@ -350,11 +348,10 @@ class OpeningHourUseCasesTest {
         // When formatting to string
         val string = openingHourUseCases.formatToString(
             multipleOpeningHoursOnSameDay,
-            localDateTime,
-            Locale.getDefault()
+            localDateTime
         )
 
         // Then formatted string contains
-        assertEquals("Geschlossen! Öffnet wieder um 11:00 Uhr", string)
+        assertEquals("Öffnet um 11:00 Uhr", string)
     }
 }
