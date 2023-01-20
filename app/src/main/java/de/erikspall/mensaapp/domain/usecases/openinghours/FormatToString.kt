@@ -1,5 +1,7 @@
 package de.erikspall.mensaapp.domain.usecases.openinghours
 
+import de.erikspall.mensaapp.MensaApplication
+import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.domain.model.OpeningHour
 import java.time.DayOfWeek
 import java.time.Duration
@@ -21,6 +23,7 @@ class FormatToString {
             // Start at current day
             var i = currentDateTime.dayOfWeek.value
             val dayOffset = i.toLong()
+            val res = MensaApplication.getRes()
 
             val fields = listOf(
                 OpeningHour.FIELD_OPENS_AT,
@@ -31,7 +34,7 @@ class FormatToString {
             while (i <= currentDateTime.dayOfWeek.value + 6) {
                 val currentDay = DayOfWeek.of((i % 7) + 1)
                 val currentDate = currentDateTime.toLocalDate().plusDays(i - dayOffset)
-                val openingHourList = openingHours[currentDay] ?: return "Geschlossen!"
+                val openingHourList = openingHours[currentDay] ?: return res.getString(R.string.closed)
 
                 for (field in fields) {
                     for (hourMap in openingHourList) {

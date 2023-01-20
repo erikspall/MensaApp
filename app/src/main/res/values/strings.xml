@@ -144,4 +144,64 @@
     </string>
     <string name="text_label_read_more">… mehr</string>
     <string name="text_label_read_less">weniger</string>
+
+
+
+    <plurals name="minutesTillOpening">
+        <item quantity="one">Öffnet in %d Minute</item>
+        <item quantity="other">Öffnet in %d Minuten</item>
+    </plurals>
+
+    <plurals name="minutesTillEndOfService">
+        <item quantity="one">Essensausgabe endet in %d Minute</item>
+        <item quantity="other">Essensausgabe endet in %d Minuten</item>
+    </plurals>
+
+    <plurals name="minutesTillClosing">
+        <item quantity="one">Schließt in %d Minute</item>
+        <item quantity="other">Schließt in %d Minuten</item>
+    </plurals>
+
+    <string name="openingTimeToday">
+        Öffnet um %s Uhr
+    </string>
+
+    <string name="closingTimeToday">
+        Schließt um %s Uhr
+    </string>
+
+    <string name="endOfServiceTimeToday">
+        Essensausgabe endet um %s Uhr
+    </string>
+
+    <string name="openingTimeTomorrow">
+        Öffnet morgen um %s Uhr
+    </string>
+
+    <string name="closingTimeTomorrow">
+        Schließt morgen um %s Uhr
+    </string>
+
+    <string name="endOfServiceTimeTomorrow">
+        Essensausgabe endet morgen um %s Uhr
+    </string>
+
+
+    <string name="closingTimeBeyond">
+        Schließt am %s um %s Uhr
+    </string>
+
+    <string name="openingTimeBeyond">
+        Öffnet am %s um %s Uhr
+    </string>
+
+    <string name="endOfServiceTimeBeyond">
+        Essensausgabe endet am %s um %s Uhr
+    </string>
+
+    <string name="closed">
+        Geschlossen!
+    </string>
+
+
 </resources>
