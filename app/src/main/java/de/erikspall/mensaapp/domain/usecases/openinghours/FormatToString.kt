@@ -1,5 +1,6 @@
 package de.erikspall.mensaapp.domain.usecases.openinghours
 
+import android.content.res.Resources
 import de.erikspall.mensaapp.MensaApplication
 import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.domain.model.OpeningHour
@@ -14,18 +15,19 @@ import java.util.*
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
-class FormatToString {
+class FormatToString(
+    val res: Resources
+) {
     operator fun invoke(
         openingHours: Map<DayOfWeek, List<Map<String, LocalTime>>>,
-        currentDateTime: LocalDateTime,
-        locale: Locale
+        currentDateTime: LocalDateTime
     ): String {
-        val res = MensaApplication.getRes()
+       // val res = MensaApplication.getRes()
         try {
+            if (openingHours.isEmpty()) return res.getString(R.string.closed)
             // Find the next 'event' of the day
-            // Start at current day
-            var i = currentDateTime.dayOfWeek.value
-            val dayOffset = i.toLong()
+            // Start at current dayOfWeek
+            val dayOffset = currentDateTime.dayOfWeek.value.toLong()
 
 
             val fields = listOf(
@@ -33,12 +35,17 @@ class FormatToString {
                 OpeningHour.FIELD_GET_FOOD_TILL,
                 OpeningHour.FIELD_CLOSES_AT
             )
-            // Only +6 because we already looked at that weekday
-            while (i <= currentDateTime.dayOfWeek.value + 6) {
-                val currentDay = DayOfWeek.of((i % 7) + 1)
+            // While the currently looked at dayOfWeek is smaller or equal than that
+            // day plus 6 days (we don't look at the next 7, because we looked at that weekday
+            // already
+            for (i in currentDateTime.dayOfWeek.value..currentDateTime.dayOfWeek.value + 6) {
+                // Determine the dayOfWeek, that we are looking at in this iteration
+                val currentDay = DayOfWeek.of((i % 7))
+                // Determine the date, that we are looking at in this iteration
                 val currentDate = currentDateTime.toLocalDate().plusDays(i - dayOffset)
+
                 val openingHourList =
-                    openingHours[currentDay] ?: return res.getString(R.string.closed)
+                    openingHours[currentDay] ?: continue
 
                 for (field in fields) {
                     for (hourMap in openingHourList) {
@@ -183,11 +190,12 @@ class FormatToString {
                     }
 
                 }
-                i++
+
             }
+            // We should never reach this, but just in case
+            return res.getString(R.string.closed)
         } catch (e: Exception) {
             return res.getString(R.string.internal_error)
         }
-        return res.getString(R.string.internal_error)
     }
 }

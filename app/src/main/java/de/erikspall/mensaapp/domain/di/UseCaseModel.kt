@@ -37,10 +37,12 @@ object UseCaseModel {
     @Provides
     @Singleton
     fun provideOpeningHourUseCases(
-
+        @ApplicationContext context: Context
     ): OpeningHourUseCases {
         return OpeningHourUseCases(
-            formatToString = FormatToString()
+            formatToString = FormatToString(
+                res = context.resources
+            ),
         )
     }
 

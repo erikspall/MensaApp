@@ -171,7 +171,7 @@
     </string>
 
     <string name="endOfServiceTimeToday">
-        Essensausgabe endet um %s Uhr
+        Essensausgabe bis %s Uhr
     </string>
 
     <string name="openingTimeTomorrow">
@@ -183,7 +183,7 @@
     </string>
 
     <string name="endOfServiceTimeTomorrow">
-        Essensausgabe endet morgen um %s Uhr
+        Essensausgabe bis morgen %s Uhr
     </string>
 
 
@@ -196,7 +196,7 @@
     </string>
 
     <string name="endOfServiceTimeBeyond">
-        Essensausgabe endet am %s um %s Uhr
+        Essensausgabe bis %s um %s Uhr
     </string>
 
     <string name="closed">

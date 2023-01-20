@@ -142,8 +142,7 @@ class FirestoreRepositoryImpl(
             it.openingHours = getOpeningHoursFromDocument(this)
             it.openingHoursString = openingHourUseCases.formatToString(
                 it.openingHours,
-                LocalDateTime.now(),
-                Locale.getDefault()
+                LocalDateTime.now()
             )
             it.description = this.getField(FoodProvider.FIELD_DESCRIPTION) ?: ""
             it.liked = sharedPreferenceUseCases.getBoolean(SharedPrefKey.constructFoodProviderKey(it), false)
