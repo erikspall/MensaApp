@@ -7,6 +7,8 @@ import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.time.format.TextStyle
 import java.util.*
 import kotlin.math.ceil
@@ -18,12 +20,13 @@ class FormatToString {
         currentDateTime: LocalDateTime,
         locale: Locale
     ): String {
+        val res = MensaApplication.getRes()
         try {
             // Find the next 'event' of the day
             // Start at current day
             var i = currentDateTime.dayOfWeek.value
             val dayOffset = i.toLong()
-            val res = MensaApplication.getRes()
+
 
             val fields = listOf(
                 OpeningHour.FIELD_OPENS_AT,
@@ -34,7 +37,8 @@ class FormatToString {
             while (i <= currentDateTime.dayOfWeek.value + 6) {
                 val currentDay = DayOfWeek.of((i % 7) + 1)
                 val currentDate = currentDateTime.toLocalDate().plusDays(i - dayOffset)
-                val openingHourList = openingHours[currentDay] ?: return res.getString(R.string.closed)
+                val openingHourList =
+                    openingHours[currentDay] ?: return res.getString(R.string.closed)
 
                 for (field in fields) {
                     for (hourMap in openingHourList) {
@@ -62,66 +66,117 @@ class FormatToString {
                             return when (field) {
                                 OpeningHour.FIELD_OPENS_AT -> {
                                     if (timeTo < 60) {
-                                        "Öffnet in $timeTo Minuten"
+                                        res.getQuantityString(
+                                            /* id = */ R.plurals.minutesTillOpening,
+                                            /* quantity = */ timeTo,
+                                            /* ...formatArgs = */ timeTo
+                                        )
                                     } else if (daysTo == 0) {
-                                        "Öffnet um " + formatTimeToString(time, true, "Uhr")
+                                        res.getString(
+                                            /* id = */ R.string.openingTimeToday,
+                                            /* ...formatArgs = */
+                                            time.format(
+                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+                                            )
+                                        )
                                     } else if (daysTo == 1) {
-                                        "Öffnet morgen um " + formatTimeToString(time, true, "Uhr")
+                                        res.getString(
+                                            /* id = */ R.string.openingTimeTomorrow,
+                                            /* ...formatArgs = */
+                                            time.format(
+                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+                                            )
+                                        )
                                     } else {
-                                        "Öffnet am ${
+                                        res.getString(
+                                            /* id = */ R.string.openingTimeBeyond,
+                                            /* ...formatArgs = */
                                             currentDate.dayOfWeek.getDisplayName(
                                                 TextStyle.SHORT_STANDALONE,
                                                 Locale.getDefault()
+                                            ),
+                                            time.format(
+                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
                                             )
-                                        } um " + formatTimeToString(time, true, "Uhr")
+                                        )
                                     }
                                 }
                                 OpeningHour.FIELD_GET_FOOD_TILL -> {
                                     if (timeTo < 60) {
-                                        "Essensausgabe endet in $timeTo Minuten"
+                                        res.getQuantityString(
+                                            /* id = */ R.plurals.minutesTillEndOfService,
+                                            /* quantity = */ timeTo,
+                                            /* ...formatArgs = */ timeTo
+                                        )
                                     } else if (daysTo == 0) {
-                                        "Essensausgabe endet um " + formatTimeToString(
-                                            time,
-                                            true,
-                                            "Uhr"
+                                        res.getString(
+                                            /* id = */ R.string.endOfServiceTimeToday,
+                                            /* ...formatArgs = */
+                                            time.format(
+                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+                                            )
                                         )
                                     } else if (daysTo == 1) {
-                                        "Essensausgabe endet morgen um " + formatTimeToString(
-                                            time,
-                                            true,
-                                            "Uhr"
+                                        res.getString(
+                                            /* id = */ R.string.endOfServiceTimeTomorrow,
+                                            /* ...formatArgs = */
+                                            time.format(
+                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+                                            )
                                         )
                                     } else {
-                                        "Essensausgabe endet am ${
+                                        res.getString(
+                                            /* id = */ R.string.endOfServiceTimeBeyond,
+                                            /* ...formatArgs = */
                                             currentDate.dayOfWeek.getDisplayName(
                                                 TextStyle.SHORT_STANDALONE,
                                                 Locale.getDefault()
+                                            ),
+                                            time.format(
+                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
                                             )
-                                        } um " + formatTimeToString(time, true, "Uhr")
+                                        )
                                     }
                                 }
                                 OpeningHour.FIELD_CLOSES_AT -> {
                                     if (timeTo < 60) {
-                                        "Schließt in $timeTo Minuten"
+                                        res.getQuantityString(
+                                            /* id = */ R.plurals.minutesTillClosing,
+                                            /* quantity = */ timeTo,
+                                            /* ...formatArgs = */ timeTo
+                                        )
                                     } else if (daysTo == 0) {
-                                        "Schließt um " + formatTimeToString(time, true, "Uhr")
+                                        res.getString(
+                                            /* id = */ R.string.closingTimeToday,
+                                            /* ...formatArgs = */
+                                            time.format(
+                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+                                            )
+                                        )
                                     } else if (daysTo == 1) {
-                                        "Schließt morgen um " + formatTimeToString(
-                                            time,
-                                            true,
-                                            "Uhr"
+                                        res.getString(
+                                            /* id = */ R.string.closingTimeTomorrow,
+                                            /* ...formatArgs = */
+                                            time.format(
+                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+                                            )
                                         )
                                     } else {
-                                        "Schließt am ${
+                                        res.getString(
+                                            /* id = */ R.string.closingTimeBeyond,
+                                            /* ...formatArgs = */
                                             currentDate.dayOfWeek.getDisplayName(
                                                 TextStyle.SHORT_STANDALONE,
                                                 Locale.getDefault()
+                                            ),
+                                            time.format(
+                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
                                             )
-                                        } um " + formatTimeToString(time, true, "Uhr")
+                                        )
                                     }
                                 }
                                 else -> {
-                                    ""
+                                    res.getString(R.string.internal_error)
                                 }
                             }
                         }
@@ -131,33 +186,8 @@ class FormatToString {
                 i++
             }
         } catch (e: Exception) {
-            return "Error parsing opening hours!"
+            return res.getString(R.string.internal_error)
         }
-        return "Parsing opening hours failed!"
-    }
-
-    private fun formatTimeToString(
-        time: LocalTime,
-        is24HoursFormat: Boolean,
-        postFix: String
-    ): String {
-       // time.format(DateTimeFormatter.)
-        var amPM = ""
-        var hours = time.hour
-        if (!is24HoursFormat && hours > 12) {
-            amPM = "pm"
-        } else if (!is24HoursFormat) {
-            amPM = "am"
-        }
-        if (amPM == "pm")
-            hours -= 12
-        return String.format(
-            "%02d:%02d %s%s",
-            hours,
-            time.minute,
-            amPM,
-            postFix
-        )
-            .trimEnd()
+        return res.getString(R.string.internal_error)
     }
 }

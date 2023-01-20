@@ -203,5 +203,6 @@
         Geschlossen!
     </string>
 
+    <string name="internal_error">Interner Fehler!:(</string>
 
 </resources>
