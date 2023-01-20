@@ -2,7 +2,7 @@
 # MensaApp Würzburg - Android
 ![Version](https://img.shields.io/github/v/release/mensa-app-wuerzburg/Android?include_prereleases)\
 \
-The unofficial app of the Studentenwerk Würzburg.\
+The unofficial app of the Studentenwerk Würzburg.
 > Important:
 > This app was created as a fun project by two computer science students at the University of Würzburg.\
 > **It is not an official app of the Studentenwerk!**\
