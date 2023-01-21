@@ -17,9 +17,7 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -83,6 +81,7 @@ fun DetailScreen(
             listState
         )
     }
+
     val flingBehavior = rememberSnapFlingBehavior(snappingLayout)
 
     val configuration = LocalConfiguration.current
@@ -151,7 +150,7 @@ fun DetailScreen(
                         }
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.ArrowBack,
+                            imageVector = Icons.Rounded.ExpandMore,
                             contentDescription = ""
                         )
                     }
