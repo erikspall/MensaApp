@@ -4,9 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -70,7 +67,7 @@ fun DetailHeader(
                     style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
                     isExpanded = descriptionState.isExpanded,
                     clickable = descriptionState.clickable,
-                    icon = Icons.Outlined.Info,
+                    icon = R.drawable.outline_info,
                     lastCharIndex = descriptionState.lastCharIndex,
                     onClick = {
                         descriptionState.isExpanded = !descriptionState.isExpanded
@@ -93,7 +90,7 @@ fun DetailHeader(
                     style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
                     isExpanded = additionalInfoState.isExpanded,
                     clickable = additionalInfoState.clickable,
-                    icon = Icons.Rounded.Storefront,
+                    icon = R.drawable.storefront,
                     lastCharIndex = additionalInfoState.lastCharIndex,
                     onClick = {
                         additionalInfoState.isExpanded = !additionalInfoState.isExpanded
@@ -111,7 +108,7 @@ fun DetailHeader(
             if (foodProvider.openingHours.isNotEmpty()) {
                 OpeningHourTile(
                     smartText = foodProvider.openingHoursString,
-                    icon = Icons.Rounded.Schedule,
+                    icon = R.drawable.schedule,
                     openingHours = foodProvider.openingHours
                 )
             }

@@ -1,17 +1,17 @@
 package de.erikspall.mensaapp.ui.components
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import de.erikspall.mensaapp.R
 
 @Composable
 fun InfoCard(
@@ -19,7 +19,7 @@ fun InfoCard(
     title: String,
     content: @Composable () -> Unit = {},
     onButtonClick: () -> Unit = {},
-    icon: ImageVector? = null,
+    @DrawableRes icon: Int? = null,
     buttonText: String? = null
 ) {
     Card(
@@ -43,7 +43,7 @@ fun InfoCard(
                 if (icon != null)
                     Icon(
                         modifier = Modifier.padding(end = 16.dp),
-                        imageVector = icon,
+                        painter = painterResource(id = icon),
                         contentDescription = "",
                         tint = MaterialTheme.colorScheme.primary
                     )
@@ -56,7 +56,9 @@ fun InfoCard(
             content()
             if (buttonText != null)
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
                     OutlinedButton(
@@ -73,7 +75,7 @@ fun InfoCard(
 @Composable
 fun PreviewInfoCard() {
     InfoCard(
-        icon = Icons.Rounded.Code,
+        icon = R.drawable.code,
         title = "Test",
         content = {
                   Text(

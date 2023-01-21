@@ -1,5 +1,6 @@
 package de.erikspall.mensaapp.ui.components
 
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -11,9 +12,10 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.domain.model.OpeningHour
 import de.erikspall.mensaapp.domain.utils.Extensions.noRippleClickable
 import java.time.DayOfWeek
@@ -27,7 +29,7 @@ import java.util.*
 fun OpeningHourTile(
     modifier: Modifier = Modifier,
     smartText: String = "",
-    icon: ImageVector? = null,
+    @DrawableRes icon: Int? = null,
     openingHours: Map<DayOfWeek, List<Map<String, LocalTime>>> = emptyMap(),
     color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     textStyle: androidx.compose.ui.text.TextStyle = MaterialTheme.typography.bodySmall.copy(color = color),
@@ -44,7 +46,7 @@ fun OpeningHourTile(
     ) {
         if (icon != null) {
             Icon(
-                imageVector = icon,
+                painter = painterResource(id = icon),
                 contentDescription = "",
                 tint = color
             )
@@ -123,7 +125,7 @@ fun OpeningHourTile(
 @Composable
 fun PreviewOpeningHourTile() {
     OpeningHourTile(
-        icon = Icons.Rounded.Schedule,
+        icon = R.drawable.schedule,
         smartText = "Öffnet in 5 min",
         openingHours = mapOf(
             DayOfWeek.MONDAY to listOf(

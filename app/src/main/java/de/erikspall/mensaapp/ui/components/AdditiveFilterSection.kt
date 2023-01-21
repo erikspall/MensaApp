@@ -1,17 +1,18 @@
 package de.erikspall.mensaapp.ui.components
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Blender
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
+import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.domain.model.Additive
 import kotlin.random.Random
 
@@ -19,7 +20,7 @@ import kotlin.random.Random
 @Composable
 fun AdditiveFilterSection(
     modifier: Modifier = Modifier,
-    icon: ImageVector,
+    @DrawableRes icon: Int,
     sectionTitle: String,
     items: List<Additive>,
     onAdditiveClicked: (Additive) -> Unit = {}
@@ -34,7 +35,7 @@ fun AdditiveFilterSection(
         ) {
             Icon(
                 modifier = Modifier.size(24.dp),
-                imageVector = icon,
+                painter = painterResource(id = icon),
                 contentDescription = "",
                 tint = MaterialTheme.colorScheme.primary
             )
@@ -79,7 +80,7 @@ fun PreviewAdditiveFilterSection() {
 
 
     AdditiveFilterSection(
-        icon = Icons.Rounded.Blender, sectionTitle = "Zutaten", items = listOf(
+        icon = R.drawable.blender, sectionTitle = "Zutaten", items = listOf(
             Additive(name = "Additive", isNotLiked = Random.nextBoolean()),
             Additive(name = "Additive", isNotLiked = Random.nextBoolean()),
             Additive(name = "Additive", isNotLiked = Random.nextBoolean()),

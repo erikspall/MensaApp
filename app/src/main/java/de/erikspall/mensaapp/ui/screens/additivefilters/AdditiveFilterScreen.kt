@@ -11,8 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Blender
-import androidx.compose.material.icons.rounded.LunchDining
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -138,7 +136,7 @@ fun AdditiveFilterScreen(
                             AdditiveFilterSection(
                                 modifier = Modifier
                                     .padding(horizontal = 24.dp),
-                                icon = Icons.Rounded.Blender,
+                                icon = R.drawable.blender,
                                 sectionTitle = stringResource(id = R.string.text_ingredient_section),
                                 items = ingredients ?: emptyList(), // Make it null safe?
                                 onAdditiveClicked = {
@@ -151,7 +149,7 @@ fun AdditiveFilterScreen(
                             AdditiveFilterSection(
                                 modifier = Modifier
                                     .padding(horizontal = 24.dp),
-                                icon = Icons.Rounded.LunchDining,
+                                icon = R.drawable.lunch_dining,
                                 sectionTitle = stringResource(id = R.string.text_allergen_section),
                                 items = allergens ?: emptyList(), // Make it null safe?
                                 onAdditiveClicked = {

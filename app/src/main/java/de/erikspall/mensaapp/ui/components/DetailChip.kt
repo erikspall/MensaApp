@@ -1,10 +1,9 @@
 package de.erikspall.mensaapp.ui.components
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -13,14 +12,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import de.erikspall.mensaapp.R
 
 @Composable
 fun DetailChip(
     modifier: Modifier = Modifier,
-    iconVector: ImageVector? = null,
+    @DrawableRes iconRes: Int? = null,
     containerColor: Color = MaterialTheme.colorScheme.primaryContainer,
     onContainerColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
     orientation: ChipOrientation = ChipOrientation.START,
@@ -45,10 +45,10 @@ fun DetailChip(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (iconVector != null) {
+            if (iconRes != null) {
                 Icon(
                     modifier = Modifier.size(18.dp),
-                    imageVector = iconVector,
+                    painter = painterResource(id = iconRes),
                     contentDescription = "",
                     tint = onContainerColor
                 )
@@ -67,7 +67,8 @@ fun DetailChip(
 fun PreviewDetailChip() {
     DetailChip(
         text = "Mensateria",
-        iconVector = Icons.Rounded.Schedule
+        iconRes = R.drawable.schedule
+
     )
 }
 

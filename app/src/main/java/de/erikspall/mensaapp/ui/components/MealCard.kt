@@ -13,9 +13,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
+import de.erikspall.mensaapp.R
 import de.erikspall.mensaapp.domain.enums.AdditiveType
 import de.erikspall.mensaapp.domain.enums.Role
 import de.erikspall.mensaapp.domain.model.Additive
@@ -103,7 +105,7 @@ fun MealCard(
                     }
                     if (containsNotLikedAdditives) {
                         Icon(
-                            imageVector = Icons.Rounded.ErrorOutline,
+                            painter = painterResource(id = R.drawable.error_outline),
                             contentDescription = "",
                             tint = MaterialTheme.colorScheme.error
                         )
@@ -182,7 +184,7 @@ fun MealCard(
                                     {
                                         Icon(
                                             modifier = Modifier.size(18.dp),
-                                            imageVector = Icons.Rounded.ErrorOutline,
+                                            painter = painterResource(id = R.drawable.error_outline),
                                             contentDescription = "",
                                             tint = MaterialTheme.colorScheme.error
                                         )

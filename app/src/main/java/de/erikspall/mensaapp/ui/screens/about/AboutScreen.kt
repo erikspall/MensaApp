@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -90,7 +89,7 @@ fun AboutScreen(
         ) {
             InfoCard(
                 modifier.padding(horizontal = 16.dp).padding(top = 8.dp),
-                icon = Icons.Outlined.Info,
+                icon = R.drawable.outline_info,
                 title = stringResource(id = R.string.text_about_this_app),
                 content = {
                     Column {
@@ -116,7 +115,7 @@ fun AboutScreen(
             )
             InfoCard(
                 modifier.padding(horizontal = 16.dp),
-                icon = Icons.Rounded.Code,
+                icon = R.drawable.code,
                 title = stringResource(id = R.string.text_label_for_developers),
                 content = {
                     Column {
@@ -142,7 +141,7 @@ fun AboutScreen(
             )
             InfoCard(
                 modifier.padding(horizontal = 16.dp),
-                icon = Icons.Rounded.AccountBalance,
+                icon = R.drawable.outline_info,
                 title = stringResource(id = R.string.text_impressum_title),
                 content = {
                     Column {
@@ -169,7 +168,7 @@ fun AboutScreen(
             )
             InfoCard(
                 modifier.padding(horizontal = 16.dp),
-                icon = Icons.Rounded.LocalPolice,
+                icon = R.drawable.local_police,
                 title = stringResource(id = R.string.text_disclaimer_title),
                 content = {
                     Column {

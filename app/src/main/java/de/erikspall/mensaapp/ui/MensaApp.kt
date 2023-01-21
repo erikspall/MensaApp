@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -47,7 +48,7 @@ fun MensaApp() {
                     ) {
                         bottomNavBarScreens.forEach {
                             NavigationBarItem(
-                                icon = { Icon(it.icon, contentDescription = "") },
+                                icon = { Icon(painter = painterResource(id = it.icon), contentDescription = "") },
                                 label = { Text(stringResource(id = it.labelId)) },
                                 selected = it == currentScreen,
                                 onClick = { navController.navigateSingleTopTo(it.route) }
