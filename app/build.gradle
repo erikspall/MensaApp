@@ -27,9 +27,9 @@ android {
         }
 
         release {
-           // minifyEnabled false
+            minifyEnabled false
            // shrinkResources false
-           // proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
