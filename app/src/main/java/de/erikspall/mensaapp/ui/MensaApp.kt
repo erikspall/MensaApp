@@ -10,15 +10,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import de.erikspall.mensaapp.ui.theme.ComposeMensaTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MensaApp() {
     ComposeMensaTheme {
-        val navController = rememberNavController()
+        val navController = rememberAnimatedNavController()
 
         var hideNavBar by rememberSaveable { mutableStateOf(false) }
 

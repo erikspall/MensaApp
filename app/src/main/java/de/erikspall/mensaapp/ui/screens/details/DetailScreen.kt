@@ -17,9 +17,7 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -31,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -83,6 +82,7 @@ fun DetailScreen(
             listState
         )
     }
+
     val flingBehavior = rememberSnapFlingBehavior(snappingLayout)
 
     val configuration = LocalConfiguration.current
@@ -139,6 +139,8 @@ fun DetailScreen(
                     Text(
                         text = foodProvider.name,
                         fontFamily = Shrikhand,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                         //style = MaterialTheme.typography.headlineMedium
                     )
                 },
@@ -151,7 +153,7 @@ fun DetailScreen(
                         }
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.ArrowBack,
+                            imageVector = Icons.Rounded.ExpandMore,
                             contentDescription = ""
                         )
                     }
