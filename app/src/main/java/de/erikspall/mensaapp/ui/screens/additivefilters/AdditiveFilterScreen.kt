@@ -102,7 +102,11 @@ fun AdditiveFilterScreen(
             ) {
                 HeroToggle(
                     modifier = Modifier
-                        .padding(top = 16.dp + innerPadding.calculateTopPadding(), start = 16.dp, end = 16.dp),
+                        .padding(
+                            top = 16.dp + innerPadding.calculateTopPadding(),
+                            start = 16.dp,
+                            end = 16.dp
+                        ),
                     title = stringResource(id = R.string.text_hero_toggle_warnings_additives),
                     checked = mensaViewModel.warningsActivated,
                     onChecked = {
@@ -112,23 +116,25 @@ fun AdditiveFilterScreen(
                     }
                 )
 
-                    AnimatedVisibility(
-                        modifier = Modifier.clip(RoundedCornerShape(corner = CornerSize(28.dp))), // Looks better
-                        visibleState = filterVisibilityState
-                    ) {
-                        if (ingredients.isNullOrEmpty() && allergens.isNullOrEmpty()) {
-                            Column(
-                                modifier = Modifier.fillMaxHeight().padding(top = 16.dp),
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                LottieWithInfo(
-                                    lottie = R.raw.error,
-                                    description = stringResource(
-                                        id = R.string.text_lottie_no_additives
-                                    )
+                AnimatedVisibility(
+                    modifier = Modifier.clip(RoundedCornerShape(corner = CornerSize(28.dp))), // Looks better
+                    visibleState = filterVisibilityState
+                ) {
+                    if (ingredients.isNullOrEmpty() && allergens.isNullOrEmpty()) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(top = 16.dp),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            LottieWithInfo(
+                                lottie = R.raw.error,
+                                description = stringResource(
+                                    id = R.string.text_lottie_no_additives
                                 )
-                            }
-                        } else {
+                            )
+                        }
+                    } else {
                         Column(
                             modifier = Modifier
                                 .padding(top = 24.dp)
@@ -151,7 +157,11 @@ fun AdditiveFilterScreen(
                                     .padding(horizontal = 24.dp),
                                 icon = R.drawable.lunch_dining,
                                 sectionTitle = stringResource(id = R.string.text_allergen_section),
-                                items = allergens ?: emptyList(), // Make it null safe?
+                                items = (allergens ?: emptyList()).filterNot { allergen ->
+                                    (ingredients ?: emptyList()).any { ingredient ->
+                                        ingredient.name == allergen.name
+                                    }
+                                }, // Make it null safe?
                                 onAdditiveClicked = {
                                     mensaViewModel.saveLikeStatus(it, !it.isNotLiked)
                                 }

@@ -16,8 +16,8 @@ interface AdditiveDao {
     @Update
     suspend fun updateAdditive(vararg additive: Additive)
 
-    @Query("UPDATE additives SET isNotLiked=:userDoesNotLike WHERE name = :name AND type = :type")
-    suspend fun updateLike(name: String, type: AdditiveType, userDoesNotLike: Boolean)
+    @Query("UPDATE additives SET isNotLiked=:isNotLiked WHERE name = :name") // AND type = :type
+    suspend fun updateLike(name: String, isNotLiked: Boolean)
 
     @Query("SELECT EXISTS(SELECT * FROM additives WHERE name = :name AND type = :type COLLATE NOCASE)")
     suspend fun exists(name: String, type: AdditiveType): Boolean
