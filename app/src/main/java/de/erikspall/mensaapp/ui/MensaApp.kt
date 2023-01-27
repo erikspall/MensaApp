@@ -44,8 +44,7 @@ fun MensaApp() {
                         initialOffsetY = { fullHeight -> fullHeight }
                     )
                 ) {
-                    NavigationBar(
-                    ) {
+                    NavigationBar {
                         bottomNavBarScreens.forEach {
                             NavigationBarItem(
                                 icon = { Icon(painter = painterResource(id = it.icon), contentDescription = "") },

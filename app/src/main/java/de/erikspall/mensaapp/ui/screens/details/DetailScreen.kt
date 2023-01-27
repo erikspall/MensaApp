@@ -1,6 +1,7 @@
 package de.erikspall.mensaapp.ui.screens.details
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
@@ -46,6 +47,7 @@ import de.erikspall.mensaapp.ui.MensaViewModel
 import de.erikspall.mensaapp.ui.components.*
 import de.erikspall.mensaapp.ui.state.UiState
 import de.erikspall.mensaapp.ui.theme.Shrikhand
+import de.erikspall.mensaapp.ui.utils.ClockBroadcastReceiver
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -130,6 +132,10 @@ fun DetailScreen(
         if (onBackClicked != null) {
             onBackClicked()
         }
+    }
+
+    ClockBroadcastReceiver(systemAction = Intent.ACTION_TIME_TICK) {
+        mensaViewModel.updateOpeningHourTexts(Category.ANY)
     }
 
     Scaffold(
@@ -411,12 +417,13 @@ fun PreviewDetailScreen() {
         foodProvider = FoodProvider(
             name = "Campus Hubland Nord",
             photo = R.drawable.mensateria_campus_hubland_nord_wuerzburg,
-            openingHoursString = "Öffnet in 5 min",
             location = "Würzburg",
             type = "Mensateria",
             additionalInfo = "Die Abendmensa hat geschlossen!",
             description = "Die Mensateria mit 500 Innen- und 60 Balkonplätzen befindet sich im Obergeschoss des Gebäudes am westlichen Rand des Campus Nord am Hubland. Zur Südseite hin trägt die Mensateria einen Balkon, so dass ein Aufenthalt im Freien mit Blick auf den Hubland-Campus möglich ist.\n"
                     + "\nAusgestattet ist die Mensateria mit einem modernen Speiseleitsystem sowie speziellen Angebotsvarianten."
-        )
+        ).apply {
+            this.openingHoursString = "Öffnet in 5 min"
+        }
     )
 }

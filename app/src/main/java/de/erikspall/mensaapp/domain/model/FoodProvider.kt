@@ -34,10 +34,10 @@ data class FoodProvider(
 
     var openingHours: Map<DayOfWeek,  List<Map<String, LocalTime>>> = mutableMapOf(),
 
-    var openingHoursString: String = "",
+    //var openingHoursString: String = "",
 ) {
     var liked by mutableStateOf(false)
-
+    var openingHoursString by mutableStateOf("")
 
     companion object {
         const val FIELD_ID = "id"
