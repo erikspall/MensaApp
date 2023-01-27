@@ -23,10 +23,16 @@ fun HeroToggle(
     checked: Boolean = false,
     colorChecked: Color = MaterialTheme.colorScheme.primaryContainer,
     colorUnchecked: Color = MaterialTheme.colorScheme.surfaceVariant,
+    colorTextChecked: Color = MaterialTheme.colorScheme.onPrimaryContainer,
+    colorTextUnchecked: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     onChecked: (Boolean) -> Unit = {}
 ) {
     val currentColor = remember {
         Animatable(if (checked) colorChecked else colorUnchecked)
+    }
+
+    val currentTextColor = remember {
+        Animatable(if (checked) colorTextChecked else colorTextUnchecked)
     }
 
     if (checked) {
@@ -36,10 +42,23 @@ fun HeroToggle(
                 animationSpec = tween(200)
             )
         }
+        LaunchedEffect(Unit) {
+            currentTextColor.animateTo(
+                colorTextChecked,
+                animationSpec = tween(200)
+            )
+        }
     } else {
         LaunchedEffect(Unit) {
             currentColor.animateTo(
                 colorUnchecked,
+                animationSpec = tween(200)
+            )
+
+        }
+        LaunchedEffect(Unit) {
+            currentTextColor.animateTo(
+                colorTextUnchecked,
                 animationSpec = tween(200)
             )
         }
@@ -69,6 +88,7 @@ fun HeroToggle(
                     .wrapContentHeight()
                     .padding(start = 16.dp, end = 16.dp),
                 text = title,
+                color = currentTextColor.value,
                 style = MaterialTheme.typography.titleLarge
             )
             Switch(
