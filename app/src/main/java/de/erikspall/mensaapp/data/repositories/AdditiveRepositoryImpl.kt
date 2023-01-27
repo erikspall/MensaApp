@@ -31,7 +31,7 @@ class AdditiveRepositoryImpl(
     }
 
     override suspend fun updateLike(name: String, type: AdditiveType, isNotLiked: Boolean) {
-        additiveDao.updateLike(name, type, isNotLiked)
+        additiveDao.updateLike(name, isNotLiked)
     }
 
     override fun getAll(): LiveData<List<Additive>> {
