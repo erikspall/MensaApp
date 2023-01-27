@@ -30,7 +30,6 @@ class AppRepositoryImpl(
         location,
         category
     )
-
     override suspend fun fetchFoodProvider(
         foodProviderId: Int
     ): Result<FoodProvider> = firestoreRepository.fetchFoodProvider(foodProviderId)

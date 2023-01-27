@@ -1,5 +1,6 @@
 package de.erikspall.mensaapp.ui.screens.foodproviders
 
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -16,6 +17,7 @@ import de.erikspall.mensaapp.ui.MensaViewModel
 import de.erikspall.mensaapp.ui.components.LottieWithInfo
 import de.erikspall.mensaapp.ui.state.UiState
 import de.erikspall.mensaapp.ui.theme.Shrikhand
+import de.erikspall.mensaapp.ui.utils.ClockBroadcastReceiver
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,6 +29,10 @@ fun FoodProvidersScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
+    ClockBroadcastReceiver(systemAction = Intent.ACTION_TIME_TICK) {
+        mensaViewModel.updateOpeningHourTexts(Category.ANY)
+    }
+    
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {

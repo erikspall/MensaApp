@@ -135,7 +135,6 @@ fun PreviewDetailHeader() {
         foodProvider = FoodProvider(
             name = "Campus Hubland Nord",
             photo = R.drawable.mensateria_campus_hubland_nord_wuerzburg,
-            openingHoursString = "Öffnet in 5 min",
             location = "Würzburg",
             type = "Mensateria",
             additionalInfo = "Die Abendmensa hat geschlossen!",
@@ -165,7 +164,9 @@ fun PreviewDetailHeader() {
                     )
                 )
             )
-        ),
+        ).apply {
+                this.openingHoursString = "Öffnet in 5 Min."
+        },
         descriptionState = descriptionState,
         additionalInfoState = additionalInfoState,
     )

@@ -14,7 +14,9 @@ import de.erikspall.mensaapp.domain.usecases.openinghours.OpeningHourUseCases
 import de.erikspall.mensaapp.domain.usecases.sharedpreferences.SharedPreferenceUseCases
 import de.erikspall.mensaapp.ui.state.UiState
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import javax.inject.Inject
+
 
 @HiltViewModel
 class MensaViewModel @Inject constructor(
@@ -55,7 +57,6 @@ class MensaViewModel @Inject constructor(
         get() = additiveUseCases.getAdditives(AdditiveType.INGREDIENT)
 
 
-
     val allergens
         get() = additiveUseCases.getAdditives(AdditiveType.ALLERGEN)
 
@@ -89,6 +90,7 @@ class MensaViewModel @Inject constructor(
         initSettings()
         getFoodProviders()
     }
+
     private fun initSettings() {
         state.role = StringResEnum.roleFrom(
             sharedPreferences.getValueRes(
@@ -149,7 +151,11 @@ class MensaViewModel @Inject constructor(
                     )
                 }
                 else -> { // This is always the like status of a foodProvider
-                    state.foodProviders.find { foodProvider -> SharedPrefKey.constructFoodProviderKey(foodProvider) == key }.apply {
+                    state.foodProviders.find { foodProvider ->
+                        SharedPrefKey.constructFoodProviderKey(
+                            foodProvider
+                        ) == key
+                    }.apply {
                         if (this != null)
                             this.liked = !this.liked
                     }
@@ -184,7 +190,7 @@ class MensaViewModel @Inject constructor(
      */
     private fun getFoodProviders() {
         state.foodProviderScreenState = UiState.LOADING
-       // state.cafeteriaScreenState = UiState.LOADING
+        // state.cafeteriaScreenState = UiState.LOADING
 
         viewModelScope.launch {
             val result = foodProviderUseCases.fetchAll(
@@ -199,10 +205,10 @@ class MensaViewModel @Inject constructor(
 
                 if (state.foodProviders.isEmpty()) {
                     state.foodProviderScreenState = UiState.NO_INFO
-                   // state.cafeteriaScreenState = UiState.NO_INFO
+                    // state.cafeteriaScreenState = UiState.NO_INFO
                 } else {
                     state.foodProviderScreenState = UiState.NORMAL
-                   // state.cafeteriaScreenState = UiState.NORMAL
+                    // state.cafeteriaScreenState = UiState.NORMAL
                 }
                 //   state.canteenUiState = UiState.NORMAL
             } else {
@@ -231,9 +237,21 @@ class MensaViewModel @Inject constructor(
 
     }
 
+    fun updateOpeningHourTexts(category: Category) {
+        Log.d("TIK", "TOK")
+
+        foodProviders.filter { foodProvider ->
+            (Category.from(foodProvider.category) == category) || category == Category.ANY
+        }.forEach { foodProvider ->
+                foodProvider.openingHoursString = openingHourUseCases.formatToString(
+                    openingHours = foodProvider.openingHours,
+                    currentDateTime = LocalDateTime.now()
+                )
+            }
+    }
+
     suspend fun getMenu(foodProviderId: Int, offset: Int) =
         foodProviderUseCases.fetchMenu(foodProviderId, offset)
-
 
 
     companion object {
