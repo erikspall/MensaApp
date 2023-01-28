@@ -13,8 +13,8 @@ android {
         applicationId "de.erikspall.mensaapp"
         minSdk 30
         targetSdk 33
-        versionCode 5
-        versionName "1.0.0-alpha02"
+        versionCode 6
+        versionName "1.0.0-alpha03"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
