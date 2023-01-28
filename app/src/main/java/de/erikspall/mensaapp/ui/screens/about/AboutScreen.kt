@@ -141,7 +141,7 @@ fun AboutScreen(
             )
             InfoCard(
                 modifier.padding(horizontal = 16.dp),
-                icon = R.drawable.outline_info,
+                icon = R.drawable.account_balance,
                 title = stringResource(id = R.string.text_impressum_title),
                 content = {
                     Column {

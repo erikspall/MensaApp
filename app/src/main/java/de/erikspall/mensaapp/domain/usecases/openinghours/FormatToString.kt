@@ -85,7 +85,7 @@ class FormatToString(
                                             /* id = */ R.string.openingTimeToday,
                                             /* ...formatArgs = */
                                             time.format(
-                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.getDefault())
                                             )
                                         )
                                     } else if (daysTo == 1) {
@@ -93,7 +93,7 @@ class FormatToString(
                                             /* id = */ R.string.openingTimeTomorrow,
                                             /* ...formatArgs = */
                                             time.format(
-                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.getDefault())
                                             )
                                         )
                                     } else {
@@ -105,7 +105,7 @@ class FormatToString(
                                                 Locale.getDefault()
                                             ),
                                             time.format(
-                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.getDefault())
                                             )
                                         )
                                     }
@@ -122,7 +122,7 @@ class FormatToString(
                                             /* id = */ R.string.endOfServiceTimeToday,
                                             /* ...formatArgs = */
                                             time.format(
-                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.getDefault())
                                             )
                                         )
                                     } else if (daysTo == 1) {
@@ -130,7 +130,7 @@ class FormatToString(
                                             /* id = */ R.string.endOfServiceTimeTomorrow,
                                             /* ...formatArgs = */
                                             time.format(
-                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.getDefault())
                                             )
                                         )
                                     } else {
@@ -142,7 +142,7 @@ class FormatToString(
                                                 Locale.getDefault()
                                             ),
                                             time.format(
-                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.getDefault())
                                             )
                                         )
                                     }
@@ -159,7 +159,7 @@ class FormatToString(
                                             /* id = */ R.string.closingTimeToday,
                                             /* ...formatArgs = */
                                             time.format(
-                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.getDefault())
                                             )
                                         )
                                     } else if (daysTo == 1) {
@@ -167,7 +167,7 @@ class FormatToString(
                                             /* id = */ R.string.closingTimeTomorrow,
                                             /* ...formatArgs = */
                                             time.format(
-                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.getDefault())
                                             )
                                         )
                                     } else {
@@ -179,7 +179,7 @@ class FormatToString(
                                                 Locale.getDefault()
                                             ),
                                             time.format(
-                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+                                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.getDefault())
                                             )
                                         )
                                     }

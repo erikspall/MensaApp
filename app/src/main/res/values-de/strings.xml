@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MensaApp</string>
+    <string name="text_canteens">Mensen</string>
+    <string name="text_cafes">Cafeterien</string>
+    <string name="text_details">Details</string>
+    <string name="text_settings">Einstellungen</string>
+    <string name="text_invalid">Ungültig</string>
+    <string name="mensa_image_descriptor">Bild der Mensa</string>
+
+    <string name="role_student">Student</string>
+
+    <!--
+    <string name="shared_pref_role">RoleStudent</string>
+    <string name="shared_pref_name">SharedPrefs</string>
+
+    -->
+
+    <string name="role_guest">Gast</string>
+    <string name="role_employee">Bediensteter</string>
+    <string name="location_wuerzburg">Würzburg</string>
+    <string name="location_aschaffenburg">Aschaffenburg</string>
+    <string name="location_bamberg">Bamberg</string>
+    <string name="location_schweinfurt">Schweinfurt</string>
+    <string name="role_invalid">Ungültig</string>
+    <string name="location_invalid">Alle</string>
+    <string name="text_label_allergenic">Unverträglichkeiten</string>
+    <string name="text_ingredient_section">Zutaten</string>
+    <string name="text_allergen_section">Allergene</string>
+    <string name="text_label_about">App-Info</string>
+    <string name="text_hero_toggle_warnings_additives">Vor Unverträglichkeiten warnen</string>
+    <string name="text_warnings_enabled">Warnungen aktiviert</string>
+    <string name="text_warnings_disabled">Warnungen deaktiviert</string>
+    <string name="text_role">Rolle</string>
+    <string name="text_location">Standort</string>
+    <string name="text_warnings">Warnungen</string>
+    <string name="text_about_this_app">Über die App</string>
+    <string name="text_about_this_app_detail">Impressum, Datenschutz, …</string>
+    <string name="text_select_location">Standort auswählen</string>
+    <string name="text_select_role">Rolle auswählen</string>
+    <string name="text_select_location_description">Wähle hier welche Mensen und Cafeterien du sehen möchtest</string>
+    <string name="text_select_role_description">Die Preise für Gerichte passen sich an deine Rolle an</string>
+    <string name="text_settings_dialog_dismiss">Zurück</string>
+    <string name="text_settings_dialog_save">Speichern</string>
+    <string name="text_lottie_fetching_canteens">Suche nach Mensen …</string>
+    <string name="text_lottie_fetching_cafeterias">Suche nach Cafeterien …</string>
+    <string name="text_lottie_fetching_meals">Suche nach Gerichten …</string>
+    <string name="text_lottie_error">Ohje, da ist etwas schiefgelaufen :(\nVersuche es später erneut</string>
+    <string name="text_lottie_no_info_canteens">Huch! Wir konnten keine Mensen finden :o\nVersuche es vielleicht später erneut!</string>
+    <string name="text_lottie_no_info_cafeterias">Huch! Wir konnten keine Cafeterien finden :o\nVersuche es vielleicht später erneut!</string>
+    <string name="text_lottie_no_meals">Wir konnten keine Gerichte finden :/\nVersuche es vielleicht später erneut!</string>
+    <string name="text_lottie_no_additives">Wir konnten keine Zusatzstoffe finden :/ Versuche es später erneut!</string>
+    <string name="text_label_for_developers">Für Entwickler</string>
+    <string name="text_label_open_github">GitHub öffnen</string>
+
+    <string name="text_app_info_1">
+        Diese App entstand als Spaßprojekt zweier Informatikstudenten der Universität
+        Würzburg.
+    </string>
+    <string name="text_app_info_2">
+        Es handelt sich um keine offizielle App des Studentenwerks!
+    </string>
+    <string name="text_app_info_3">
+        Aufgrund dessen kann es vorkommen, dass die angezeigten Daten nicht aktuell oder
+        Informationen zu z.B. Inhaltsstoffen, Allergenen oder Preisen nicht korrekt sind.
+        Beachte - besonders wenn du Allergiker bist - bitte immer die Aushänge
+        vor Ort!
+    </string>
+
+
+    <string name="text_open_source_body_1">
+        Der komplette Code des Projektes ist OpenSource und auf GitHub.
+    </string>
+
+    <string name="text_open_source_body_2">
+        Solltest du einen Fehler entdecken, kannst du gerne ein Issue im passenden Repository
+        eröffnen.
+    </string>
+
+    <string name="text_open_source_body_3">
+        Auch Pull-Requests sind herzlich willkommen :)
+    </string>
+
+
+    <string name="text_impressum_title">Impressum</string>
+    <string name="text_impressum_body_1">
+        Angaben gemäß § 5 TMG
+    </string>
+
+    <string name="text_impressum_body_2">
+        Erik Spall
+    </string>
+
+    <string name="text_impressum_body_3">
+        Kontakt:
+    </string>
+
+    <string name="text_impressum_body_4">
+        Telefon: -\nE-Mail: android@mensa-app.timo-reusch.de\n\nVerantwortlich für den Inhalt nach § 55 Abs. 2 RStV: Erik Spall, Anschrift wie oben.
+    </string>
+
+
+    <string name="text_disclaimer_title">Haftungsausschluss</string>
+    <string name="text_disclaimer_body_1">
+        Haftung für Inhalte
+    </string>
+    <string name="text_disclaimer_body_2">
+        Die Inhalte dieser Applikation wurden mit größter Sorgfalt erstellt. Für die Richtigkeit,
+        Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.
+        Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach
+        den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter
+        jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen
+        oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.
+        Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den
+        allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch
+        erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich.
+        Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend
+        entfernen.
+    </string>
+    <string name="text_disclaimer_body_3">
+        Haftung für Links
+    </string>
+    <string name="text_disclaimer_body_4">
+        Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen
+        Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen.
+        Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der
+        Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf
+        mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung
+        nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne
+        konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von
+        Rechtsverletzungen werden wir derartige Links umgehend entfernen.
+    </string>
+    <string name="text_label_read_more">… mehr</string>
+    <string name="text_label_read_less">weniger</string>
+
+
+
+    <plurals name="minutesTillOpening">
+        <item quantity="one">Öffnet in %d Minute</item>
+        <item quantity="other">Öffnet in %d Minuten</item>
+    </plurals>
+
+    <plurals name="minutesTillEndOfService">
+        <item quantity="one">Essensausgabe endet in %d Minute</item>
+        <item quantity="other">Essensausgabe endet in %d Minuten</item>
+    </plurals>
+
+    <plurals name="minutesTillClosing">
+        <item quantity="one">Schließt in %d Minute</item>
+        <item quantity="other">Schließt in %d Minuten</item>
+    </plurals>
+
+    <string name="openingTimeToday">
+        Öffnet um %s Uhr
+    </string>
+
+    <string name="closingTimeToday">
+        Schließt um %s Uhr
+    </string>
+
+    <string name="endOfServiceTimeToday">
+        Essensausgabe bis %s Uhr
+    </string>
+
+    <string name="openingTimeTomorrow">
+        Öffnet morgen um %s Uhr
+    </string>
+
+    <string name="closingTimeTomorrow">
+        Schließt morgen um %s Uhr
+    </string>
+
+    <string name="endOfServiceTimeTomorrow">
+        Essensausgabe bis morgen %s Uhr
+    </string>
+
+
+    <string name="closingTimeBeyond">
+        Schließt am %s um %s Uhr
+    </string>
+
+    <string name="openingTimeBeyond">
+        Öffnet am %s um %s Uhr
+    </string>
+
+    <string name="endOfServiceTimeBeyond">
+        Essensausgabe bis %s um %s Uhr
+    </string>
+
+    <string name="closed">
+        Geschlossen!
+    </string>
+
+    <string name="internal_error">Interner Fehler!:(</string>
+</resources>
