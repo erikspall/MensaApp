@@ -58,41 +58,36 @@
     <string name="text_label_open_github">Open GitHub</string>
 
     <string name="text_app_info_1">
-        Diese App entstand als Spaßprojekt zweier Informatikstudenten der Universität
-        Würzburg.
+        This app was created as a fun project by two computer science students at the University of Würzburg.
     </string>
     <string name="text_app_info_2">
-        Es handelt sich um keine offizielle App des Studentenwerks!
+        This is not an official app of the Studentenwerk!
     </string>
     <string name="text_app_info_3">
-        Aufgrund dessen kann es vorkommen, dass die angezeigten Daten nicht aktuell oder
-        Informationen zu z.B. Inhaltsstoffen, Allergenen oder Preisen nicht korrekt sind.
-        Beachte - besondes wenn du Allergiker bist - bitte immer die Aushänge
-        vor Ort!
+        Therefore it can happen that the displayed data is not up to date or information about e.g. ingredients, allergens or prices is not correct. Please note - especially if you are allergic - always the notices on site!
     </string>
-    <string name="text_app_info_4">
+    <string name="text_app_info_4" translatable="false">
         Version: 1.0.0-alpha02
     </string>
 
 
 
     <string name="text_open_source_body_1">
-        Der komplette Code des Projektes ist OpenSource und auf GitHub.
+        The complete code of the project is open source and on GitHub.
     </string>
 
     <string name="text_open_source_body_2">
-        Solltest du einen Fehler entdecken, kannst du gerne ein Issue im passenden Repository
-        eröffnen.
+        If you find a bug, feel free to open an issue in the appropriate repository.
     </string>
 
     <string name="text_open_source_body_3">
-        Auch Pull-Requests sind herzlich willkommen :)
+        Pull requests are also welcome :)
     </string>
 
 
     <string name="text_impressum_title">Imprint</string>
     <string name="text_impressum_body_1">
-        Angaben gemäß § 5 TMG
+        Information according to § 5 TMG
     </string>
 
     <string name="text_impressum_body_2">
@@ -104,39 +99,22 @@
     </string>
 
     <string name="text_impressum_body_4">
-        Telefon: -\nE-Mail: android@mensa-app.timo-reusch.de\n\nVerantwortlich für den Inhalt nach § 55 Abs. 2 RStV: Erik Spall, Anschrift wie oben.
+        Phone: -\nE-Mail: android@mensa-app.timo-reusch.de\n\nResponsible for the content according to § 55 para. 2 RStV: Erik Spall, address as above.
     </string>
 
 
     <string name="text_disclaimer_title">Disclaimer</string>
     <string name="text_disclaimer_body_1">
-        Haftung für Inhalte
+        Liability for contents
     </string>
     <string name="text_disclaimer_body_2">
-        Die Inhalte dieser Applikation wurden mit größter Sorgfalt erstellt. Für die Richtigkeit,
-        Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.
-        Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach
-        den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter
-        jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen
-        oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.
-        Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den
-        allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch
-        erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich.
-        Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend
-        entfernen.
+        The content of this application was created with the utmost care. However, we cannot guarantee that the content is correct, complete or up-to-date. As a service provider, we are responsible for our own content on these pages according to Section 7, Paragraph 1 of the German Telemedia Act (TMG). According to §§ 8 to 10 TMG, however, we as a service provider are not obliged to monitor transmitted or stored third-party information or to investigate circumstances that indicate illegal activity. Obligations to remove or block the use of information according to general laws remain unaffected. However, liability in this regard is only possible from the point in time at which knowledge of a specific infringement of the law is known. As soon as we become aware of any violations of the law, we will remove this content immediately.
     </string>
     <string name="text_disclaimer_body_3">
-        Haftung für Links
+        Liability for links
     </string>
     <string name="text_disclaimer_body_4">
-        Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen
-        Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen.
-        Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der
-        Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf
-        mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung
-        nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne
-        konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von
-        Rechtsverletzungen werden wir derartige Links umgehend entfernen.
+        Our offer contains links to external third-party websites, the content of which we have no influence on. Therefore we cannot assume any liability for this external content. The respective provider or operator of the pages is always responsible for the content of the linked pages. The linked pages were checked for possible legal violations at the time of linking. Illegal content was not recognizable at the time of linking. However, a permanent control of the content of the linked pages is not reasonable without concrete evidence of an infringement. As soon as we become aware of legal violations, we will remove such links immediately.
     </string>
     <string name="text_label_read_more">… more</string>
     <string name="text_label_read_less">less</string>
@@ -144,59 +122,59 @@
 
 
     <plurals name="minutesTillOpening">
-        <item quantity="one">Öffnet in %d Minute</item>
-        <item quantity="other">Öffnet in %d Minuten</item>
+        <item quantity="one">Opens in %d minute</item>
+        <item quantity="other">Opens in %d minutes</item>
     </plurals>
 
     <plurals name="minutesTillEndOfService">
-        <item quantity="one">Essensausgabe endet in %d Minute</item>
-        <item quantity="other">Essensausgabe endet in %d Minuten</item>
+        <item quantity="one">Food serving ends in %d minute</item>
+        <item quantity="other">Food serving ends in %d minutes</item>
     </plurals>
 
     <plurals name="minutesTillClosing">
-        <item quantity="one">Schließt in %d Minute</item>
-        <item quantity="other">Schließt in %d Minuten</item>
+        <item quantity="one">Closes in %d minute</item>
+        <item quantity="other">Closes in %d minutes</item>
     </plurals>
 
     <string name="openingTimeToday">
-        Öffnet um %s Uhr
+        Opens at %s
     </string>
 
     <string name="closingTimeToday">
-        Schließt um %s Uhr
+        Closes at %s
     </string>
 
     <string name="endOfServiceTimeToday">
-        Essensausgabe bis %s Uhr
+        Food serving till %s
     </string>
 
     <string name="openingTimeTomorrow">
-        Öffnet morgen um %s Uhr
+        Opens tomorrow at %s
     </string>
 
     <string name="closingTimeTomorrow">
-        Schließt morgen um %s Uhr
+        Closes tomorrow at %s
     </string>
 
     <string name="endOfServiceTimeTomorrow">
-        Essensausgabe bis morgen %s Uhr
+        Food serving till tomorrow %s
     </string>
 
 
     <string name="closingTimeBeyond">
-        Schließt am %s um %s Uhr
+        Closes on %s at %s
     </string>
 
     <string name="openingTimeBeyond">
-        Öffnet am %s um %s Uhr
+        Opens on %s at %s
     </string>
 
     <string name="endOfServiceTimeBeyond">
-        Essensausgabe bis %s um %s Uhr
+        Food serving till %s at %s
     </string>
 
     <string name="closed">
-        Geschlossen!
+        Closed!
     </string>
 
     <string name="internal_error">Internal error!:(</string>

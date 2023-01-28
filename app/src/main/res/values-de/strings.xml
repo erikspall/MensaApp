@@ -63,13 +63,9 @@
     <string name="text_app_info_3">
         Aufgrund dessen kann es vorkommen, dass die angezeigten Daten nicht aktuell oder
         Informationen zu z.B. Inhaltsstoffen, Allergenen oder Preisen nicht korrekt sind.
-        Beachte - besondes wenn du Allergiker bist - bitte immer die Aushänge
+        Beachte - besonders wenn du Allergiker bist - bitte immer die Aushänge
         vor Ort!
     </string>
-    <string name="text_app_info_4">
-        Version: 1.0.0-alpha02
-    </string>
-
 
 
     <string name="text_open_source_body_1">
